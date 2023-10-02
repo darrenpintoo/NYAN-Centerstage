@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -11,14 +10,11 @@ import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 /**
  * Example teleop code for a basic mecanum drive
  */
-@TeleOp(name = "Template Teleop")
-@Disabled
+@TeleOp(name = "Template Teleop") 
 public class TemplateTeleop extends LinearOpMode {
 
     // Create new Instance of the robot
     RobotEx robot = RobotEx.getInstance();
-
-    private boolean fieldCentric = false;
 
     @Override
     public void runOpMode() {
@@ -53,16 +49,15 @@ public class TemplateTeleop extends LinearOpMode {
             currentFrameGamepad1.copy(gamepad1);
             currentFrameGamepad2.copy(gamepad2);
 
-            telemetry.addData("Field Centric: ", fieldCentric);
 
             telemetry.update();
 
             if (currentFrameGamepad1.left_trigger > 0) {
-                robot.lift.setLiftPower(
+                robot.climbLift.setLiftPower(
                         -currentFrameGamepad1.left_trigger
                 );
             } else {
-                robot.lift.setLiftPower(
+                robot.climbLift.setLiftPower(
                         currentFrameGamepad1.right_trigger
                 );
             }

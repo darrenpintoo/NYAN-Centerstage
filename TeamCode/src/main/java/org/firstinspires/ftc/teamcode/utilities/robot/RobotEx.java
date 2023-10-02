@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utilities.localizer.RoadrunnerLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
-import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.ClimbLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
 
 
@@ -30,7 +30,7 @@ public class RobotEx {
     public InternalIMU internalIMU = InternalIMU.getInstance();
 
     public Drivetrain drivetrain = new Drivetrain();
-    public Lift lift = new Lift();
+    public ClimbLift climbLift = new ClimbLift();
     public VoltageSensor voltageSensor;
 
     private final ElapsedTime frameTimer = new ElapsedTime();
@@ -38,7 +38,7 @@ public class RobotEx {
     private final Subsystem[] robotSubsystems = new Subsystem[] {
             internalIMU,
             drivetrain,
-            lift
+            climbLift
     };
 
     Telemetry telemetry;

@@ -7,10 +7,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.MotorGroup;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
 
-import java.text.Format;
-
-public class Lift implements Subsystem {
+public class ClimbLift implements Subsystem {
 
     double power;
 
@@ -21,14 +20,14 @@ public class Lift implements Subsystem {
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.leftLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "LeftLiftMotor");
-        this.rightLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "RightLiftMotor");
+        this.leftLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftLiftMotor");
+        this.rightLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightLiftMotor");
     }
 
     @Override
     public void onOpmodeStarted() {
         this.leftLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        this.rightLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.rightLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void setLiftPower(double power) {
