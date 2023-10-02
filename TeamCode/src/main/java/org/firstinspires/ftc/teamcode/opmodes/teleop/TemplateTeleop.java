@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 /**
  * Example teleop code for a basic mecanum drive
  */
-@TeleOp(name = "Template Teleop") 
+@TeleOp(name = "Template Teleop")
 public class TemplateTeleop extends LinearOpMode {
 
     // Create new Instance of the robot
