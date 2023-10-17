@@ -28,7 +28,7 @@ public class DepositLift implements Subsystem{
     @Override
     public void onOpmodeStarted() {
         this.backLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        this.frontLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.frontLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void driveLiftFromGamepad(double power) {

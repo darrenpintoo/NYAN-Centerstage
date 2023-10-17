@@ -43,7 +43,8 @@ public class RobotEx {
             internalIMU,
             drivetrain,
             climbLift,
-            intake
+            intake,
+            depositLift
     };
 
     Telemetry telemetry;

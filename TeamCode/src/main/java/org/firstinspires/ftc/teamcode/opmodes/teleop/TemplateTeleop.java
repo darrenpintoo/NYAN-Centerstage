@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 
 /**
  * Example teleop code for a basic mecanum drive
@@ -37,6 +38,8 @@ public class TemplateTeleop extends LinearOpMode {
         Gamepad previousFrameGamepad1 = new Gamepad();
         Gamepad previousFrameGamepad2 = new Gamepad();
 
+        boolean gripState = false;
+        boolean rotationState = false;
         // robot.drivetrain.enableAntiTip();
 
         robot.update();
@@ -70,6 +73,20 @@ public class TemplateTeleop extends LinearOpMode {
             } else {
                 robot.climbLift.setLiftPower(
                         currentFrameGamepad2.right_trigger
+                );
+            }
+
+            if (currentFrameGamepad1.a && !previousFrameGamepad1.a) {
+                gripState = !gripState;
+                robot.intake.setGripperState(
+                        gripState ? Intake.GripperStates.OPEN : Intake.GripperStates.CLOSED
+                );
+            }
+
+            if (currentFrameGamepad1.b && !previousFrameGamepad1.b) {
+                rotationState = !rotationState;
+                robot.intake.setRotationState(
+                        rotationState ? Intake.RotationStates.ROTATED : Intake.RotationStates.DEFAULT
                 );
             }
 
