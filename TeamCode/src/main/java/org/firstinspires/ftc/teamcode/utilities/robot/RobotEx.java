@@ -68,6 +68,7 @@ public class RobotEx {
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
 
+
         this.allHubs = hardwareMap.getAll(LynxModule.class);
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltageCompensator = this.voltageSensor.getVoltage();
