@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: org.firstinspires.ftc:OnBotJava:9.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b48fab3853691df14fc5f98ac0eed0e4/transformed/jetified-OnBotJava-9.0.1/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b48fab3853691df14fc5f98ac0eed0e4/transformed/jetified-OnBotJava-9.0.1/jars/libs/javac.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b48fab3853691df14fc5f98ac0eed0e4/transformed/jetified-OnBotJava-9.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b48fab3853691df14fc5f98ac0eed0e4/transformed/jetified-OnBotJava-9.0.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/OnBotJava/9.0.1/659ea14e137164d3869e82e9357c74617b1b16d2/OnBotJava-9.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/OnBotJava/9.0.1/4a9f2121b9cff9dfee55c59e9420f6e2cc5d4c8a/OnBotJava-9.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

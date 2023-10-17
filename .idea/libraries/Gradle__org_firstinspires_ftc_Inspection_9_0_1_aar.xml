@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: org.firstinspires.ftc:Inspection:9.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fea5e8120cbdff1aea9d51b6fa87e0e7/transformed/jetified-Inspection-9.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fea5e8120cbdff1aea9d51b6fa87e0e7/transformed/jetified-Inspection-9.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fea5e8120cbdff1aea9d51b6fa87e0e7/transformed/jetified-Inspection-9.0.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/Inspection/9.0.1/f761e628b7b3fdf6be10db2487b7da57072e36d6/Inspection-9.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/Inspection/9.0.1/f5e1353db8738b77f49ae4a7b42d7b16bb693488/Inspection-9.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

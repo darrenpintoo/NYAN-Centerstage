@@ -14,7 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utilities.localizer.RoadrunnerLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.ClimbLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
@@ -31,6 +33,8 @@ public class RobotEx {
 
     public Drivetrain drivetrain = new Drivetrain();
     public ClimbLift climbLift = new ClimbLift();
+    public DepositLift depositLift = new DepositLift();
+    public Intake intake = new Intake();
     public VoltageSensor voltageSensor;
 
     private final ElapsedTime frameTimer = new ElapsedTime();
@@ -38,7 +42,8 @@ public class RobotEx {
     private final Subsystem[] robotSubsystems = new Subsystem[] {
             internalIMU,
             drivetrain,
-            climbLift
+            climbLift,
+            intake
     };
 
     Telemetry telemetry;

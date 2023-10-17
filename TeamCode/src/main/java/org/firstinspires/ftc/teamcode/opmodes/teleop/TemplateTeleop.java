@@ -53,12 +53,22 @@ public class TemplateTeleop extends LinearOpMode {
             telemetry.update();
 
             if (currentFrameGamepad1.left_trigger > 0) {
-                robot.climbLift.setLiftPower(
+                robot.depositLift.driveLiftFromGamepad(
                         -currentFrameGamepad1.left_trigger
                 );
             } else {
-                robot.climbLift.setLiftPower(
+                robot.depositLift.driveLiftFromGamepad(
                         currentFrameGamepad1.right_trigger
+                );
+            }
+
+            if (currentFrameGamepad2.left_trigger > 0) {
+                robot.climbLift.setLiftPower(
+                        -currentFrameGamepad2.left_trigger
+                );
+            } else {
+                robot.climbLift.setLiftPower(
+                        currentFrameGamepad2.right_trigger
                 );
             }
 
