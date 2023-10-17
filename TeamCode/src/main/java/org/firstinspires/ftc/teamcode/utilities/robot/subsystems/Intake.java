@@ -12,7 +12,7 @@ public class Intake implements Subsystem {
     Servo gripServo;
     Servo rotationServo;
 
-    public static double num = 0;
+    public static double num = 0.5;
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
         gripServo = hardwareMap.get(Servo.class, "IntakeGripServo");
@@ -26,6 +26,6 @@ public class Intake implements Subsystem {
 
     @Override
     public void onCyclePassed() {
-        gripServo.setPosition(num);
+        rotationServo.setPosition(num);
     }
 }
