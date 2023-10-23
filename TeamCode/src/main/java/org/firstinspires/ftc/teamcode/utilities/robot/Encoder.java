@@ -12,9 +12,5 @@ public class Encoder {
         this.direction = direction;
     }
 
-    public getTicks() {
-        
-    }
-
 
 }
