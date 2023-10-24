@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utilities.robot.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.robot.Robot;
 
@@ -95,9 +96,9 @@ public class Drivetrain implements Subsystem {
         this.rightBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor");
 
         // todo: figure out the directions
-        this.rightFrontMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        this.rightFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         this.leftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        this.leftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        this.leftBackMotor.setDirection(DcMotorEx.Direction.FORWARD);
         this.rightBackMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
 /*        this.rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

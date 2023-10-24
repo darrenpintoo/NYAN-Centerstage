@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
 
 /**
  * Example teleop code for a basic mecanum drive
@@ -40,6 +41,8 @@ public class TemplateTeleop extends LinearOpMode {
 
         boolean gripState = false;
         boolean rotationState = false;
+        boolean airplaneLaunchState = false;
+        boolean airplaneLiftState = false;
         // robot.drivetrain.enableAntiTip();
 
         robot.update();
@@ -76,6 +79,7 @@ public class TemplateTeleop extends LinearOpMode {
                 );
             }
 
+
             if (currentFrameGamepad1.a && !previousFrameGamepad1.a) {
                 gripState = !gripState;
                 robot.intake.setGripperState(
@@ -90,6 +94,20 @@ public class TemplateTeleop extends LinearOpMode {
                 );
             }
 
+            if (currentFrameGamepad2.a && !previousFrameGamepad2.a) {
+                airplaneLaunchState = !airplaneLaunchState;
+                robot.planeLauncher.setShootState(
+                        airplaneLaunchState ? PlaneLauncher.AirplaneShootStates.OPENED : PlaneLauncher.AirplaneShootStates.CLOSED
+                );
+            }
+
+            if (currentFrameGamepad2.b && !previousFrameGamepad2.b) {
+                airplaneLiftState = !airplaneLiftState;
+                robot.planeLauncher.setLiftState(
+                        airplaneLiftState ? PlaneLauncher.AirplaneLiftStates.UP : PlaneLauncher.AirplaneLiftStates.DOWN
+                );
+            }
+
             robot.drivetrain.robotCentricDriveFromGamepad(
                     currentFrameGamepad1.left_stick_y,
                     currentFrameGamepad1.left_stick_x,
@@ -100,6 +118,7 @@ public class TemplateTeleop extends LinearOpMode {
             double frameTime = robot.update();
 
             telemetry.addData("Frame Time: ", frameTime);
+            telemetry.addData("Ticks: ", robot.depositLift.frontLiftMotor.getCurrentPosition());
         }
     }
 }

@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.ClimbLift;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
 
 
@@ -37,6 +38,7 @@ public class RobotEx {
     public Intake intake = new Intake();
     public VoltageSensor voltageSensor;
 
+    public PlaneLauncher planeLauncher = new PlaneLauncher();
     private final ElapsedTime frameTimer = new ElapsedTime();
 
     private final Subsystem[] robotSubsystems = new Subsystem[] {
@@ -44,7 +46,8 @@ public class RobotEx {
             drivetrain,
             climbLift,
             intake,
-            depositLift
+            depositLift,
+            planeLauncher
     };
 
     Telemetry telemetry;
