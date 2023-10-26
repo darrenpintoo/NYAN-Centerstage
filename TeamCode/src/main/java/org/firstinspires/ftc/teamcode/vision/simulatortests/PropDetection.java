@@ -10,7 +10,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class SleeveDetectionPipeline extends OpenCvPipeline {
+public class PropDetection extends OpenCvPipeline {
 
     public enum ParkingPosition {
         LEFT,
@@ -18,34 +18,43 @@ public class SleeveDetectionPipeline extends OpenCvPipeline {
         RIGHT
     }
 
-    public static Point TOP_LEFT_ANCHOR_POINT1 = new Point(145, 168);
-    public static Point TOP_LEFT_ANCHOR_POINT2 = new Point(245, 168);
-    public static Point TOP_LEFT_ANCHOR_POINT3 = new Point(345, 168);
+    private static final Point SLEEVE_TOP_LEFT_ANCHOR_POINT = new Point(145, 168);
 
     // Width and height for the bounding box
     public static int REGION_WIDTH = 30;
     public static int REGION_HEIGHT = 50;
 
     // Lower and upper boundaries for colors
-    public static Scalar lowerRed = new Scalar(0, 0, 0);
-    public static Scalar upperRed = new Scalar(255, 255, 255);
-
+    public static Scalar lowerMagenta = new Scalar(0, 0, 0);
+    public static Scalar upperMagenta = new Scalar(255, 255, 255);
+    public static Scalar lowerYellow  = new Scalar(0, 0, 0);
+    public static Scalar upperYellow = new Scalar(255, 255, 255);
+    public static Scalar lowerGreen = new Scalar(0, 0, 0);
+    public static Scalar upperGreen = new Scalar(255, 255, 255);
 
     // Color definitions
+    private final Scalar MAGENTA = new Scalar(255, 0, 255);
+    private final Scalar GREEN    = new Scalar(0, 255, 255);
+    private final Scalar YELLOW  = new Scalar(255, 255, 0);
 
-    private Mat redMatrix1 = new Mat();
-    private Mat redMatrix2 = new Mat();
-    private Mat redMatrix3 = new Mat();
+    // Percent and mat definitions
+    private double magentaPercent;
+    private double yellowPercent;
+    private double greenPercent;
+
+    private Mat magentaMatrix = new Mat();
+    private Mat yellowMatrix = new Mat();
+    private Mat greenMatrix = new Mat();
+
+    private Mat blurredMatrix = new Mat();
 
     // Anchor point definitions
-    Point point1A = new Point(TOP_LEFT_ANCHOR_POINT1.x, TOP_LEFT_ANCHOR_POINT1.y);
-    Point point1B = new Point(TOP_LEFT_ANCHOR_POINT1.x + REGION_WIDTH, TOP_LEFT_ANCHOR_POINT1.y + REGION_HEIGHT);
-    Point point2A = new Point(TOP_LEFT_ANCHOR_POINT2.x, TOP_LEFT_ANCHOR_POINT2.y);
-    Point point2B = new Point(TOP_LEFT_ANCHOR_POINT2.x + REGION_WIDTH, TOP_LEFT_ANCHOR_POINT2.y + REGION_HEIGHT);
-    Point point3A = new Point(TOP_LEFT_ANCHOR_POINT3.x, TOP_LEFT_ANCHOR_POINT3.y);
-    Point point3B = new Point(TOP_LEFT_ANCHOR_POINT3.x + REGION_WIDTH, TOP_LEFT_ANCHOR_POINT3.y + REGION_HEIGHT);
+    Point sleeve_pointA = new Point(SLEEVE_TOP_LEFT_ANCHOR_POINT.x, SLEEVE_TOP_LEFT_ANCHOR_POINT.y);
+    Point sleeve_pointB = new Point(SLEEVE_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH, SLEEVE_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
     // Running variable storing the parking position
+    private volatile ParkingPosition position = ParkingPosition.LEFT;
+
     private int stageNum = 0;
 
     private enum Stage
@@ -61,10 +70,10 @@ public class SleeveDetectionPipeline extends OpenCvPipeline {
 
     Telemetry t;
 
-    public SleeveDetectionPipeline(Telemetry t) {
+    public PropDetection(Telemetry t) {
         this.t = t;
     }
-    public SleeveDetectionPipeline() {}
+    public PropDetection() {}
 
     @Override
     public void onViewportTapped()
@@ -84,30 +93,29 @@ public class SleeveDetectionPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
 
         // Memory cleanup
-        redMatrix1.release();
-        redMatrix2.release();
-        redMatrix3.release();
+        blurredMatrix.release();
+        yellowMatrix.release();
+        greenMatrix.release();
+        magentaMatrix.release();
 
-        Imgproc.rectangle();
         // Noise reduction
-        Imgproc.cvtColor(input, redMatrix, Imgproc.COLOR_RGB2YCrCb);
-        // Imgproc.blur(blurredMatrix, blurredMatrix, new Size(5, 5));
+        Imgproc.cvtColor(input, blurredMatrix, Imgproc.COLOR_RGB2HSV);
+        Imgproc.blur(blurredMatrix, blurredMatrix, new Size(5, 5));
         // blurredMatrix = blurredMatrix.submat(new Rect(sleeve_pointA, sleeve_pointB));
 
         // Apply Morphology
-        // Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
-        // Imgproc.morphologyEx(blurredMatrix, blurredMatrix, Imgproc.MORPH_CLOSE, kernel);
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+        Imgproc.morphologyEx(blurredMatrix, blurredMatrix, Imgproc.MORPH_CLOSE, kernel);
 
         // Gets channels from given source mat
-        Core.inRange(input, lowerRed, upperRed, redMatrix);
-        // Core.inRange(blurredMatrix, lowerYellow, upperYellow, yellowMatrix);
-        // Core.inRange(blurredMatrix, lowerGreen, upperGreen, greenMatrix);
+        Core.inRange(blurredMatrix, lowerMagenta, upperMagenta, magentaMatrix);
+        Core.inRange(blurredMatrix, lowerYellow, upperYellow, yellowMatrix);
+        Core.inRange(blurredMatrix, lowerGreen, upperGreen, greenMatrix);
 
         // Gets color specific values
-        redPercent1 = Core.countNonZero(magentaMatrix);
-        redPercent2 = Core.countNonZero(magentaMatrix);
-        redPercent3 = Core.countNonZero(magentaMatrix);
-
+        magentaPercent = Core.countNonZero(magentaMatrix);
+        yellowPercent = Core.countNonZero(yellowMatrix);
+        greenPercent = Core.countNonZero(greenMatrix);
 
         // Calculates the highest amount of pixels being covered on each side
         double maxPercent = Math.max(magentaPercent, Math.max(greenPercent, yellowPercent));

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
 
@@ -114,6 +115,15 @@ public class TemplateTeleop extends LinearOpMode {
                     currentFrameGamepad1.right_stick_x
             );
 
+            if (currentFrameGamepad2.x && !previousFrameGamepad2.x) {
+                robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+            } else if (currentFrameGamepad2.dpad_down && !previousFrameGamepad2.dpad_down) {
+                robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
+            } else if (currentFrameGamepad2.dpad_left && !previousFrameGamepad2.dpad_left) {
+                robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+            } else if (currentFrameGamepad2.dpad_up && !previousFrameGamepad2.dpad_up) {
+                robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL3);
+            }
 
             double frameTime = robot.update();
 
