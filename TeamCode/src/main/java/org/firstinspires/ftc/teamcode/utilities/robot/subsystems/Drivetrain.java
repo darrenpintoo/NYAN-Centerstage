@@ -37,10 +37,10 @@ public class Drivetrain implements Subsystem {
     MotorGroup<DcMotorEx> drivetrainMotorGroup;
     private DcMotorEx[] drivetrainMotors;
 
-    private DcMotorEx rightFrontMotor;
-    private DcMotorEx leftFrontMotor;
-    private DcMotorEx leftBackMotor;
-    private DcMotorEx rightBackMotor;
+    public DcMotorEx rightFrontMotor;
+    public DcMotorEx leftFrontMotor;
+    public DcMotorEx leftBackMotor;
+    public DcMotorEx rightBackMotor;
 
 
     private boolean enableAntiTip = false;
@@ -83,7 +83,6 @@ public class Drivetrain implements Subsystem {
     private double trackWidth = 12;
     private double wheelBase = 6.5;
     private double lateralMultiplier = -1.2;
-
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
 
@@ -96,9 +95,9 @@ public class Drivetrain implements Subsystem {
         this.rightBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor");
 
         // todo: figure out the directions
-        this.rightFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        this.rightFrontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         this.leftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        this.leftBackMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        this.leftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
         this.rightBackMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
 /*        this.rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -187,6 +186,7 @@ public class Drivetrain implements Subsystem {
         this.leftBackMotor.setPower(leftBackPower);
         this.leftFrontMotor.setPower(leftFrontPower);
 
+
         this.lastRightBackPower = this.rightBackPower;
         this.lastLeftBackPower= this.leftBackPower;
         this.lastLeftFrontPower = this.leftFrontPower;
@@ -211,6 +211,7 @@ public class Drivetrain implements Subsystem {
     public void robotCentricDriveFromGamepad(double leftJoystickY, double leftJoystickX, double rightJoystickX) {
         // todo: write code for robot centric drive
 
+        /*
         if (this.enableHeadingRetention) {
             if (rightJoystickX == 0) {
 
@@ -226,7 +227,7 @@ public class Drivetrain implements Subsystem {
                 rightJoystickX = headingPID.getOutputFromError(headingError);
             }
         }
-
+*/
         leftJoystickY = -leftJoystickY;
 
         double multiple = this.robotInstance.getPowerMultiple();
@@ -241,6 +242,12 @@ public class Drivetrain implements Subsystem {
         this.rightFrontPower += (leftJoystickY - leftJoystickX - rightJoystickX) / denominator;
         this.rightBackPower += (leftJoystickY + leftJoystickX - rightJoystickX) / denominator;
 
+        telemetry.addData("lf: ", leftFrontPower);
+        telemetry.addData("lb: ", leftBackPower);
+
+        telemetry.addData("rf: ", rightFrontPower);
+
+        telemetry.addData("rb: ", rightBackPower);
 
         this.lastX = leftJoystickX;
         this.lastY = leftJoystickY;

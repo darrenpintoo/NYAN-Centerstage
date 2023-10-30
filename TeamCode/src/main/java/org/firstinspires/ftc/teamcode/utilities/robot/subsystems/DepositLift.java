@@ -50,8 +50,19 @@ public class DepositLift implements Subsystem{
 
     @Override
     public void onOpmodeStarted() {
+
+        this.backLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.frontLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.backLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.frontLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        this.frontLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         this.backLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.frontLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
     }
 
     public void driveLiftFromGamepad(double power) {
@@ -65,7 +76,7 @@ public class DepositLift implements Subsystem{
         int targetPosition = this.getTargetPositionFromState(this.currentTargetState);
 
         if (power == 0) {
-            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.75, 0.75);
+            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.5, 0.5);
         }
 
         t.addData("Power:", power);

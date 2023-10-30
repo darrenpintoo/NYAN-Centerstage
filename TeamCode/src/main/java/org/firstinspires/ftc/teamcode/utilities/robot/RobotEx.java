@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utilities.localizer.RoadrunnerLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
@@ -52,7 +53,7 @@ public class RobotEx {
 
     Telemetry telemetry;
 
-    public RoadrunnerLocalizer localizer;
+    public ThreeWheelLocalizer localizer;
 
     private double voltageCompensator = 12;
 
@@ -77,7 +78,12 @@ public class RobotEx {
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltageCompensator = this.voltageSensor.getVoltage();
 
-        this.localizer = new RoadrunnerLocalizer(drivetrain, internalIMU, telemetry);
+        this.localizer = new ThreeWheelLocalizer(
+                new Encoder(this.drivetrain.rightBackMotor, 1), // 3
+                new Encoder(this.drivetrain.leftBackMotor, 1), // 0
+                new Encoder(this.drivetrain.rightFrontMotor, 1), // 2
+                telemetry
+        );
 
         for (LynxModule hub: allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
