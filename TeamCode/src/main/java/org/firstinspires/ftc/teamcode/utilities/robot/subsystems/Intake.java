@@ -26,8 +26,8 @@ public class Intake implements Subsystem {
     public static double startRotationPosition = 0.25;
     public static double endRotationPosition = 0.84;
 
-    public static double openClawPosition = 0.5;
-    public static double closeClawPosition = 0;
+    public static double openClawPosition = 0;
+    public static double closeClawPosition = 0.25;
     public static double num = 0;
 
     private RotationStates currentRotationState = RotationStates.DEFAULT;

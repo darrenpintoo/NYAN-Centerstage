@@ -5,12 +5,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.feedback.GeneralPIDController;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.MotorGroup;
-
+//boxOpen = 0.3 closed = 0.1
+//left servo closed position = 0.55ish  open = 0.80 (better than the 0.85 that we had
+//right servo
 @Config
 public class DepositLift implements Subsystem{
 
@@ -24,6 +27,11 @@ public class DepositLift implements Subsystem{
 
     public DcMotorEx backLiftMotor;
     public DcMotorEx frontLiftMotor;
+    public Servo leftServo;
+    public Servo rightServo;
+    public Servo outtakeServo;
+
+    public Servo boxServo;
 
     private MotorGroup<DcMotorEx> liftMotors;
 
@@ -33,17 +41,24 @@ public class DepositLift implements Subsystem{
     public static double kI = 0;
     public static double kD = 0;
     public static double kF = 0.15;
-    public static int targetPosition;
+    // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-
+    public static double servoPosition = 0.80;
+    //
+    public static double boxPosition = 0.1;
     private Telemetry t;
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
         this.backLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backDepositMotor");
         this.frontLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "frontDepositMotor");
+        this.leftServo = hardwareMap.get(Servo.class, "LeftBox");
+        this.rightServo = hardwareMap.get(Servo.class, "RightBox");
+        this.outtakeServo = hardwareMap.get(Servo.class, "BoxOpenServo");
 
         this.liftMotors = new MotorGroup<>(backLiftMotor, frontLiftMotor);
+
+        this.boxServo = hardwareMap.get(Servo.class, "BoxOpenServo");
 
         t = telemetry;
     }
@@ -73,6 +88,8 @@ public class DepositLift implements Subsystem{
 
         controller.updateCoefficients(kP, kI, kD, kF);
 
+        rightServo.setPosition(servoPosition);
+        boxServo.setPosition(boxPosition);
         int targetPosition = this.getTargetPositionFromState(this.currentTargetState);
 
         if (power == 0) {

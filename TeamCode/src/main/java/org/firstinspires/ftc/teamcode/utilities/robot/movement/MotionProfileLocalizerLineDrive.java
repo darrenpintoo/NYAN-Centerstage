@@ -37,7 +37,7 @@ public class MotionProfileLocalizerLineDrive {
 
     InternalIMU imu = robot.internalIMU;
     Drivetrain dt = robot.drivetrain;
-    RoadrunnerLocalizer localizer = robot.localizer;
+    RoadrunnerLocalizer localizer;
 
     Telemetry telemetry;
 

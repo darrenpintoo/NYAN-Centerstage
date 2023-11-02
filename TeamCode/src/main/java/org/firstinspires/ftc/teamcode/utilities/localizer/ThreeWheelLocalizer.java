@@ -20,9 +20,9 @@ public class ThreeWheelLocalizer {
     }
 
     public void updatePose() {
-        this.telemetry.addData("lp: ", leftParallel.getTicks());
-        this.telemetry.addData("rp: ", rightParallel.getTicks());
-        this.telemetry.addData("bp: ", backPerpendicular.getTicks());
+        this.telemetry.addData("lp: ", this.leftParallel.getTicks());
+        this.telemetry.addData("rp: ", this.rightParallel.getTicks());
+        this.telemetry.addData("bp: ", this.backPerpendicular.getTicks());
 
     }
 }

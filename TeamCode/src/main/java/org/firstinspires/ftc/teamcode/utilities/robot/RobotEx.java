@@ -78,12 +78,7 @@ public class RobotEx {
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltageCompensator = this.voltageSensor.getVoltage();
 
-        this.localizer = new ThreeWheelLocalizer(
-                new Encoder(this.drivetrain.rightBackMotor, 1), // 3
-                new Encoder(this.drivetrain.leftBackMotor, 1), // 0
-                new Encoder(this.drivetrain.rightFrontMotor, 1), // 2
-                telemetry
-        );
+
 
         for (LynxModule hub: allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -92,6 +87,13 @@ public class RobotEx {
         for (Subsystem subsystem : this.robotSubsystems) {
             subsystem.onInit(hardwareMap, telemetry);
         }
+
+        this.localizer = new ThreeWheelLocalizer(
+                new Encoder(this.drivetrain.rightBackMotor, 1), // 3
+                new Encoder(this.drivetrain.leftBackMotor, 1), // 0
+                new Encoder(this.drivetrain.rightFrontMotor, 1), // 2
+                telemetry
+        );
 
         telemetry.update();
 
@@ -122,12 +124,12 @@ public class RobotEx {
 
         }
 
-        this.localizer.update();
-
+        this.localizer.updatePose();
+/*
         Pose2d currentPose = this.localizer.getPoseEstimate();
         telemetry.addData("X: ", currentPose.getX());
         telemetry.addData("Y: ", currentPose.getY());
-        telemetry.addData("Heading: ", currentPose.getHeading());
+        telemetry.addData("Heading: ", currentPose.getHeading());*/
         telemetry.addData("Current Draw: ", hubCurrent);
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -136,7 +138,7 @@ public class RobotEx {
         fieldOverlay.setStrokeWidth(1);
         fieldOverlay.setStroke("#4CAF50");
 
-        drawRobot(fieldOverlay, currentPose);
+        // drawRobot(fieldOverlay, currentPose);
 
 
         double frameTime = frameTimer.milliseconds();
@@ -155,7 +157,7 @@ public class RobotEx {
     }
 
     public void persistData() {
-        PersistentData.startPose = this.localizer.getPoseEstimate();
+        // PersistentData.startPose = this.localizer.getPoseEstimate();
     }
 
     public double getVoltage() {
