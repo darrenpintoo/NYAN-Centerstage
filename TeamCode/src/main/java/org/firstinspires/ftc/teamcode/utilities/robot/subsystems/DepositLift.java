@@ -28,6 +28,11 @@ public class DepositLift implements Subsystem{
         OPEN,
         CLOSED
     }
+
+    public enum TiltStates {
+        DEFAULT,
+        TILTED
+    }
     double power;
 
     public DcMotorEx backLiftMotor;
@@ -44,17 +49,25 @@ public class DepositLift implements Subsystem{
     private LiftStates previousTargetState = LiftStates.LEVEL0;
 
     private BoxStates boxState = BoxStates.CLOSED;
+    private TiltStates tiltState = TiltStates.DEFAULT;
     public static double kP = 0.005;
     public static double kI = 0;
     public static double kD = 0;
     public static double kF = 0.15;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-    public static double leftServoDefaultPosition = 0.80;
-    public static double leftServoTiltPosition = 0.55;
+    public static double leftServoDefaultPosition = 0.55;
+    public static double leftServoTiltPosition = 0.8;
+
+    public static double rightServoDefaultPosition = 0.8;
+    public static double rightServoTiltPosition = 0.55;
     //
     public static double boxOpenPosition = 0.3;
     public static double boxClosedPosition = 0.1;
+
+    private boolean override = false;
+    public int offset = 1;
+    public static int offsetLength = 25;
 
     private Telemetry t;
 
@@ -99,36 +112,59 @@ public class DepositLift implements Subsystem{
         controller.updateCoefficients(kP, kI, kD, kF);
 
 
-        int targetPosition = this.getTargetPositionFromState(this.currentTargetState);
+        int targetPosition = this.getTargetPositionFromState(this.currentTargetState) + offset * offsetLength;
 
         if (power == 0) {
-            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.5, 0.5);
+            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.5, 0.8);
         }
 
         t.addData("Power:", power);
         t.addData("Current Position: ", this.frontLiftMotor.getCurrentPosition());
         t.addData("Target Position: ", targetPosition);
+        t.addData("leftServo Position: ", leftServo.getPosition());
+        t.addData("Tilted: ", this.tiltState == TiltStates.TILTED);
+
         this.liftMotors.setPower(power);
+
+        if (this.previousTargetState != this.currentTargetState) {
+            this.setOffset(0);
+        }
 
         if (this.previousTargetState != this.currentTargetState && this.currentTargetState == LiftStates.LEVEL0) {
             this.setBoxState(BoxStates.CLOSED);
+            this.setTiltState(TiltStates.DEFAULT);
+        } else if (this.currentTargetState != LiftStates.LEVEL0) {
+            if (!override) {
+                this.setTiltState(TiltStates.TILTED);
+            }
         }
 
+        if (this.tiltState == TiltStates.TILTED) {
+            this.leftServo.setPosition(leftServoTiltPosition);
+            // this.rightServo.setPosition(rightServoTiltPosition);
+            t.addData("Tilted", 1);
+        } else {
+            this.leftServo.setPosition(leftServoDefaultPosition);
+            // this.rightServo.setPosition(rightServoDefaultPosition);
+            t.addData("Not Tilted", 1);
+        }
         this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
 
+
+        this.override = false;
         power = 0;
     }
 
     public int getTargetPositionFromState(LiftStates state) {
         switch (state) {
             case LEVEL0:
-                return 0;
+                return -10;
             case LEVEL1:
                 return 400;
             case LEVEL2:
                 return 700;
             case LEVEL3:
-                return 1200;
+                return 1000;
             default:
                 return 1000;
         }
@@ -148,8 +184,24 @@ public class DepositLift implements Subsystem{
     public void setBoxState(BoxStates state) {
         this.boxState = state;
     }
+
+    public void setTiltState(TiltStates state) {
+        this.tiltState = state;
+        this.override = true;
+    }
     public void setTargetState(LiftStates state) {
+
+        if (state == LiftStates.LEVEL0) {
+            this.setTiltState(TiltStates.DEFAULT);
+        }
         this.previousTargetState = this.currentTargetState;
         this.currentTargetState = state;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    public void incrementOffset(int sign) {
+        this.offset += sign;
     }
 }

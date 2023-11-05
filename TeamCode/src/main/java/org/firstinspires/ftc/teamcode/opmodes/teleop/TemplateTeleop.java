@@ -44,6 +44,7 @@ public class TemplateTeleop extends LinearOpMode {
         boolean rotationState = false;
         boolean airplaneLaunchState = false;
         boolean airplaneLiftState = false;
+        boolean dropState = false;
         // robot.drivetrain.enableAntiTip();
 
         robot.update();
@@ -64,24 +65,24 @@ public class TemplateTeleop extends LinearOpMode {
             {
                 if (currentFrameGamepad2.left_trigger > 0) {
                     robot.depositLift.driveLiftFromGamepad(
-                            -currentFrameGamepad2.left_trigger
+                            -currentFrameGamepad2.left_trigger / 2
                     );
                 } else {
                     robot.depositLift.driveLiftFromGamepad(
-                            currentFrameGamepad2.right_trigger
+                            currentFrameGamepad2.right_trigger / 2
                     );
                 }
             }
 
             // Manual Climb handler
             {
-                if (currentFrameGamepad2.left_trigger > 0) {
+                if (currentFrameGamepad1.left_trigger > 0) {
                     robot.climbLift.setLiftPower(
-                            -currentFrameGamepad2.left_trigger
+                            -currentFrameGamepad1.left_trigger
                     );
                 } else {
                     robot.climbLift.setLiftPower(
-                            currentFrameGamepad2.right_trigger
+                            currentFrameGamepad1.right_trigger
                     );
                 }
             }
@@ -126,6 +127,31 @@ public class TemplateTeleop extends LinearOpMode {
                 }
             }
 
+            {
+                if (currentFrameGamepad2.y && !previousFrameGamepad2.y) {
+                    dropState = !dropState;
+
+                    robot.depositLift.setBoxState(
+                            dropState ? DepositLift.BoxStates.OPEN : DepositLift.BoxStates.CLOSED
+                    );
+                }
+            }
+
+            {
+                if (currentFrameGamepad2.right_bumper && !previousFrameGamepad2.right_bumper) {
+                    robot.depositLift.incrementOffset(1);
+                }
+
+                if (currentFrameGamepad2.left_bumper && !previousFrameGamepad2.left_bumper) {
+                    robot.depositLift.incrementOffset(-1);
+                }
+            }
+
+            {
+                if (currentFrameGamepad2.left_stick_button) {
+                    robot.depositLift.setTiltState(DepositLift.TiltStates.DEFAULT);
+                }
+            }
 
             robot.drivetrain.robotCentricDriveFromGamepad(
                     currentFrameGamepad1.left_stick_y,

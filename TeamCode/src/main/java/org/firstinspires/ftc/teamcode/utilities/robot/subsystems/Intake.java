@@ -23,7 +23,7 @@ public class Intake implements Subsystem {
         OPEN,
         CLOSED
     }
-    public static double startRotationPosition = 0.25;
+    public static double startRotationPosition = 0.23;
     public static double endRotationPosition = 0.84;
 
     public static double openClawPosition = 0;
