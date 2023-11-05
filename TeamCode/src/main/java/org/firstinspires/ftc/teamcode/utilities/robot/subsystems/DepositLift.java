@@ -23,6 +23,11 @@ public class DepositLift implements Subsystem{
         LEVEL2,
         LEVEL3
     }
+
+    public enum BoxStates {
+        OPEN,
+        CLOSED
+    }
     double power;
 
     public DcMotorEx backLiftMotor;
@@ -36,16 +41,21 @@ public class DepositLift implements Subsystem{
     private MotorGroup<DcMotorEx> liftMotors;
 
     private LiftStates currentTargetState = LiftStates.LEVEL0;
+    private LiftStates previousTargetState = LiftStates.LEVEL0;
 
+    private BoxStates boxState = BoxStates.CLOSED;
     public static double kP = 0.005;
     public static double kI = 0;
     public static double kD = 0;
     public static double kF = 0.15;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-    public static double servoPosition = 0.80;
+    public static double leftServoDefaultPosition = 0.80;
+    public static double leftServoTiltPosition = 0.55;
     //
-    public static double boxPosition = 0.1;
+    public static double boxOpenPosition = 0.3;
+    public static double boxClosedPosition = 0.1;
+
     private Telemetry t;
 
     @Override
@@ -88,8 +98,7 @@ public class DepositLift implements Subsystem{
 
         controller.updateCoefficients(kP, kI, kD, kF);
 
-        rightServo.setPosition(servoPosition);
-        boxServo.setPosition(boxPosition);
+
         int targetPosition = this.getTargetPositionFromState(this.currentTargetState);
 
         if (power == 0) {
@@ -100,6 +109,12 @@ public class DepositLift implements Subsystem{
         t.addData("Current Position: ", this.frontLiftMotor.getCurrentPosition());
         t.addData("Target Position: ", targetPosition);
         this.liftMotors.setPower(power);
+
+        if (this.previousTargetState != this.currentTargetState && this.currentTargetState == LiftStates.LEVEL0) {
+            this.setBoxState(BoxStates.CLOSED);
+        }
+
+        this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
 
         power = 0;
     }
@@ -119,7 +134,22 @@ public class DepositLift implements Subsystem{
         }
     }
 
+    public double getBoxPositionFromState(BoxStates state) {
+        switch (state) {
+            case OPEN:
+                return boxOpenPosition;
+            case CLOSED:
+                return boxClosedPosition;
+            default:
+                return 0;
+        }
+    }
+
+    public void setBoxState(BoxStates state) {
+        this.boxState = state;
+    }
     public void setTargetState(LiftStates state) {
+        this.previousTargetState = this.currentTargetState;
         this.currentTargetState = state;
     }
 }

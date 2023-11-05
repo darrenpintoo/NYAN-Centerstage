@@ -60,53 +60,70 @@ public class TemplateTeleop extends LinearOpMode {
 
             telemetry.update();
 
-            if (currentFrameGamepad1.left_trigger > 0) {
-                robot.depositLift.driveLiftFromGamepad(
-                        -currentFrameGamepad1.left_trigger
-                );
-            } else {
-                robot.depositLift.driveLiftFromGamepad(
-                        currentFrameGamepad1.right_trigger
-                );
+            // Manual Lift Handler
+            {
+                if (currentFrameGamepad2.left_trigger > 0) {
+                    robot.depositLift.driveLiftFromGamepad(
+                            -currentFrameGamepad2.left_trigger
+                    );
+                } else {
+                    robot.depositLift.driveLiftFromGamepad(
+                            currentFrameGamepad2.right_trigger
+                    );
+                }
             }
 
-            if (currentFrameGamepad2.left_trigger > 0) {
-                robot.climbLift.setLiftPower(
-                        -currentFrameGamepad2.left_trigger
-                );
-            } else {
-                robot.climbLift.setLiftPower(
-                        currentFrameGamepad2.right_trigger
-                );
+            // Manual Climb handler
+            {
+                if (currentFrameGamepad2.left_trigger > 0) {
+                    robot.climbLift.setLiftPower(
+                            -currentFrameGamepad2.left_trigger
+                    );
+                } else {
+                    robot.climbLift.setLiftPower(
+                            currentFrameGamepad2.right_trigger
+                    );
+                }
             }
 
-
-            if (currentFrameGamepad1.a && !previousFrameGamepad1.a) {
-                gripState = !gripState;
-                robot.intake.setGripperState(
-                        gripState ? Intake.GripperStates.OPEN : Intake.GripperStates.CLOSED
-                );
+            // Manual Intake Grab Handler
+            {
+                if (currentFrameGamepad1.a && !previousFrameGamepad1.a) {
+                    gripState = !gripState;
+                    robot.intake.setGripperState(
+                            gripState ? Intake.GripperStates.OPEN : Intake.GripperStates.CLOSED
+                    );
+                }
             }
 
-            if (currentFrameGamepad1.b && !previousFrameGamepad1.b) {
-                rotationState = !rotationState;
-                robot.intake.setRotationState(
-                        rotationState ? Intake.RotationStates.ROTATED : Intake.RotationStates.DEFAULT
-                );
+            // Manual Intake Rotation Handler
+            {
+                if (currentFrameGamepad1.b && !previousFrameGamepad1.b) {
+                    rotationState = !rotationState;
+                    robot.intake.setRotationState(
+                            rotationState ? Intake.RotationStates.ROTATED : Intake.RotationStates.DEFAULT
+                    );
+                }
             }
 
-            if (currentFrameGamepad2.a && !previousFrameGamepad2.a) {
-                airplaneLaunchState = !airplaneLaunchState;
-                robot.planeLauncher.setShootState(
-                        airplaneLaunchState ? PlaneLauncher.AirplaneShootStates.OPENED : PlaneLauncher.AirplaneShootStates.CLOSED
-                );
+            // Manual Plane Launch Handler
+            {
+                if (currentFrameGamepad2.a && !previousFrameGamepad2.a) {
+                    airplaneLaunchState = !airplaneLaunchState;
+                    robot.planeLauncher.setShootState(
+                            airplaneLaunchState ? PlaneLauncher.AirplaneShootStates.OPENED : PlaneLauncher.AirplaneShootStates.CLOSED
+                    );
+                }
             }
 
-            if (currentFrameGamepad2.b && !previousFrameGamepad2.b) {
-                airplaneLiftState = !airplaneLiftState;
-                robot.planeLauncher.setLiftState(
-                        airplaneLiftState ? PlaneLauncher.AirplaneLiftStates.UP : PlaneLauncher.AirplaneLiftStates.DOWN
-                );
+            // Manual Plane Lifter Handler
+            {
+                if (currentFrameGamepad2.b && !previousFrameGamepad2.b) {
+                    airplaneLiftState = !airplaneLiftState;
+                    robot.planeLauncher.setLiftState(
+                            airplaneLiftState ? PlaneLauncher.AirplaneLiftStates.UP : PlaneLauncher.AirplaneLiftStates.DOWN
+                    );
+                }
             }
 
 
