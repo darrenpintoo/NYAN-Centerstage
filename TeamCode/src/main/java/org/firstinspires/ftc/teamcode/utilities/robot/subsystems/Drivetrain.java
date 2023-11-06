@@ -95,6 +95,17 @@ public class Drivetrain implements Subsystem {
         this.rightBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor");
 
         // todo: figure out the directions
+
+        this.rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         this.rightFrontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         this.leftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         this.leftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);

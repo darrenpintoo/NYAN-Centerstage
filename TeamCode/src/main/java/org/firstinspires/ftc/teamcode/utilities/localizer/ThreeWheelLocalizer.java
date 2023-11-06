@@ -23,6 +23,5 @@ public class ThreeWheelLocalizer {
         this.telemetry.addData("lp: ", this.leftParallel.getTicks());
         this.telemetry.addData("rp: ", this.rightParallel.getTicks());
         this.telemetry.addData("bp: ", this.backPerpendicular.getTicks());
-
     }
 }

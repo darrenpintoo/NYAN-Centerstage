@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.utilities.robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 
 @Config
 public class DriveConstants {
 
+
+    public static final double DEAD_WHEEL_SIZE = 1.375;
+
+    public static final double TICKS_PER_REVOLUTION = 4096;
 
     public static final double WHEEL_TICKS = 537.7;
     public static final double WHEEL_SIZE = 3.78/2;
@@ -31,7 +34,6 @@ public class DriveConstants {
     public static double ANGULAR_VELOCITY_THRESHOLD = Math.toRadians(10);
     public static double ANGULAR_VELOCITY_THRESHOLD_MIN = Math.toRadians(1);
 
-    public static Pose2d POSITION_THRESHOLD = new Pose2d(0.25, 0.25, TURN_THRESHOLD);
     public static double MAX_CORRECTION_TIME = 0.75;
 
     public static double MAX_VELOCITY = 55; // If doing 1

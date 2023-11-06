@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: org.team11260:fast-load:0.1.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d7286cf05cfb985203d24c588f3809e6/transformed/jetified-fast-load-0.1.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d7286cf05cfb985203d24c588f3809e6/transformed/jetified-fast-load-0.1.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d7286cf05cfb985203d24c588f3809e6/transformed/jetified-fast-load-0.1.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.team11260/fast-load/0.1.1/676cb4fc429c874ee45770808889b9680e5e6f4d/fast-load-0.1.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.team11260/fast-load/0.1.1/80e4d4de3649ebb8c6bde9847869d0aeab6c42ee/fast-load-0.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

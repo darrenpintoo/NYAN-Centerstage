@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Twist2d;
+import com.acmerobotics.roadrunner.Twist2dDual;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -13,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.utilities.localizer.RoadrunnerLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
@@ -53,9 +56,11 @@ public class RobotEx {
 
     Telemetry telemetry;
 
-    public ThreeWheelLocalizer localizer;
-
+    public ThreeWheelLocalizer localizer1;
+    public ThreeDeadWheelLocalizer localizer;
     private double voltageCompensator = 12;
+    public PoseVelocity2d position;
+    public Pose2d pose = new Pose2d(0, 0, 0);
 
     private RobotEx() {
         if (RobotEx.robotInstance != null) {
@@ -88,10 +93,15 @@ public class RobotEx {
             subsystem.onInit(hardwareMap, telemetry);
         }
 
-        this.localizer = new ThreeWheelLocalizer(
+        this.localizer = new ThreeDeadWheelLocalizer(
+                hardwareMap,
+                (Math.PI * DriveConstants.DEAD_WHEEL_SIZE ) / DriveConstants.TICKS_PER_REVOLUTION
+        );
+
+        this.localizer1 = new ThreeWheelLocalizer(
                 new Encoder(this.drivetrain.rightBackMotor, 1), // 3
                 new Encoder(this.drivetrain.leftBackMotor, 1), // 0
-                new Encoder(this.drivetrain.rightFrontMotor, 1), // 2
+                new Encoder(this.drivetrain.leftFrontMotor, 1), // 2
                 telemetry
         );
 
@@ -124,8 +134,22 @@ public class RobotEx {
 
         }
 
+        // this.localizer1.updatePose();
+        this.position = this.updatePoseEstimate();
+
+        telemetry.addData("Pose: ", this.pose);
+        telemetry.addData("Pos:", this.position);
+        telemetry.addData("Rev: ", this.drivetrain.rightBackMotor.getCurrentPosition());
+        telemetry.addData("Rev: ", this.drivetrain.leftBackMotor.getCurrentPosition());
+
+
+
+        /*
         this.localizer.updatePose();
+
+         */
 /*
+
         Pose2d currentPose = this.localizer.getPoseEstimate();
         telemetry.addData("X: ", currentPose.getX());
         telemetry.addData("Y: ", currentPose.getY());
@@ -168,6 +192,7 @@ public class RobotEx {
         return 12 / this.voltageCompensator;
     }
 
+    /*
     public static void drawRobot(Canvas canvas, Pose2d pose) {
         canvas.strokeCircle(pose.getX(), pose.getY(), 9);
         Vector2d v = pose.headingVec().times(9);
@@ -175,8 +200,18 @@ public class RobotEx {
         double x2 = pose.getX() + v.getX(), y2 = pose.getY() + v.getY();
         canvas.strokeLine(x1, y1, x2, y2);
     }
+
+
     public void clearPersistData() {
         PersistentData.startPose = new Pose2d();
+    }*/
+
+
+    public PoseVelocity2d updatePoseEstimate() {
+        Twist2dDual<Time> twist = localizer.update();
+        pose = pose.plus(twist.value());
+
+        return twist.velocity().value();
     }
 
     public void destroy() {
