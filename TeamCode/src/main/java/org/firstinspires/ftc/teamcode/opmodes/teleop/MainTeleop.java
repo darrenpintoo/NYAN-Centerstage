@@ -151,7 +151,7 @@ public class MainTeleop extends LinearOpMode {
                 if (currentFrameGamepad2.right_bumper && !previousFrameGamepad2.right_bumper) {
                     robot.depositLift.incrementOffset(1);
                 }
- 
+
                 if (currentFrameGamepad2.left_bumper && !previousFrameGamepad2.left_bumper) {
                     robot.depositLift.incrementOffset(-1);
                 }
@@ -185,6 +185,7 @@ public class MainTeleop extends LinearOpMode {
             double frameTime = robot.update();
 
             telemetry.addData("Frame Time: ", frameTime);
+            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCCW());
             telemetry.addData("Ticks: ", robot.depositLift.frontLiftMotor.getCurrentPosition());
         }
     }

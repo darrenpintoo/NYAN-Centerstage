@@ -46,7 +46,7 @@ public class RobotEx {
     private final ElapsedTime frameTimer = new ElapsedTime();
 
     private final Subsystem[] robotSubsystems = new Subsystem[] {
-            // internalIMU,
+            internalIMU,
             drivetrain,
             climbLift,
             intake,

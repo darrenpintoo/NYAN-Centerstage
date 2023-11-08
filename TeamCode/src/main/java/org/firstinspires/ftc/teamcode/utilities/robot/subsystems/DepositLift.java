@@ -56,14 +56,14 @@ public class DepositLift implements Subsystem{
     public static double kF = 0.15;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-    public static double leftServoDefaultPosition = 0.55;
-    public static double leftServoTiltPosition = 0.8;
+    public static double leftServoDefaultPosition = 0.43;
+    public static double leftServoTiltPosition = 0.68 ;
 
-    public static double rightServoDefaultPosition = 0.8;
-    public static double rightServoTiltPosition = 0.55;
+    public static double rightServoDefaultPosition = 0.5;
+    public static double rightServoTiltPosition = 0.3;
     //
     public static double boxOpenPosition = 0.3;
-    public static double boxClosedPosition = 0.1;
+    public static double boxClosedPosition = 0.6;
 
     private boolean override = false;
     public int offset = 1;
@@ -141,11 +141,11 @@ public class DepositLift implements Subsystem{
 
         if (this.tiltState == TiltStates.TILTED) {
             this.leftServo.setPosition(leftServoTiltPosition);
-            // this.rightServo.setPosition(rightServoTiltPosition);
+            this.rightServo.setPosition(rightServoTiltPosition);
             t.addData("Tilted", 1);
         } else {
             this.leftServo.setPosition(leftServoDefaultPosition);
-            // this.rightServo.setPosition(rightServoDefaultPosition);
+            this.rightServo.setPosition(rightServoDefaultPosition);
             t.addData("Not Tilted", 1);
         }
         this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
