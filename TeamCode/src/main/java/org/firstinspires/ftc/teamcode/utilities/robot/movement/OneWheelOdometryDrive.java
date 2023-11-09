@@ -18,11 +18,11 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
 
 @Config
 public class OneWheelOdometryDrive {
-    GeneralPIDController followerPID = new GeneralPIDController(0.3, 0, 0, 0);
+    GeneralPIDController followerPID = new GeneralPIDController(0.01, 0, 0, 0);
     GeneralPIDController laterialPID = new GeneralPIDController(0.3, 0, 0, 0);
 
     public static double kV = 0.01;//1 / DriveConstants.MAX_VELOCITY;
-    public static double kA = 0.001;
+    public static double kA = 0.0001;
 
     public static double kStaticTurn = 0.07;
     public static double kStaticMovement = 0.08;
@@ -183,7 +183,7 @@ public class OneWheelOdometryDrive {
             this.dt.robotCentricDriveFromGamepad(
                     0,
                     0,
-                    Math.min(Math.max(output, -0.2), 0.2) + Math.signum(output) * kStaticTurn
+                    Math.min(Math.max(output, -1), 1) + Math.signum(output) * kStaticTurn
             );
 
             currentIMUPosition = this.imu.getCurrentFrameRobotOrientation().getCCWHeading();

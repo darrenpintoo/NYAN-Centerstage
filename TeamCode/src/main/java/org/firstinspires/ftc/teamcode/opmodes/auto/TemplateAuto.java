@@ -18,21 +18,29 @@ public class TemplateAuto extends LinearOpMode {
     OpenCvCamera frontCamera;
     String cameraName = "Webcam 1";
 
+    RobotEx robot = RobotEx.getInstance();
 
     @Override
     public void runOpMode() {
-        OneWheelOdometryDrive drive = new OneWheelOdometryDrive(this, telemetry);
 
-        RobotEx robot = RobotEx.getInstance();
+        robot.init(hardwareMap, telemetry);
+
+        waitForStart();
+
+        // Notify subsystems before loop
+        robot.postInit();
+        OneWheelOdometryDrive drive = new OneWheelOdometryDrive(this, telemetry);
 
 
         waitForStart();
+
         while (!isStopRequested()) {
-            drive.turnToAngle(Math.toRadians(90));
-            robot.pause(1);
-            drive.turnToAngle(Math.toRadians(-90));
+            drive.driveForward(robot.drivetrain.rightBackMotor, 30, Math.toRadians(0));
+            drive.turnToAngle(Math.toRadians(-180));
+            drive.driveForward(robot.drivetrain.rightBackMotor, 30, Math.toRadians(-180));
+            drive.turnToAngle(Math.toRadians(0));
+
         }
 
-        drive.driveForward(robot.drivetrain.rightBackMotor, 1, Math.toRadians(0));
     }
 }

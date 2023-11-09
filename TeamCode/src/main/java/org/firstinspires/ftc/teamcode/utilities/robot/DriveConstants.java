@@ -12,8 +12,8 @@ public class DriveConstants {
 
     public static final double TICKS_PER_REVOLUTION = 4096;
 
-    public static final double WHEEL_TICKS = 537.7;
-    public static final double WHEEL_SIZE = 3.78/2;
+    public static final double WHEEL_TICKS = 4096;
+    public static final double WHEEL_SIZE = 1.375/2;
 
     public static final double INCHES_PER_REVOLUTION = 2 * WHEEL_SIZE * Math.PI;
 

@@ -46,8 +46,8 @@ public class Drivetrain implements Subsystem {
     private boolean enableAntiTip = false;
     private boolean enableHeadingRetention = false;
 
-    public GeneralPIDController headingPID = new GeneralPIDController(1, 0, 20, 0);
-    public GeneralPIDController profiledTurningPID = new GeneralPIDController(0.7, 0, 40, 0);
+    public GeneralPIDController headingPID = new GeneralPIDController(1.5, 0, 20, 0);
+    public GeneralPIDController profiledTurningPID = new GeneralPIDController(1.5, 0, 40, 0);
 
     public GeneralPIDController translationalPID = new GeneralPIDController(1, 0, 0, 0);
 
@@ -76,7 +76,7 @@ public class Drivetrain implements Subsystem {
 
     private double weight = 1;
 
-    public static double kP = 0.7;
+    public static double kP = 2;
     public static double kI = 0;
     public static double kD = 40;
 
@@ -152,12 +152,13 @@ public class Drivetrain implements Subsystem {
 
     @Override
     public void onOpmodeStarted() {
+        this.robotInstance = RobotEx.getInstance();
     }
 
     @Override
     public void onCyclePassed() {
 
-        this.profiledTurningPID.updateCoefficients(Drivetrain.kP, Drivetrain.kI, Drivetrain.kD, 0);
+        this.headingPID.updateCoefficients(Drivetrain.kP, Drivetrain.kI, Drivetrain.kD, 0);
 
 /*        RobotOrientation currentOrientation = this.internalIMU.getCurrentFrameRobotOrientation();
         RobotOrientation startOrientation = this.internalIMU.getStartFrameRobotOrientation();
@@ -241,7 +242,7 @@ public class Drivetrain implements Subsystem {
 */
         leftJoystickY = -leftJoystickY;
 
-        double multiple = this.robotInstance.getPowerMultiple();
+        double multiple = RobotEx.getInstance().getPowerMultiple();
 
         leftJoystickY = MathHelper.clamp(leftJoystickY * multiple, -1, 1);
         leftJoystickX = MathHelper.clamp(leftJoystickX * multiple, -1, 1);
