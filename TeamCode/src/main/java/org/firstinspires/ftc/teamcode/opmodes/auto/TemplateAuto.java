@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.MotionProfileLocalizerLineDrive;
+import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -20,16 +21,18 @@ public class TemplateAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        MotionProfileLocalizerLineDrive drive = new MotionProfileLocalizerLineDrive(this, telemetry);
+        OneWheelOdometryDrive drive = new OneWheelOdometryDrive(this, telemetry);
 
         RobotEx robot = RobotEx.getInstance();
 
 
         waitForStart();
-        while (true) {
+        while (!isStopRequested()) {
             drive.turnToAngle(Math.toRadians(90));
             robot.pause(1);
             drive.turnToAngle(Math.toRadians(-90));
         }
+
+        drive.driveForward(robot.drivetrain.rightBackMotor, 1, Math.toRadians(0));
     }
 }
