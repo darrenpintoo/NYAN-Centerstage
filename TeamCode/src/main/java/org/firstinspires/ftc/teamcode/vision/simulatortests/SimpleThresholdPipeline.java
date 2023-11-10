@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.vision.simulatortests;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -22,8 +23,8 @@ public class SimpleThresholdPipeline extends OpenCvPipeline {
      * min and max values here for now, meaning
      * that all pixels will be shown.
      */
-    public Scalar lower = new Scalar(0, 0, 0);
-    public Scalar upper = new Scalar(255, 255, 255);
+    public Scalar lower = new Scalar(0, 151.0, 86);
+    public Scalar upper = new Scalar(240, 255, 160);
 
     /*
      * A good practice when typing EOCV pipelines is
@@ -41,15 +42,7 @@ public class SimpleThresholdPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        /*
-         * Converts our input mat from RGB to YCrCb.
-         * EOCV ALWAYS returns RGB mats, so you'd
-         * always convert from RGB to the color
-         * space you want to use.
-         *
-         * Takes our "input" mat as an input, and outputs
-         * to a separate Mat buffer "ycrcbMat"
-         */
+
         Imgproc.cvtColor(input, ycrcbMat, Imgproc.COLOR_RGB2YCrCb);
 
         /*
@@ -83,6 +76,10 @@ public class SimpleThresholdPipeline extends OpenCvPipeline {
          * range (RGB 0, 0, 0. All discarded pixels will be black)
          */
         Core.bitwise_and(input, input, maskedInputMat, binaryMat);
+        // Mat kernel = Imgproc.getStructuringElement(Imgproc., new Size(20, 20));
+        // Imgproc.morphologyEx(maskedInputMat, maskedInputMat, Imgproc.MORPH_CLOSE, kernel);
+
+
 
         /*
          * The Mat returned from this method is the
