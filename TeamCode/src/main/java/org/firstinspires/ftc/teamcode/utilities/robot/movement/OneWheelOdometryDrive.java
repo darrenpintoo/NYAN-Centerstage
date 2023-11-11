@@ -143,6 +143,101 @@ public class OneWheelOdometryDrive {
 
         // robot.pause(3);
     }
+
+    public void strafeRight(DcMotorEx encoder, double strafeInches, double targetHeading) {
+
+        MotionProfile profile = new MotionProfile(
+                0,
+                strafeInches,
+                DriveConstants.MAX_VELOCITY,
+                DriveConstants.MAX_ACCELERATION
+        );
+
+        double duration = profile.getDuration();
+        double startAveragePosition = -encoder.getCurrentPosition();
+
+        this.profileTimer.reset();
+
+        double currentFrameTime = 0.001;
+        double previousFrameTime = 0;
+
+        double previousFramePositionTicks = startAveragePosition;
+
+        double startOrientation = robot.internalIMU.getCurrentFrameHeadingCCW();
+
+        while (duration > currentFrameTime && !this.currentOpmode.isStopRequested()) {
+
+            double dt = currentFrameTime - previousFrameTime;
+
+            double targetCurrentFramePosition = profile.getPositionFromTime(currentFrameTime);
+            double targetCurrentFrameVelocity = profile.getVelocityFromTime(currentFrameTime);
+            double targetCurrentFrameAcceleration = profile.getAccelerationFromTime(currentFrameTime);
+
+            double currentFramePosition = -encoder.getCurrentPosition() - startAveragePosition;
+            double currentFrameVelocity = (currentFramePosition - previousFramePositionTicks) / dt;
+
+            if (telemetry != null) {
+                telemetry.addData("Target Position: ", targetCurrentFramePosition);
+                telemetry.addData("Current Position: ", DriveConstants.getInchesFromEncoderTicks(currentFramePosition));
+                telemetry.addData("Position Error: ", targetCurrentFramePosition - DriveConstants.getInchesFromEncoderTicks(currentFramePosition));
+                telemetry.addData("Target Velocity: ", targetCurrentFrameVelocity);
+                telemetry.addData("Current Velocity: ", DriveConstants.getInchesFromEncoderTicks(currentFrameVelocity));
+                telemetry.addData("Velocity Error: ", targetCurrentFrameVelocity - DriveConstants.getInchesFromEncoderTicks(currentFrameVelocity));
+                telemetry.addData("Target Acceleration: ", targetCurrentFrameAcceleration);
+
+                telemetry.update();
+            }
+
+            double feedforward = targetCurrentFrameVelocity * kV + targetCurrentFrameAcceleration * kA;
+
+            double feedback = this.followerPID.getOutputFromError(
+                    targetCurrentFramePosition,
+                    DriveConstants.getInchesFromEncoderTicks(currentFramePosition)
+            );
+
+            double output = feedforward + feedback;
+
+            output += Math.signum(output) * kStaticMovement;
+
+            double targetAngle = targetHeading;
+            double currentAngle = robot.internalIMU.getCurrentFrameHeadingCCW();
+            double error = targetAngle - currentAngle;
+
+            if (Math.abs(error) > Math.PI) {
+                if (targetAngle < 0) {
+                    targetAngle = AngleHelper.norm(targetAngle);
+                    error = targetAngle - currentAngle;
+                } else if (targetAngle > 0) {
+                    currentAngle = AngleHelper.norm(currentAngle);
+                    error = targetAngle - currentAngle;
+                }
+            }
+
+            double outputH = robot.drivetrain.headingPID.getOutputFromError(
+                    error
+            );
+
+            this.dt.robotCentricDriveFromGamepad(
+                    0,
+                    output,
+                    Math.min(Math.max(outputH, -1), 1)
+            );
+
+            previousFramePositionTicks = currentFramePosition;
+            previousFrameTime = currentFrameTime;
+
+            currentFrameTime = this.profileTimer.seconds();
+
+            robot.update();
+
+        }
+
+        this.dt.robotCentricDriveFromGamepad(0, 0, 0);
+
+
+
+        // robot.pause(3);
+    }
     public void turnToAngle(double angle) {
         this.imu.trackAngularVelocity();
 

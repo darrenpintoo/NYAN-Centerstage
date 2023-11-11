@@ -17,7 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous(name="Preload Auto")
-public class PreloadAuto extends LinearOpMode {
+public class BluePreloadAuto extends LinearOpMode {
 
 
     PropDetection propDetection;

@@ -159,6 +159,7 @@ public class MainTeleop extends LinearOpMode {
             {
                 if (currentFrameGamepad2.left_stick_button) {
                     robot.depositLift.setTiltState(DepositLift.TiltStates.DEFAULT);
+                    robot.depositLift.setBoxState(DepositLift.BoxStates.CLOSED);
                 }
             }
 

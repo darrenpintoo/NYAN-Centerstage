@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -12,190 +10,101 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class PropDetection extends OpenCvPipeline {
 
-    public enum ParkingPosition {
-        LEFT,
-        CENTER,
-        RIGHT
-    }
+    /*
+     * These are our variables that will be
+     * modifiable from the variable tuner.
+     *
+     * Scalars in OpenCV are generally used to
+     * represent color. So our values in the
+     * lower and upper Scalars here represent
+     * the Y, Cr and Cb values respectively.
+     *
+     * YCbCr, like most color spaces, range
+     * from 0-255, so we default to those
+     * min and max values here for now, meaning
+     * that all pixels will be shown.
+     */
+    public Scalar lower = new Scalar(0, 151.0, 86);
+    public Scalar upper = new Scalar(240, 255, 160);
 
-    private static final Point SLEEVE_TOP_LEFT_ANCHOR_POINT = new Point(145, 168);
+    /*
+     * A good practice when typing EOCV pipelines is
+     * declaring the Mats you will use here at the top
+     * of your pipeline, to reuse the same buffers every
+     * time. This removes the need to call mat.release()
+     * with every Mat you create on the processFrame method,
+     * and therefore, reducing the possibility of getting a
+     * memory leak and causing the app to crash due to an
+     * "Out of Memory" error.
+     */
+    private Mat ycrcbMat       = new Mat();
+    private Mat binaryMat      = new Mat();
+    private Mat maskedInputMat = new Mat();
 
-    // Width and height for the bounding box
-    public static int REGION_WIDTH = 30;
-    public static int REGION_HEIGHT = 50;
-
-    // Lower and upper boundaries for colors
-    public static Scalar lowerMagenta = new Scalar(0, 0, 0);
-    public static Scalar upperMagenta = new Scalar(255, 255, 255);
-    public static Scalar lowerYellow  = new Scalar(0, 0, 0);
-    public static Scalar upperYellow = new Scalar(255, 255, 255);
-    public static Scalar lowerGreen = new Scalar(0, 0, 0);
-    public static Scalar upperGreen = new Scalar(255, 255, 255);
-
-    // Color definitions
-    private final Scalar MAGENTA = new Scalar(255, 0, 255);
-    private final Scalar GREEN    = new Scalar(0, 255, 255);
-    private final Scalar YELLOW  = new Scalar(255, 255, 0);
-
-    // Percent and mat definitions
-    private double magentaPercent;
-    private double yellowPercent;
-    private double greenPercent;
-
-    private Mat magentaMatrix = new Mat();
-    private Mat yellowMatrix = new Mat();
-    private Mat greenMatrix = new Mat();
-
-    private Mat blurredMatrix = new Mat();
-
-    // Anchor point definitions
-    Point sleeve_pointA = new Point(SLEEVE_TOP_LEFT_ANCHOR_POINT.x, SLEEVE_TOP_LEFT_ANCHOR_POINT.y);
-    Point sleeve_pointB = new Point(SLEEVE_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH, SLEEVE_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-
-    // Running variable storing the parking position
-    private volatile ParkingPosition position = ParkingPosition.LEFT;
-
-    private int stageNum = 0;
-
-    private enum Stage
-    {
-        BLURRED,
-        MAGENTA,
-        YELLOW,
-        GREEN,
-        INPUT
-    }
-
-    Stage[] stages = Stage.values();
-
-    Telemetry t;
-
-    public PropDetection(Telemetry t) {
-        this.t = t;
-    }
-    public PropDetection() {}
-
-    @Override
-    public void onViewportTapped()
-    {
-
-        int nextStageNum = stageNum + 1;
-
-        if(nextStageNum >= stages.length)
-        {
-            nextStageNum = 0;
-        }
-
-        stageNum = nextStageNum;
-    }
-
+    double redAmount1 = 0;
+    double redAmount2 = 0;
+    private final double redThreshold = 2500;
+    private volatile PlacementPosition placementPosition = PlacementPosition.CENTER;
     @Override
     public Mat processFrame(Mat input) {
+        Imgproc.cvtColor(input, ycrcbMat, Imgproc.COLOR_RGB2YCrCb);
 
-        // Memory cleanup
-        blurredMatrix.release();
-        yellowMatrix.release();
-        greenMatrix.release();
-        magentaMatrix.release();
+        Core.inRange(ycrcbMat, lower, upper, binaryMat);
 
-        // Noise reduction
-        Imgproc.cvtColor(input, blurredMatrix, Imgproc.COLOR_RGB2HSV);
-        Imgproc.blur(blurredMatrix, blurredMatrix, new Size(5, 5));
-        // blurredMatrix = blurredMatrix.submat(new Rect(sleeve_pointA, sleeve_pointB));
+        maskedInputMat.release();
+        Core.bitwise_and(input, input, maskedInputMat, binaryMat);
 
-        // Apply Morphology
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
-        Imgproc.morphologyEx(blurredMatrix, blurredMatrix, Imgproc.MORPH_CLOSE, kernel);
+        // Define the coordinates of three rectangles
+        // You need to adjust these coordinates based on your screen resolution
+        Rect rect1 = new Rect(140, 40, 100, 100);
+        Rect rect2 = new Rect(475, 40, 100, 100);
 
-        // Gets channels from given source mat
-        Core.inRange(blurredMatrix, lowerMagenta, upperMagenta, magentaMatrix);
-        Core.inRange(blurredMatrix, lowerYellow, upperYellow, yellowMatrix);
-        Core.inRange(blurredMatrix, lowerGreen, upperGreen, greenMatrix);
+        // Draw rectangles on the output frame
+        drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
+        drawRectangle(maskedInputMat, rect2, new Scalar(0, 255, 0)); // Green
 
-        // Gets color specific values
-        magentaPercent = Core.countNonZero(magentaMatrix);
-        yellowPercent = Core.countNonZero(yellowMatrix);
-        greenPercent = Core.countNonZero(greenMatrix);
 
-        // Calculates the highest amount of pixels being covered on each side
-        double maxPercent = Math.max(magentaPercent, Math.max(greenPercent, yellowPercent));
+        // Calculate the amount of red in each rectangle
+        redAmount1 = calculateRedAmount(maskedInputMat.submat(rect1));
+        redAmount2 = calculateRedAmount(maskedInputMat.submat(rect2));
 
-        // Checks all percentages, will highlight bounding box in camera preview
-        // based on what color is being detected
-        if (maxPercent == yellowPercent) {
-            position = ParkingPosition.LEFT;
-            Imgproc.rectangle(
-                    input,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    YELLOW,
-                    2
-            );
-            Imgproc.rectangle(
-                    yellowMatrix,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    YELLOW,
-                    2
-            );
-        } else if (maxPercent == greenPercent) {
-            position = ParkingPosition.CENTER;
-            Imgproc.rectangle(
-                    input,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    GREEN,
-                    2
-            );
-            Imgproc.rectangle(
-                    greenMatrix,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    GREEN,
-                    2
-            );
-        } else if (maxPercent == magentaPercent) {
-            position = ParkingPosition.RIGHT;
-            Imgproc.rectangle(
-                    input,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    MAGENTA,
-                    2
-            );
-            Imgproc.rectangle(
-                    magentaMatrix,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    MAGENTA,
-                    2
-            );
+        if (redAmount1 > redThreshold) {
+            this.placementPosition = PlacementPosition.LEFT;
+        } else if (redAmount2 > redThreshold) {
+            this.placementPosition = PlacementPosition.CENTER;
+        } else {
+            this.placementPosition = PlacementPosition.RIGHT;
         }
 
 
-        if (this.t != null) {
-            t.addData("Current Stage Index: ", stageNum);
-            t.update();
-        }
-
-        switch (stages[stageNum]) {
-            case BLURRED:
-                return blurredMatrix;
-            case MAGENTA:
-                return magentaMatrix;
-            case YELLOW:
-                return yellowMatrix;
-            case GREEN:
-                return greenMatrix;
-            case INPUT:
-                return input;
-        }
-
-        return input;
+        // Output the red amounts to the console (you can modify this part)
+        return maskedInputMat;
     }
 
-    // Returns an enum being the current position where the robot will park
-    public ParkingPosition getPosition() {
-        return position;
+    // Helper method to calculate the amount of red in a given Mat using countNonZero
+    private double calculateRedAmount(Mat mat) {
+        Mat binary = new Mat();
+        Imgproc.cvtColor(mat, binary, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.threshold(binary, binary, 1, 255, Imgproc.THRESH_BINARY);
+
+        int nonZeroCount = Core.countNonZero(binary);
+        binary.release();
+
+        return nonZeroCount;
     }
+    public double getRedAmount1() {
+        return redAmount1;
+    }
+
+    public double getRedAmount2() {
+        return redAmount2;
+    }
+    private void drawRectangle(Mat mat, Rect rect, Scalar color) {
+        Imgproc.rectangle(mat, rect.tl(), rect.br(), color, 2);
+    }
+
+    public PlacementPosition getPlacementPosition() {
+        return this.placementPosition;
+    }
+
 }

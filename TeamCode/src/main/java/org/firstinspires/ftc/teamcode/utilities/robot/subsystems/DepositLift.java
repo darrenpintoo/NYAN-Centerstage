@@ -57,7 +57,7 @@ public class DepositLift implements Subsystem{
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.43;
-    public static double leftServoTiltPosition = 0.68 ;
+    public static double leftServoTiltPosition = 0.73;
 
     public static double rightServoDefaultPosition = 0.5;
     public static double rightServoTiltPosition = 0.3;
@@ -160,7 +160,7 @@ public class DepositLift implements Subsystem{
             case LEVEL0:
                 return -10;
             case LEVEL1:
-                return 400;
+                return 430;
             case LEVEL2:
                 return 700;
             case LEVEL3:
