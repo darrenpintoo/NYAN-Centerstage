@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetection;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionRed;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -19,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 public class StrafeAuto extends LinearOpMode {
 
 
-    PropDetection propDetection;
+    PropDetectionRed propDetectionRed;
     OpenCvCamera camera;
     String webcamName = "Webcam 2";
 
@@ -34,8 +34,8 @@ public class StrafeAuto extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-        propDetection = new PropDetection();
-        camera.setPipeline(propDetection);
+        propDetectionRed = new PropDetectionRed();
+        camera.setPipeline(propDetectionRed);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -51,16 +51,16 @@ public class StrafeAuto extends LinearOpMode {
 
 
         while (!isStarted()) {
-            telemetry.addData("ROTATION: ", propDetection.getPlacementPosition());
-            telemetry.addData("Red Amount 1: ", propDetection.getRedAmount1());
-            telemetry.addData("Red Amount 2: ", propDetection.getRedAmount2());
+            telemetry.addData("ROTATION: ", propDetectionRed.getPlacementPosition());
+            telemetry.addData("Red Amount 1: ", propDetectionRed.getRedAmount1());
+            telemetry.addData("Red Amount 2: ", propDetectionRed.getRedAmount2());
 
             telemetry.update();
         }
 
         waitForStart();
 
-        PlacementPosition placementPosition = propDetection.getPlacementPosition();
+        PlacementPosition placementPosition = propDetectionRed.getPlacementPosition();
 
         // Notify subsystems before loop
         robot.postInit();

@@ -47,6 +47,7 @@ public class MainTeleop extends LinearOpMode {
         boolean dropState = false;
         // robot.drivetrain.enableAntiTip();
 
+        robot.planeLauncher.setLiftState(PlaneLauncher.AirplaneLiftStates.DOWN);
         robot.update();
 
         while(opModeIsActive()) {

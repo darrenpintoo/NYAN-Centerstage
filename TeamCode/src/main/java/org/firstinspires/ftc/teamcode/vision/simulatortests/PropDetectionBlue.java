@@ -4,11 +4,10 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class PropDetection extends OpenCvPipeline {
+public class PropDetectionBlue extends OpenCvPipeline {
 
     /*
      * These are our variables that will be
@@ -24,8 +23,8 @@ public class PropDetection extends OpenCvPipeline {
      * min and max values here for now, meaning
      * that all pixels will be shown.
      */
-    public Scalar lower = new Scalar(0, 151.0, 86);
-    public Scalar upper = new Scalar(240, 255, 160);
+    public Scalar lower = new Scalar(0, 0, 0);
+    public Scalar upper = new Scalar(255, 117.6, 255);
 
     /*
      * A good practice when typing EOCV pipelines is
@@ -56,8 +55,8 @@ public class PropDetection extends OpenCvPipeline {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(140, 40, 100, 100);
-        Rect rect2 = new Rect(475, 40, 100, 100);
+        Rect rect1 = new Rect(80, 180, 100, 100);
+        Rect rect2 = new Rect(400, 140, 100, 100);
 
         // Draw rectangles on the output frame
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue

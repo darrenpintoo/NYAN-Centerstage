@@ -57,7 +57,7 @@ public class DepositLift implements Subsystem{
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.43;
-    public static double leftServoTiltPosition = 0.73;
+    public static double leftServoTiltPosition = 0.85;
 
     public static double rightServoDefaultPosition = 0.5;
     public static double rightServoTiltPosition = 0.3;
@@ -150,7 +150,7 @@ public class DepositLift implements Subsystem{
         }
         this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
 
-
+        this.previousTargetState = currentTargetState;
         this.override = false;
         power = 0;
     }

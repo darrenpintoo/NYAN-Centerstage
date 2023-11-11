@@ -6,28 +6,29 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetection;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlue;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionRed;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Preload Auto")
-public class PreloadAuto extends LinearOpMode {
+@Autonomous(name="Preload Blue Auto")
+public class PreloadBlueAuto extends LinearOpMode {
 
 
-    PropDetection propDetection;
+    PropDetectionBlue propDetectionRed;
     OpenCvCamera camera;
     String webcamName = "Webcam 2";
 
     RobotEx robot = RobotEx.getInstance();
 
 
-    private final boolean PARK_LEFT = false;
 
     @Override
     public void runOpMode() {
@@ -37,8 +38,8 @@ public class PreloadAuto extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-        propDetection = new PropDetection();
-        camera.setPipeline(propDetection);
+        propDetectionRed = new PropDetectionBlue();
+        camera.setPipeline(propDetectionRed);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -54,16 +55,16 @@ public class PreloadAuto extends LinearOpMode {
 
 
         while (!isStarted()) {
-            telemetry.addData("ROTATION: ", propDetection.getPlacementPosition());
-            telemetry.addData("Red Amount 1: ", propDetection.getRedAmount1());
-            telemetry.addData("Red Amount 2: ", propDetection.getRedAmount2());
+            telemetry.addData("ROTATION: ", propDetectionRed.getPlacementPosition());
+            telemetry.addData("Red Amount 1: ", propDetectionRed.getRedAmount1());
+            telemetry.addData("Red Amount 2: ", propDetectionRed.getRedAmount2());
 
             telemetry.update();
         }
 
         waitForStart();
 
-        PlacementPosition placementPosition = propDetection.getPlacementPosition();
+        PlacementPosition placementPosition = propDetectionRed.getPlacementPosition();
 
         // Notify subsystems before loop
         robot.postInit();
@@ -87,13 +88,13 @@ public class PreloadAuto extends LinearOpMode {
         drive.driveForward(robot.drivetrain.rightBackMotor, 55, Math.toRadians(0));
 
         switch (placementPosition) {
-            case RIGHT:
-                drive.turnToAngle(Math.toRadians(-90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, -28, Math.toRadians(-90));
-                break;
             case LEFT:
-                drive.turnToAngle(Math.toRadians(-90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(-90));
+                drive.turnToAngle(Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -31, Math.toRadians(90));
+                break;
+            case RIGHT:
+                drive.turnToAngle(Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 break;
             case CENTER:
                 drive.driveForward(robot.drivetrain.rightBackMotor, -2.5, Math.toRadians(0));
@@ -109,64 +110,64 @@ public class PreloadAuto extends LinearOpMode {
 
 
         switch (placementPosition) {
-            case RIGHT:
-                drive.driveForward(robot.drivetrain.rightBackMotor, -40, Math.toRadians(-90));
+            case LEFT:
+                drive.driveForward(robot.drivetrain.rightBackMotor, -40, Math.toRadians(90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(-90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, -25, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, 25, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(90));
                 robot.pause(1);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-                if (PARK_LEFT) {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 60, Math.toRadians(-90));
+                if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
+                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -60, Math.toRadians(90));
                 } else {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -40, Math.toRadians(-90));
+                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(90));
                 }
                 break;
-            case LEFT:
-                drive.driveForward(robot.drivetrain.rightBackMotor, -85, Math.toRadians(-90));
+            case RIGHT:
+                drive.driveForward(robot.drivetrain.rightBackMotor, -85, Math.toRadians(90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(-90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, 10, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, -4, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(90));
                 robot.pause(1);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-                if (!PARK_LEFT) {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 30, Math.toRadians(-90));
+                if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
+                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 60, Math.toRadians(90));
                 } else {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -60, Math.toRadians(-90));
+                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -30, Math.toRadians(90));
                 }
                 break;
             case CENTER:
                 drive.driveForward(robot.drivetrain.rightBackMotor, -16, Math.toRadians(-0));
-                drive.turnToAngle(Math.toRadians(-90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, -70, Math.toRadians(-90));
+                drive.turnToAngle(Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -70, Math.toRadians(90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(-90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, 16, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, -16, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(90));
                 robot.pause(1);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(-90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
 
-                if (PARK_LEFT) {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -40, Math.toRadians(-90));
+                if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
+                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(90));
                 } else {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(-90));
+                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -40, Math.toRadians(90));
                 }
                 break;
 

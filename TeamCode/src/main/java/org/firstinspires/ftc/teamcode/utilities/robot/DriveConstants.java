@@ -7,6 +7,10 @@ import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 @Config
 public class DriveConstants {
 
+    public enum ParkPositions {
+        LEFT,
+        RIGHT
+    }
 
     public static final double DEAD_WHEEL_SIZE = 1.375;
 
@@ -41,5 +45,7 @@ public class DriveConstants {
 
     public static double MAX_ANGULAR_VELOCITY = Math.toRadians(180);
     public static double trackWidth = 14;
+
+    public static ParkPositions parkPosition = ParkPositions.RIGHT;
 
 }

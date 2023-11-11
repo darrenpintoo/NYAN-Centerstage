@@ -23,7 +23,7 @@ public class PlaneLauncher implements Subsystem {
 
     public static double angleHome = 1;
     public static double angleActivated = 0.6;
-    public static double launchClosed = 0.26;
+    public static double launchClosed = 0.4;
     public static double launchOpen = 0.55;
 
     private AirplaneShootStates currentShootState;
