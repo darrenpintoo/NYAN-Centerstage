@@ -16,8 +16,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Blue Preload")
-public class BluePreloadAuto extends LinearOpMode {
+@Autonomous(name="Better Blue Auto")
+public class BetterBlueAuto extends LinearOpMode {
 
 
     PropDetection propDetection;
@@ -84,19 +84,19 @@ public class BluePreloadAuto extends LinearOpMode {
          */
         robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
         robot.intake.setOffset(3);
-        drive.driveForward(robot.drivetrain.rightBackMotor, -55, Math.toRadians(0));
+        drive.driveForward(robot.drivetrain.rightBackMotor, 55, Math.toRadians(0));
 
         switch (placementPosition) {
-            case RIGHT:
-                drive.turnToAngle(Math.toRadians(90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, 28, Math.toRadians(90));
-                break;
             case LEFT:
                 drive.turnToAngle(Math.toRadians(90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, -10, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -31, Math.toRadians(90));
+                break;
+            case RIGHT:
+                drive.turnToAngle(Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 break;
             case CENTER:
-                drive.driveForward(robot.drivetrain.rightBackMotor, 2.5, Math.toRadians(0));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -2.5, Math.toRadians(0));
                 break;
 
         }
@@ -109,18 +109,18 @@ public class BluePreloadAuto extends LinearOpMode {
 
 
         switch (placementPosition) {
-            case RIGHT:
-                drive.driveForward(robot.drivetrain.rightBackMotor, 40, Math.toRadians(90));
+            case LEFT:
+                drive.driveForward(robot.drivetrain.rightBackMotor, -40, Math.toRadians(90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -5, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(90));
                 drive.strafeRight(robot.drivetrain.leftFrontMotor, 25, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 7, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(90));
                 robot.pause(1);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -10, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 if (PARK_LEFT) {
                     drive.strafeRight(robot.drivetrain.leftFrontMotor, -60, Math.toRadians(90));
@@ -128,18 +128,18 @@ public class BluePreloadAuto extends LinearOpMode {
                     drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(90));
                 }
                 break;
-            case LEFT:
-                drive.driveForward(robot.drivetrain.rightBackMotor, 85, Math.toRadians(90));
+            case RIGHT:
+                drive.driveForward(robot.drivetrain.rightBackMotor, -85, Math.toRadians(90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -5, Math.toRadians(90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, -10, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, -4, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 7, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(90));
                 robot.pause(1);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -10, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 if (!PARK_LEFT) {
                     drive.strafeRight(robot.drivetrain.leftFrontMotor, -30, Math.toRadians(90));
@@ -148,19 +148,19 @@ public class BluePreloadAuto extends LinearOpMode {
                 }
                 break;
             case CENTER:
-                drive.driveForward(robot.drivetrain.rightBackMotor, 16, Math.toRadians(0));
-                drive.turnToAngle(Math.toRadians(-90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, 70, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -16, Math.toRadians(-0));
+                drive.turnToAngle(Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -70, Math.toRadians(90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -5, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(90));
                 drive.strafeRight(robot.drivetrain.leftFrontMotor, -16, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.driveForward(robot.drivetrain.rightBackMotor, 7, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(90));
                 robot.pause(1);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.driveForward(robot.drivetrain.rightBackMotor, -10, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
 
                 if (PARK_LEFT) {
