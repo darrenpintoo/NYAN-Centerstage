@@ -76,7 +76,7 @@ public class PreloadRedAuto extends LinearOpMode {
         robot.planeLauncher.setShootState(PlaneLauncher.AirplaneShootStates.CLOSED);
         robot.planeLauncher.onCyclePassed();
         robot.intake.onCyclePassed();
-
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
         waitForStart();
 
         /*
@@ -117,7 +117,7 @@ public class PreloadRedAuto extends LinearOpMode {
                 drive.driveForward(robot.drivetrain.rightBackMotor, -40, Math.toRadians(-90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
                 drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(-90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, -25, Math.toRadians(-90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, -30, Math.toRadians(-90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(-90));
                 robot.pause(1);
@@ -136,7 +136,7 @@ public class PreloadRedAuto extends LinearOpMode {
                 drive.driveForward(robot.drivetrain.rightBackMotor, -85, Math.toRadians(-90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
                 drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(-90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, 10, Math.toRadians(-90));
+                // drive.strafeRight(robot.drivetrain.leftFrontMotor, 10, Math.toRadians(-90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(-90));
                 robot.pause(1);
@@ -157,7 +157,7 @@ public class PreloadRedAuto extends LinearOpMode {
                 drive.driveForward(robot.drivetrain.rightBackMotor, -70, Math.toRadians(-90));
                 robot.intake.setRotationState(Intake.RotationStates.DEFAULT);
                 drive.driveForward(robot.drivetrain.rightBackMotor, 5, Math.toRadians(-90));
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, 16, Math.toRadians(-90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, 23, Math.toRadians(-90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.driveForward(robot.drivetrain.rightBackMotor, -7, Math.toRadians(-90));
                 robot.pause(1);

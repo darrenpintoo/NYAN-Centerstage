@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2d;
 import com.acmerobotics.roadrunner.Twist2dDual;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -28,6 +29,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
 
 
 import java.util.List;
+import java.util.Vector;
 
 public class RobotEx {
     private static RobotEx robotInstance = null;
@@ -59,7 +61,7 @@ public class RobotEx {
     public ThreeWheelLocalizer localizer1;
     public ThreeDeadWheelLocalizer localizer;
     private double voltageCompensator = 12;
-    public PoseVelocity2d position;
+    public PoseVelocity2d position = new PoseVelocity2d(new Vector2d(0, 0), 0);
     public Pose2d pose = new Pose2d(0, 0, 0);
 
     private RobotEx() {
@@ -95,7 +97,7 @@ public class RobotEx {
 
         this.localizer = new ThreeDeadWheelLocalizer(
                 hardwareMap,
-                (Math.PI * DriveConstants.DEAD_WHEEL_SIZE ) / DriveConstants.TICKS_PER_REVOLUTION
+                (Math.PI * DriveConstants.DEAD_WHEEL_SIZE) / DriveConstants.TICKS_PER_REVOLUTION
         );
 
         this.localizer1 = new ThreeWheelLocalizer(
@@ -134,12 +136,12 @@ public class RobotEx {
 
         }
 
-        // this.localizer1.updatePose();
+        this.localizer1.updatePose();
         this.position = this.updatePoseEstimate();
 
 
-        // telemetry.addData("Pose: ", this.pose);
-        // telemetry.addData("Pos:", this.position);
+         telemetry.addData("Pose: ", this.pose);
+         telemetry.addData("Pos:", this.position);
         telemetry.addData("Parallel Encoder 1 Ticks: ", this.drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", this.drivetrain.leftBackMotor.getCurrentPosition());
         telemetry.addData("Perpendicular Encoder 1 Ticks: ", this.drivetrain.leftFrontMotor.getCurrentPosition());
@@ -210,6 +212,10 @@ public class RobotEx {
     }*/
 
 
+    public void resetData() {
+        this.pose = new Pose2d(0, 0, 0);
+        this.position = new PoseVelocity2d(new Vector2d(0, 0), 0);
+    }
     public PoseVelocity2d updatePoseEstimate() {
         Twist2dDual<Time> twist = localizer.update();
         pose = pose.plus(twist.value());

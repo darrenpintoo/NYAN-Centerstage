@@ -56,8 +56,8 @@ public class DepositLift implements Subsystem{
     public static double kF = 0.15;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-    public static double leftServoDefaultPosition = 0.43;
-    public static double leftServoTiltPosition = 0.85;
+    public static double leftServoDefaultPosition = 0.77;
+    public static double leftServoTiltPosition = 0.53;
 
     public static double rightServoDefaultPosition = 0.5;
     public static double rightServoTiltPosition = 0.3;
@@ -68,6 +68,8 @@ public class DepositLift implements Subsystem{
     private boolean override = false;
     public int offset = 1;
     public static int offsetLength = 25;
+
+    public static int position = 900;
 
     private Telemetry t;
 
@@ -115,7 +117,7 @@ public class DepositLift implements Subsystem{
         int targetPosition = this.getTargetPositionFromState(this.currentTargetState) + offset * offsetLength;
 
         if (power == 0) {
-            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.5, 0.8);
+            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.5, 1);
         }
 
         t.addData("Power:", power);
@@ -164,7 +166,7 @@ public class DepositLift implements Subsystem{
             case LEVEL2:
                 return 700;
             case LEVEL3:
-                return 1000;
+                return position;
             default:
                 return 1000;
         }

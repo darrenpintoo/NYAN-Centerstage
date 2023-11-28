@@ -66,11 +66,11 @@ public class MainTeleop extends LinearOpMode {
             {
                 if (currentFrameGamepad2.left_trigger > 0) {
                     robot.depositLift.driveLiftFromGamepad(
-                            -currentFrameGamepad2.left_trigger / 2
+                            -currentFrameGamepad2.left_trigger
                     );
                 } else {
                     robot.depositLift.driveLiftFromGamepad(
-                            currentFrameGamepad2.right_trigger / 2
+                            currentFrameGamepad2.right_trigger
                     );
                 }
             }

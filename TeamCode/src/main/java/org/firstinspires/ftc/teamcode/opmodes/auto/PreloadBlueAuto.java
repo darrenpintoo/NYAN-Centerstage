@@ -73,6 +73,7 @@ public class PreloadBlueAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
         robot.intake.onCyclePassed();
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
 
         waitForStart();
 
@@ -90,11 +91,11 @@ public class PreloadBlueAuto extends LinearOpMode {
         switch (placementPosition) {
             case LEFT:
                 drive.turnToAngle(Math.toRadians(90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, -31, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, -30, Math.toRadians(90));
                 break;
             case RIGHT:
                 drive.turnToAngle(Math.toRadians(90));
-                drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
+                drive.driveForward(robot.drivetrain.rightBackMotor, 9, Math.toRadians(90));
                 break;
             case CENTER:
                 drive.driveForward(robot.drivetrain.rightBackMotor, -2.5, Math.toRadians(0));
