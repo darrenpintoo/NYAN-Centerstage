@@ -17,7 +17,7 @@ public class MotionProfiledMotion {
 
     private double vMax = 1000;
     private double aMax = 1000;
-    MotionProfiledMotion(MotionProfile feedforward, GeneralPIDController feedback) {
+    public MotionProfiledMotion(MotionProfile feedforward, GeneralPIDController feedback) {
         this.feedforwardProfile = feedforward;
         this.feedbackPositionController = feedback;
 

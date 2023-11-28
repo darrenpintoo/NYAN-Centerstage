@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utilities.controltheory.MotionProfiledMotion;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.feedback.GeneralPIDController;
+import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.MotionProfile;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.MotorGroup;
 //boxOpen = 0.3 closed = 0.1
@@ -50,10 +52,14 @@ public class DepositLift implements Subsystem{
 
     private BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
-    public static double kP = 0.005;
+    public static double kP = 0;
     public static double kI = 0;
     public static double kD = 0;
-    public static double kF = 0.15;
+    public static double kF = 0.1;
+    public static double kV = 0.0003;
+    public static double kA = 0.0001;
+    public static double vMax = 1000;
+    public static double aMax = 1000;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.77;
@@ -71,6 +77,10 @@ public class DepositLift implements Subsystem{
 
     public static int position = 900;
 
+    private MotionProfiledMotion profile = new MotionProfiledMotion(
+            new MotionProfile(0, 0, vMax, aMax),
+            new GeneralPIDController(kP, kI, kD, kF)
+    );
     private Telemetry t;
 
     @Override
@@ -111,18 +121,13 @@ public class DepositLift implements Subsystem{
     @Override
     public void onCyclePassed() {
 
-        controller.updateCoefficients(kP, kI, kD, kF);
+        profile.setPIDCoefficients(kP, kI, kD, kF);
+        profile.setProfileCoefficients(kV, kA, vMax, aMax);
 
-
-        int targetPosition = this.getTargetPositionFromState(this.currentTargetState) + offset * offsetLength;
-
-        if (power == 0) {
-            power = MathHelper.clamp(controller.getOutputFromError(targetPosition, this.frontLiftMotor.getCurrentPosition()), -0.5, 1);
-        }
+        power = profile.getOutput(this.frontLiftMotor.getCurrentPosition());
 
         t.addData("Power:", power);
         t.addData("Current Position: ", this.frontLiftMotor.getCurrentPosition());
-        t.addData("Target Position: ", targetPosition);
         t.addData("leftServo Position: ", leftServo.getPosition());
         t.addData("Tilted: ", this.tiltState == TiltStates.TILTED);
 
@@ -141,6 +146,7 @@ public class DepositLift implements Subsystem{
             }
         }
 
+        /*
         if (this.tiltState == TiltStates.TILTED) {
             this.leftServo.setPosition(leftServoTiltPosition);
             this.rightServo.setPosition(rightServoTiltPosition);
@@ -150,6 +156,8 @@ public class DepositLift implements Subsystem{
             this.rightServo.setPosition(rightServoDefaultPosition);
             t.addData("Not Tilted", 1);
         }
+         */
+
         this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
 
         this.previousTargetState = currentTargetState;
@@ -198,6 +206,8 @@ public class DepositLift implements Subsystem{
         }
         this.previousTargetState = this.currentTargetState;
         this.currentTargetState = state;
+
+        this.profile.updateTargetPosition(getTargetPositionFromState(state), this.frontLiftMotor.getCurrentPosition());
     }
 
     public void setOffset(int offset) {
