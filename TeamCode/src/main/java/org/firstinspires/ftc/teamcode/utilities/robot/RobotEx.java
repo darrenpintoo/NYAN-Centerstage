@@ -140,13 +140,13 @@ public class RobotEx {
         this.position = this.updatePoseEstimate();
 
 
+        /*
          telemetry.addData("Pose: ", this.pose);
          telemetry.addData("Pos:", this.position);
         telemetry.addData("Parallel Encoder 1 Ticks: ", this.drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", this.drivetrain.leftBackMotor.getCurrentPosition());
         telemetry.addData("Perpendicular Encoder 1 Ticks: ", this.drivetrain.leftFrontMotor.getCurrentPosition());
-
-
+*/
 
 
         /*

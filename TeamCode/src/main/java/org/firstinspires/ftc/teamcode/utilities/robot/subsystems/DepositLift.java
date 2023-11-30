@@ -52,14 +52,14 @@ public class DepositLift implements Subsystem{
 
     private BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
-    public static double kP = 0;
+    public static double kP = 0.005;
     public static double kI = 0;
-    public static double kD = 0;
+    public static double kD = 0.001;
     public static double kF = 0.1;
     public static double kV = 0.0003;
-    public static double kA = 0.0001;
-    public static double vMax = 1000;
-    public static double aMax = 1000;
+    public static double kA = 0;
+    public static double vMax = 4000;
+    public static double aMax = 3000;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.77;
@@ -128,6 +128,7 @@ public class DepositLift implements Subsystem{
 
         t.addData("Power:", power);
         t.addData("Current Position: ", this.frontLiftMotor.getCurrentPosition());
+        t.addData("Target Position: ", this.getTargetPositionFromState(currentTargetState));
         t.addData("leftServo Position: ", leftServo.getPosition());
         t.addData("Tilted: ", this.tiltState == TiltStates.TILTED);
 
