@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 @Config
 public class Intake implements Subsystem {
 
-    Servo gripServo;
-    Servo rotationServo;
+    Servo leftRotationServo;
+    Servo rightRotationServo;
 
     public enum RotationStates {
         DEFAULT,
@@ -38,11 +38,17 @@ public class Intake implements Subsystem {
     private GripperStates currentGripperState = GripperStates.OPEN;
     Telemetry t;
 
+    public static double defaultPosition = 0.5;
+
+    public static double activatedRotationOffset = -0.5;
+    public static double intakeRotationOffset = 0.05;
+
+
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        gripServo = hardwareMap.get(Servo.class, "IntakeGripServo");
-        rotationServo = hardwareMap.get(Servo.class, "IntakeRotationServo");
+        leftRotationServo = hardwareMap.get(Servo.class, "leftRotationServo");
+        rightRotationServo = hardwareMap.get(Servo.class, "rightRotationServo");
 
         this.t = telemetry;
     }
@@ -53,35 +59,26 @@ public class Intake implements Subsystem {
     }
 
     @Override
-    public void onCyclePassed() {
+    public void  onCyclePassed() {
 
-        double currentClawPosition;
-        double currentRotationPosition;
-
-        if (currentGripperState == GripperStates.OPEN) {
-            currentClawPosition = openClawPosition;
-        } else {
-            currentClawPosition = closeClawPosition;
-        }
-
-        if (currentRotationState == RotationStates.DEFAULT) {
-            currentRotationPosition = startRotationPosition;
-        } else {
-            currentRotationPosition = endRotationPosition;
-        }
-
-        currentRotationPosition = currentRotationPosition + offset*offsetLength;
-        this.rotationServo.setPosition(currentRotationPosition);
-        this.gripServo.setPosition(currentClawPosition);
-
-        t.addData("Position Rot: ", currentRotationPosition);
-        t.addData("Grip Position: ", currentClawPosition);
+        this.leftRotationServo.setPosition(defaultPosition+getRotationPosition(currentRotationState));
+        this.rightRotationServo.setPosition(defaultPosition-getRotationPosition(currentRotationState));
     }
 
     public void setGripperState(GripperStates newGripState) {
         this.currentGripperState = newGripState;
     }
 
+    public double getRotationPosition(RotationStates currentRotationState)  {
+        switch (currentRotationState) {
+            case ROTATED:
+                return activatedRotationOffset;
+            case DEFAULT:
+                return intakeRotationOffset;
+            default:
+                return 0;
+        }
+    }
     public void setRotationState(RotationStates newRotationState) {
 
         if (this.currentRotationState != newRotationState) {
