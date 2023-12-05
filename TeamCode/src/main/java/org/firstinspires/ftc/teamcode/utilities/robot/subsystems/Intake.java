@@ -38,7 +38,8 @@ public class Intake implements Subsystem {
     private GripperStates currentGripperState = GripperStates.OPEN;
     Telemetry t;
 
-    public static double defaultPosition = 0.5;
+    public static double defaultPosition = 0.2;
+    public static double placingPosition = 0.8;
 
     public static double activatedRotationOffset = -0.5;
     public static double intakeRotationOffset = 0.05;
@@ -61,8 +62,8 @@ public class Intake implements Subsystem {
     @Override
     public void  onCyclePassed() {
 
-        this.leftRotationServo.setPosition(defaultPosition+getRotationPosition(currentRotationState));
-        this.rightRotationServo.setPosition(defaultPosition-getRotationPosition(currentRotationState));
+        this.leftRotationServo.setPosition(defaultPosition);
+        this.rightRotationServo.setPosition(defaultPosition);
     }
 
     public void setGripperState(GripperStates newGripState) {
