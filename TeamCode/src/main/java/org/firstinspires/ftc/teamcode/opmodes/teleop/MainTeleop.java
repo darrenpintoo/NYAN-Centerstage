@@ -192,6 +192,7 @@ public class MainTeleop extends LinearOpMode {
             telemetry.addData("Frame Time: ", frameTime);
             telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCCW());
             telemetry.addData("Ticks: ", robot.depositLift.frontLiftMotor.getCurrentPosition());
+            telemetry.addData("ET:", gamepad2.right_trigger);
         }
     }
 }

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.checkerframework.checker.index.qual.LTEqLengthOf;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.MotionProfile;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
@@ -20,6 +21,7 @@ public class Intake implements Subsystem {
 
     public enum RotationStates {
         DEFAULT,
+        FULL_DEFAULT,
         ROTATED
     }
 
@@ -46,7 +48,8 @@ public class Intake implements Subsystem {
     public static double placingPosition = 0.76;
 
     public static double activatedRotationOffset = 0.74;
-    public static double intakeRotationOffset = 0.15;
+    public static double fullIntakeRotationOffset = 0.15;
+    public static double intakeRotationOffset = 0.25;
 
     public static double aMax = 1;
     public static double vMax = 1;
@@ -80,9 +83,22 @@ public class Intake implements Subsystem {
 
     @Override
     public void onCyclePassed() {
+        double position = getCurrentPosition();
         this.intakeClawServo.setPosition(getClawPosition());
-        this.leftRotationServo.setPosition(getCurrentPosition());
-        this.rightRotationServo.setPosition(getCurrentPosition());
+        this.leftRotationServo.setPosition(position);
+        this.rightRotationServo.setPosition(position);
+
+        t.addData("Time: ", this.profile.getDuration());
+        t.addData("Timer: ", this.timer.seconds());
+        t.addData("Position: ", position);
+
+        if (this.currentRotationState == RotationStates.DEFAULT && (timer.seconds() > this.profile.getDuration())) {
+            this.setGripperState(GripperStates.OPEN);
+
+            if (timer.seconds()+1.5 > this.profile.getDuration()) {
+                this.setRotationState(RotationStates.FULL_DEFAULT);
+            }
+        }
     }
 
     public void setGripperState(GripperStates newGripState) {
@@ -95,6 +111,8 @@ public class Intake implements Subsystem {
                 return activatedRotationOffset;
             case DEFAULT:
                 return intakeRotationOffset;
+            case FULL_DEFAULT:
+                return fullIntakeRotationOffset;
             default:
                 return 0;
         }
@@ -129,7 +147,7 @@ public class Intake implements Subsystem {
                 vMax,
                 aMax
         );
-
+        timer.reset();
 
         this.currentRotationState = newRotationState;
     }

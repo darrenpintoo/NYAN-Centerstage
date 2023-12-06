@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.Mot
 public class MotionProfiledMotion {
 
     GeneralPIDController feedbackPositionController;
-    MotionProfile feedforwardProfile;
+    public MotionProfile feedforwardProfile;
 
-    ElapsedTime timer;
+    public ElapsedTime timer;
 
     private double kV = 0;
     private double kA = 0;

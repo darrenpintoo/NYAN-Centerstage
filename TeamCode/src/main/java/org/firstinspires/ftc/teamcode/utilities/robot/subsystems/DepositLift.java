@@ -122,8 +122,11 @@ public class DepositLift implements Subsystem{
         profile.setPIDCoefficients(kP, kI, kD, kF);
         profile.setProfileCoefficients(kV, kA, vMax, aMax);
 
-        power = profile.getOutput(this.frontLiftMotor.getCurrentPosition());
-
+        if (power != 0) {
+            power = profile.getOutput(this.frontLiftMotor.getCurrentPosition());
+        } else {
+            power *= 10;
+        }
         t.addData("Power:", power);
         t.addData("Current Position: ", this.frontLiftMotor.getCurrentPosition());
         t.addData("Target Position: ", this.getTargetPositionFromState(currentTargetState));
@@ -157,8 +160,9 @@ public class DepositLift implements Subsystem{
         }
 
 
-        this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
-
+        if (profile.timer.seconds() > profile.) {
+            this.boxServo.setPosition(this.getBoxPositionFromState(this.boxState));
+        }
         this.previousTargetState = currentTargetState;
         this.override = false;
         power = 0;
