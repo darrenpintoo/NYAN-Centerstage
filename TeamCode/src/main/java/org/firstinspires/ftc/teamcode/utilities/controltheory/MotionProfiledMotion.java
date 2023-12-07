@@ -65,4 +65,8 @@ public class MotionProfiledMotion {
 
         this.timer.reset();
     }
+
+    public boolean atTargetPosition() {
+        return this.timer.seconds() >= this.feedforwardProfile.getDuration();
+    }
 }

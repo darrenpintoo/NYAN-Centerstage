@@ -47,9 +47,9 @@ public class Intake implements Subsystem {
     public static double defaultPosition = 0.2;
     public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.74;
-    public static double fullIntakeRotationOffset = 0.15;
-    public static double intakeRotationOffset = 0.25;
+    public static double activatedRotationOffset = 0.69;
+    public static double fullIntakeRotationOffset = 0.1;
+    public static double intakeRotationOffset = 0.2;
 
     public static double aMax = 1;
     public static double vMax = 1;
@@ -57,6 +57,7 @@ public class Intake implements Subsystem {
     private MotionProfile profile;
 
     private ElapsedTime timer = new ElapsedTime();
+    private ElapsedTime clawTimer = new ElapsedTime();
 
 
 
@@ -92,6 +93,9 @@ public class Intake implements Subsystem {
         t.addData("Timer: ", this.timer.seconds());
         t.addData("Position: ", position);
 
+        if (clawTimer.seconds() > 0.5 && currentRotationState == RotationStates.ROTATED && currentGripperState != GripperStates.CLOSED) {
+            this.setRotationState(RotationStates.DEFAULT);
+        }
         if (this.currentRotationState == RotationStates.DEFAULT && (timer.seconds() > this.profile.getDuration())) {
             this.setGripperState(GripperStates.OPEN);
 
@@ -102,6 +106,7 @@ public class Intake implements Subsystem {
     }
 
     public void setGripperState(GripperStates newGripState) {
+        clawTimer.reset();
         this.currentGripperState = newGripState;
     }
 

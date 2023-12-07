@@ -65,6 +65,7 @@ public class MainTeleop extends LinearOpMode {
 
             telemetry.update();
 
+
             // Manual Lift Handler
             {
                 if (currentFrameGamepad2.left_trigger > 0) {
