@@ -94,21 +94,36 @@ public class MainTeleop extends LinearOpMode {
 
             // Manual Intake Grab Handler
             {
-                if (currentFrameGamepad1.a && !previousFrameGamepad1.a) {
+                if (currentFrameGamepad1.right_bumper && !previousFrameGamepad1.right_bumper) {
                     gripState = !gripState;
+
                     robot.intake.setGripperState(
-                            gripState ? Intake.GripperStates.OPEN : Intake.GripperStates.CLOSED
+                            robot.intake.currentGripperState == Intake.GripperStates.CLOSED ? Intake.GripperStates.OPEN : Intake.GripperStates.CLOSED
                     );
                 }
             }
 
             // Manual Intake Rotation Handler
             {
-                if (currentFrameGamepad1.b && !previousFrameGamepad1.b) {
+                if (currentFrameGamepad1.left_bumper && !previousFrameGamepad1.left_bumper) {
                     rotationState = !rotationState;
                     robot.intake.setRotationState(
-                            rotationState ? Intake.RotationStates.ROTATED : Intake.RotationStates.DEFAULT
+                            robot.intake.currentRotationState != Intake.RotationStates.ROTATED ? Intake.RotationStates.ROTATED : Intake.RotationStates.DEFAULT
                     );
+                }
+            }
+
+            // Intake Reset
+            {
+                if (currentFrameGamepad1.x && !previousFrameGamepad1.x) {
+                    robot.intake.reset();
+                }
+            }
+
+            // Intake Offset
+            {
+                if (currentFrameGamepad1.y && !previousFrameGamepad1.y) {
+                    robot.intake.setOffset(5);
                 }
             }
 
@@ -137,17 +152,17 @@ public class MainTeleop extends LinearOpMode {
                     dropState = !dropState;
 
                     robot.depositLift.setBoxState(
-                            dropState ? DepositLift.BoxStates.OPEN : DepositLift.BoxStates.CLOSED
+                            robot.depositLift.boxState == DepositLift.BoxStates.CLOSED ? DepositLift.BoxStates.OPEN : DepositLift.BoxStates.CLOSED
                     );
                 }
             }
 
             {
-                if (currentFrameGamepad1.right_bumper && !previousFrameGamepad1.right_bumper) {
+                if (currentFrameGamepad1.a && !previousFrameGamepad1.a) {
                     robot.intake.incrementOffset(1);
                 }
 
-                if (currentFrameGamepad1.left_bumper && !previousFrameGamepad1.left_bumper) {
+                if (currentFrameGamepad1.b && !previousFrameGamepad1.b) {
                     robot.intake.incrementOffset(-1);
                 }
             }
@@ -163,8 +178,8 @@ public class MainTeleop extends LinearOpMode {
             }
             {
                 if (currentFrameGamepad2.left_stick_button) {
-                    robot.depositLift.setTiltState(DepositLift.TiltStates.DEFAULT);
                     robot.depositLift.setBoxState(DepositLift.BoxStates.CLOSED);
+                    robot.depositLift.setTiltState(DepositLift.TiltStates.DEFAULT);
                 }
             }
 
@@ -192,8 +207,6 @@ public class MainTeleop extends LinearOpMode {
 
             telemetry.addData("Frame Time: ", frameTime);
             telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCCW());
-            telemetry.addData("Ticks: ", robot.depositLift.frontLiftMotor.getCurrentPosition());
-            telemetry.addData("ET:", gamepad2.right_trigger);
         }
     }
 }

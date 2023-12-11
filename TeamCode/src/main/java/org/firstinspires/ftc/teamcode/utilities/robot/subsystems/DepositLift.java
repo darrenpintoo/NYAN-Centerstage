@@ -51,7 +51,7 @@ public class DepositLift implements Subsystem{
     private LiftStates currentTargetState = LiftStates.LEVEL0;
     private LiftStates previousTargetState = LiftStates.LEVEL0;
 
-    private BoxStates boxState = BoxStates.CLOSED;
+    public BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
     public static double kP = 0.005;
     public static double kI = 0;
@@ -72,10 +72,12 @@ public class DepositLift implements Subsystem{
 
     public ElapsedTime timer = new ElapsedTime();
     private boolean override = false;
-    public int offset = 1;
-    public static int offsetLength = 25;
+    public int offset = 0;
+    public static int offsetLength = 50;
 
     public static int position = 900;
+
+    private ElapsedTime boxCloseTimer = new ElapsedTime();
 
     private MotionProfiledMotion profile = new MotionProfiledMotion(
             new MotionProfile(0, 0, vMax, aMax),
@@ -128,12 +130,13 @@ public class DepositLift implements Subsystem{
             power = profile.getOutput(this.frontLiftMotor.getCurrentPosition());
         }
 
+        if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0) {
+            power /= 2;
+        }
         t.addData("Power:", power);
-        t.addData("Current Position: ", this.frontLiftMotor.getCurrentPosition());
-        t.addData("Target Position: ", this.getTargetPositionFromState(currentTargetState));
+        t.addData("{Current}/{Target}: ", this.frontLiftMotor.getCurrentPosition() + "/" + this.getTargetPositionFromState(currentTargetState));
         t.addData("leftServo Position: ", leftServo.getPosition());
-        t.addData("Tilted: ", this.tiltState == TiltStates.TILTED);
-
+        t.addData("Offset: ", this.offset);
 
         if (this.previousTargetState != this.currentTargetState) {
             this.setOffset(0);
@@ -148,17 +151,18 @@ public class DepositLift implements Subsystem{
             }
         }
 
-
         if (this.tiltState == TiltStates.TILTED) {
             this.leftServo.setPosition(leftServoDefaultPosition+tiltAmount);
             this.rightServo.setPosition(rightServoDefaultPosition-tiltAmount);
-            t.addData("Tilted", 1);
         } else {
-            this.leftServo.setPosition(leftServoDefaultPosition);
-            this.rightServo.setPosition(rightServoDefaultPosition);
-            t.addData("Not Tilted", 1);
+            if (this.override && this.boxCloseTimer.seconds() < 0.4 && this.currentTargetState != LiftStates.LEVEL0) {
+                this.leftServo.setPosition(leftServoDefaultPosition+tiltAmount);
+                this.rightServo.setPosition(rightServoDefaultPosition-tiltAmount);
+            } else {
+                this.leftServo.setPosition(leftServoDefaultPosition);
+                this.rightServo.setPosition(rightServoDefaultPosition);
+            }
         }
-
         this.previousTargetState = currentTargetState;
         this.override = false;
         this.liftMotors.setPower(power);
@@ -167,18 +171,25 @@ public class DepositLift implements Subsystem{
     }
 
     public int getTargetPositionFromState(LiftStates state) {
+        int pos;
+
         switch (state) {
             case LEVEL0:
-                return -10;
+                pos = -10;
+                break;
             case LEVEL1:
-                return 430;
+                pos = 430;
+                break;
             case LEVEL2:
-                return 700;
+                pos = 700;
+                break;
             case LEVEL3:
-                return position;
+                pos = position;
             default:
-                return 1000;
+                pos = 1000;
         }
+
+        return pos + offset * offsetLength;
     }
 
     public double getBoxPositionFromState(BoxStates state) {
@@ -193,7 +204,9 @@ public class DepositLift implements Subsystem{
     }
 
     public void setBoxState(BoxStates state) {
+        if (this.boxState == state) { return; }
         this.boxState = state;
+        boxCloseTimer.reset();
     }
 
     public void setTiltState(TiltStates state) {
@@ -208,19 +221,29 @@ public class DepositLift implements Subsystem{
         this.previousTargetState = this.currentTargetState;
         this.currentTargetState = state;
 
-        timer.reset();
+        this.regenerateProfile();
 
-        this.profile.updateTargetPosition(getTargetPositionFromState(state), this.frontLiftMotor.getCurrentPosition());
     }
 
     public void setOffset(int offset) {
+        if (this.offset == offset) {return;}
         this.offset = offset;
+
+        this.regenerateProfile();
     }
     public void incrementOffset(int sign) {
         this.offset += sign;
+
+        this.regenerateProfile();
     }
 
     public boolean atTargetPosition() {
         return this.profile.atTargetPosition();
+    }
+
+    private void regenerateProfile() {
+        timer.reset();
+
+        this.profile.updateTargetPosition(getTargetPositionFromState(this.currentTargetState), this.frontLiftMotor.getCurrentPosition());
     }
 }

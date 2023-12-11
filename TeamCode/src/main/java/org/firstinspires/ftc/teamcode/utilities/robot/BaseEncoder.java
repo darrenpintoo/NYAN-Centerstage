@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.utilities.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class Encoder {
+public class BaseEncoder {
 
     private DcMotorEx encoder;
     private int multiplier = 1;
-    public Encoder(DcMotorEx motor, int multiplier) {
+    public BaseEncoder(DcMotorEx motor, int multiplier) {
         this.encoder = motor;
         this.multiplier = multiplier;
     }

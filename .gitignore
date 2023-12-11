@@ -28,3 +28,9 @@ replay_pid*
 *.bin
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 *.bin
+build/*
+!build/build.xml
+**/.build
+**/build
+/TeamCode/build/
+/TeamCode/build/intermediates/

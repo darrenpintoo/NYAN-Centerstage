@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2d;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -26,10 +25,16 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.ClimbLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
+import org.mercurialftc.mercurialftc.silversurfer.encoderticksconverter.EncoderTicksConverter;
+import org.mercurialftc.mercurialftc.silversurfer.encoderticksconverter.Units;
+import org.mercurialftc.mercurialftc.silversurfer.geometry.Pose2D;
+import org.mercurialftc.mercurialftc.silversurfer.geometry.Vector2D;
+import org.mercurialftc.mercurialftc.silversurfer.tracker.ThreeWheelTracker;
+import org.mercurialftc.mercurialftc.silversurfer.tracker.WheeledTrackerConstants;
+import org.mercurialftc.mercurialftc.util.hardware.Encoder;
 
 
 import java.util.List;
-import java.util.Vector;
 
 public class RobotEx {
     private static RobotEx robotInstance = null;
@@ -60,6 +65,8 @@ public class RobotEx {
 
     public ThreeWheelLocalizer localizer1;
     public ThreeDeadWheelLocalizer localizer;
+
+    public ThreeWheelTracker mercLocalizer;
     private double voltageCompensator = 12;
     public PoseVelocity2d position = new PoseVelocity2d(new Vector2d(0, 0), 0);
     public Pose2d pose = new Pose2d(0, 0, 0);
@@ -101,11 +108,12 @@ public class RobotEx {
         );
 
         this.localizer1 = new ThreeWheelLocalizer(
-                new Encoder(this.drivetrain.rightBackMotor, 1), // 3
-                new Encoder(this.drivetrain.leftBackMotor, 1), // 0
-                new Encoder(this.drivetrain.leftFrontMotor, 1), // 2
+                new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 0
+                new BaseEncoder(this.drivetrain.rightBackMotor, 1), // 3
+                new BaseEncoder(this.drivetrain.leftFrontMotor, -1), // 2
                 telemetry
         );
+
 
         telemetry.update();
 
@@ -137,6 +145,8 @@ public class RobotEx {
         }
 
         this.localizer1.updatePose();
+
+
         this.position = this.updatePoseEstimate();
 
 

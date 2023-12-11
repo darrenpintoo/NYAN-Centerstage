@@ -254,13 +254,6 @@ public class Drivetrain implements Subsystem {
         this.rightFrontPower += (leftJoystickY - leftJoystickX - rightJoystickX) / denominator;
         this.rightBackPower += (leftJoystickY + leftJoystickX - rightJoystickX) / denominator;
 
-        telemetry.addData("lf: ", leftFrontPower);
-        telemetry.addData("lb: ", leftBackPower);
-
-        telemetry.addData("rf: ", rightFrontPower);
-
-        telemetry.addData("rb: ", rightBackPower);
-
         this.lastX = leftJoystickX;
         this.lastY = leftJoystickY;
         this.lastRot = rightJoystickX;
