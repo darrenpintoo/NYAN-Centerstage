@@ -27,8 +27,8 @@ public class ThreeWheelLocalizer {
     private double robotHeading = 0.0;
 
     public static double bx = 7;
-    public static double trackWidth = 1;
-    public static double fowardOffset = 10;
+    public static double trackWidth = -7;
+    public static double fowardOffset = 5;
 
 
     public ThreeWheelLocalizer(BaseEncoder lp, BaseEncoder rp, BaseEncoder bp, Telemetry telemetry) {
@@ -59,31 +59,12 @@ public class ThreeWheelLocalizer {
         double deltaRightDistance = (deltaRightParallel / DriveConstants.TICKS_PER_REVOLUTION) * DriveConstants.WHEEL_SIZE * 2 * Math.PI;
         double deltaBackDistance = (deltaBackPerpendicular / DriveConstants.TICKS_PER_REVOLUTION) * DriveConstants.WHEEL_SIZE * 2 * Math.PI;
 
-        /*
-       phi = (delta_left_encoder_pos - delta_right_encoder_pos) / trackwidth
-       delta_middle_pos = (delta_left_encoder_pos + delta_right_encoder_pos) / 2
-       delta_perp_pos = delta_center_encoder_pos - forward_offset * phi
-
-       delta_x = delta_middle_pos * cos(heading) - delta_perp_pos * sin(heading)
-       delta_y = delta_middle_pos * sin(heading) + delta_perp_pos * cos(heading)
-
-       robotX += delta_x
-       robotY += delta_y
-       robotHeading += phi
-         */
-        // Calculate odometry values
         double phi = (deltaLeftDistance - deltaRightDistance) / trackWidth;
         double deltaMiddle = (deltaLeftDistance + deltaRightDistance) / 2.0;
         double deltaPerpendicular = deltaBackDistance - fowardOffset * phi;
 
         double deltaX = deltaMiddle * Math.cos(robotHeading) - deltaPerpendicular * Math.sin(robotHeading);
         double deltaY = deltaMiddle * Math.sin(robotHeading) + deltaPerpendicular * Math.cos(robotHeading);
-
-        /*
-        double forward = (deltaLeftDistance + deltaRightDistance) / 2.0;
-        double heading = (deltaRightDistance - deltaLeftDistance) / trackWidth;
-        double strafe = (deltaBackDistance - bx) * heading;
-        */
 
         // Update robot pose
         robotX += deltaX;
