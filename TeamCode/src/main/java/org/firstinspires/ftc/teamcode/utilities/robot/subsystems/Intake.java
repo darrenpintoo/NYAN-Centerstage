@@ -32,9 +32,9 @@ public class Intake implements Subsystem {
     // public static double startRotationPosition = 0.23;
     // public static double endRotationPosition = 0.84;
 
-    public static double openClawPosition = 0.35;
+    public static double openClawPosition = 0.32;
     public static double partlyOpenClawPosition = 0.45;
-    public static double closeClawPosition = 0.5;
+    public static double closeClawPosition = 0.51;
     // public static double num = 0;
 
     private int offset = 0;
@@ -47,9 +47,9 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.69;
-    public static double fullIntakeRotationOffset = 0.1;
-    public static double intakeRotationOffset = 0.2;
+    public static double activatedRotationOffset = 0.59;
+    public static double fullIntakeRotationOffset = 0;
+    public static double intakeRotationOffset = 0.1;
 
     public static double aMax = 1;
     public static double vMax = 1;
@@ -64,7 +64,7 @@ public class Intake implements Subsystem {
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        // leftRotationServo = hardwareMap.get(Servo.class, "leftRotationServo");
+        leftRotationServo = hardwareMap.get(Servo.class, "leftRotationServo");
         rightRotationServo = hardwareMap.get(Servo.class, "rightRotationServo");
         intakeClawServo = hardwareMap.get(Servo.class, "intakeClaw");
 
@@ -87,7 +87,7 @@ public class Intake implements Subsystem {
     public void onCyclePassed() {
         double position = getCurrentPosition();
         this.intakeClawServo.setPosition(getClawPosition());
-        // this.leftRotationServo.setPosition(position);
+        this.leftRotationServo.setPosition(position);
         this.rightRotationServo.setPosition(position);
 
         /*
