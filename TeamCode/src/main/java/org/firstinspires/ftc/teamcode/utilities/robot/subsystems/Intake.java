@@ -32,13 +32,13 @@ public class Intake implements Subsystem {
     // public static double startRotationPosition = 0.23;
     // public static double endRotationPosition = 0.84;
 
-    public static double openClawPosition = 0.32;
-    public static double partlyOpenClawPosition = 0.45;
-    public static double closeClawPosition = 0.51;
+    public static double openClawPosition = 0.4;
+    public static double partlyOpenClawPosition = 0.6;
+    public static double closeClawPosition = 0.63;
     // public static double num = 0;
 
     private int offset = 0;
-    public static double offsetLength = 0.015;
+    public static double offsetLength = 0.025;
 
     public RotationStates currentRotationState = RotationStates.DEFAULT;
     public GripperStates currentGripperState = GripperStates.OPEN;
@@ -48,11 +48,11 @@ public class Intake implements Subsystem {
     // public static double placingPosition = 0.76;
 
     public static double activatedRotationOffset = 0.59;
-    public static double fullIntakeRotationOffset = 0;
+    public static double fullIntakeRotationOffset = 0.02;
     public static double intakeRotationOffset = 0.1;
 
-    public static double aMax = 1;
-    public static double vMax = 1;
+    public static double aMax = 1.5;
+    public static double vMax = 1.5;
 
     private MotionProfile profile;
 
@@ -90,12 +90,12 @@ public class Intake implements Subsystem {
         this.leftRotationServo.setPosition(position);
         this.rightRotationServo.setPosition(position);
 
-        /*
+
         t.addData("Intake Servo Position: ", position);
         t.addData("Timer: ", timer.seconds());
         t.addData("Open?: ", this.currentGripperState);
         t.addData("Rot: ", this.currentRotationState);
-        t.addData("offset: ", offset);*/
+        t.addData("offset: ", offset);
 
         // TODO: Sync with teleop
         if (clawTimer.seconds() > 0.5 && currentGripperState == GripperStates.CLOSED && currentRotationState == RotationStates.FULL_DEFAULT && !waitingForAction) {

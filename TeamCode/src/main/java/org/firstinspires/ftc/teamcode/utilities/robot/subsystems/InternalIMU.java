@@ -116,7 +116,7 @@ public class InternalIMU implements Subsystem {
     }
 
     public double getCurrentFrameHeadingCW() {
-        return this.currentFrameOrientation.firstAngle;
+        return this.enabledHeadingOffset ? this.currentFrameOrientation.firstAngle + this.headingOffset : this.currentFrameOrientation.firstAngle;
     }
 
     public AngularVelocity getCurrentFrameVelocity() {
