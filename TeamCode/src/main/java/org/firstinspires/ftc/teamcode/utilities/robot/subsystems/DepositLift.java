@@ -73,7 +73,7 @@ public class DepositLift implements Subsystem{
     public ElapsedTime timer = new ElapsedTime();
     private boolean override = false;
     public int offset = 0;
-    public static int offsetLength = 50;
+    public static int offsetLength = 100;
 
     public static int position = 900;
 

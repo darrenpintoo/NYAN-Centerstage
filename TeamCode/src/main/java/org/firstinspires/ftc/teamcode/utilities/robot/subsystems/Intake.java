@@ -33,12 +33,12 @@ public class Intake implements Subsystem {
     // public static double endRotationPosition = 0.84;
 
     public static double openClawPosition = 0.4;
-    public static double partlyOpenClawPosition = 0.6;
-    public static double closeClawPosition = 0.63;
+    public static double partlyOpenClawPosition = 0.55;
+    public static double closeClawPosition = 0.64;
     // public static double num = 0;
 
     private int offset = 0;
-    public static double offsetLength = 0.025;
+    public static double offsetLength = 0.0175;
 
     public RotationStates currentRotationState = RotationStates.DEFAULT;
     public GripperStates currentGripperState = GripperStates.OPEN;
@@ -47,9 +47,9 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.59;
-    public static double fullIntakeRotationOffset = 0.02;
-    public static double intakeRotationOffset = 0.1;
+    public static double activatedRotationOffset = 0.61;
+    public static double fullIntakeRotationOffset = 0.005;
+    public static double intakeRotationOffset = 0.05;
 
     public static double aMax = 1.5;
     public static double vMax = 1.5;

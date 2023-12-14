@@ -22,7 +22,7 @@ public class PlaneLauncher implements Subsystem {
     Servo droneLaunchServo;
 
     public static double angleHome = 0.75;
-    public static double angleActivated = 0.6;
+    public static double angleActivated = 0.61;
     public static double launchClosed = 0.83;
     public static double launchOpen = 0.65;
 

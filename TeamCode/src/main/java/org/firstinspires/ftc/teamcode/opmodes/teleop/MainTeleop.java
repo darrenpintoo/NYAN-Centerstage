@@ -206,7 +206,7 @@ public class MainTeleop extends LinearOpMode {
             double frameTime = robot.update();
 
             telemetry.addData("Frame Time: ", frameTime);
-            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCCW());
+            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
         }
     }
 }
