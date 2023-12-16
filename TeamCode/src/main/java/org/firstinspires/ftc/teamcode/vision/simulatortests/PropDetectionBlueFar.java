@@ -55,23 +55,28 @@ public class PropDetectionBlueFar extends OpenCvPipeline {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(230, 250, 100, 100);
-        Rect rect2 = new Rect(540, 300, 100, 100);
-        // Draw rectangles on the output
+        Rect rect1 = new Rect(130, 240, 100, 100);
+        Rect rect2 = new Rect(350, 230, 100, 100);
+
+        // Draw rectangles on the output frame
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
         drawRectangle(maskedInputMat, rect2, new Scalar(0, 255, 0)); // Green
 
 
         // Calculate the amount of red in each rectangle
-        redAmount1 = calculateRedAmount(maskedInputMat.submat(rect1));
-        redAmount2 = calculateRedAmount(maskedInputMat.submat(rect2));
+        Mat r1 = maskedInputMat.submat(rect1);
+        Mat r2 = maskedInputMat.submat(rect2);
+        redAmount1 = calculateRedAmount(r1);
+        redAmount2 = calculateRedAmount(r2);
+        r1.release();
+        r2.release();
 
         if (redAmount1 > redThreshold) {
-            this.placementPosition = PlacementPosition.CENTER;
-        } else if (redAmount2 > redThreshold) {
-            this.placementPosition = PlacementPosition.RIGHT;
-        } else {
             this.placementPosition = PlacementPosition.LEFT;
+        } else if (redAmount2 > redThreshold) {
+            this.placementPosition = PlacementPosition.CENTER;
+        } else {
+            this.placementPosition = PlacementPosition.RIGHT;
         }
 
 

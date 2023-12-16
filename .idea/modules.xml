@@ -2,15 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/NYAN-Centerstage.iml" filepath="$PROJECT_DIR$/.idea/modules/NYAN-Centerstage.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN-Centerstage.FtcRobotController.unitTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/NYAN-Centerstage.TeamCode.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/NYAN2023-2024.iml" filepath="$PROJECT_DIR$/.idea/modules/NYAN2023-2024.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN2023-2024.FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN2023-2024.FtcRobotController.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN2023-2024.FtcRobotController.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/NYAN2023-2024.FtcRobotController.androidTest.iml" />

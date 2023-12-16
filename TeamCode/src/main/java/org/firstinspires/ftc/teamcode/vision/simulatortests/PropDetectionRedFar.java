@@ -7,7 +7,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class PropDetectionRed extends OpenCvPipeline {
+public class PropDetectionRedFar extends OpenCvPipeline {
 
     /*
      * These are our variables that will be
@@ -57,8 +57,8 @@ public class PropDetectionRed extends OpenCvPipeline {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(100, 200, 100, 100);
-        Rect rect2 = new Rect(350, 190, 100, 100);
+        Rect rect1 = new Rect(220, 240, 100, 100);
+        Rect rect2 = new Rect(420, 240, 100, 100);
         Rect rect3 = new Rect(500, 200, 100, 100);
 
         // Draw rectangles on the output

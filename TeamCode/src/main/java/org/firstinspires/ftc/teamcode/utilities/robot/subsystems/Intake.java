@@ -17,7 +17,7 @@ public class Intake implements Subsystem {
 
     Servo leftRotationServo;
     Servo rightRotationServo;
-    Servo intakeClawServo;
+    public Servo intakeClawServo;
 
     public enum RotationStates {
         DEFAULT,
@@ -47,9 +47,9 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.61;
+    public static double activatedRotationOffset = 0.62;
     public static double fullIntakeRotationOffset = 0.005;
-    public static double intakeRotationOffset = 0.05;
+    public static double intakeRotationOffset = 0;
 
     public static double aMax = 1.5;
     public static double vMax = 1.5;

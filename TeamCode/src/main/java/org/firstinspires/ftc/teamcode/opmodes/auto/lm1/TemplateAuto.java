@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.lm1;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -8,6 +9,8 @@ import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryD
 import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous(name="Template Auto")
+@Disabled
+
 public class TemplateAuto extends LinearOpMode {
 
 
