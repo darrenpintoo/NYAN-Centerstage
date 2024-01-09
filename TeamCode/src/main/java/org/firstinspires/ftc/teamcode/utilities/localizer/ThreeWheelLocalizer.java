@@ -71,6 +71,7 @@ public class ThreeWheelLocalizer {
         robotY += deltaY;
         robotHeading += phi;
 
+        /*
         this.telemetry.addData("deltaX: ", deltaX);
         this.telemetry.addData("deltaY: ", deltaY);
         this.telemetry.addData("deltaTheta: ", phi);
@@ -83,4 +84,6 @@ public class ThreeWheelLocalizer {
         this.telemetry.addData("Robot X (inches): ", robotX);
         this.telemetry.addData("Robot Y (inches): ", robotY);
         this.telemetry.addData("Robot Heading: ", robotHeading);
+
+         */
     }}

@@ -139,7 +139,7 @@ public class MainTeleop extends LinearOpMode {
 
             // Manual Plane Lifter Handler
             {
-                if (currentFrameGamepad2.b && !previousFrameGamepad2.b) {
+                if (currentFrameGamepad2.dpad_right && !previousFrameGamepad2.dpad_right) {
                     airplaneLiftState = !airplaneLiftState;
                     robot.planeLauncher.setLiftState(
                             airplaneLiftState ? PlaneLauncher.AirplaneLiftStates.UP : PlaneLauncher.AirplaneLiftStates.DOWN

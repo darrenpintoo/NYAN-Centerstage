@@ -133,10 +133,13 @@ public class DepositLift implements Subsystem{
         if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0) {
             power /= 2;
         }
+        /*
         t.addData("Power:", power);
         t.addData("{Current}/{Target}: ", this.frontLiftMotor.getCurrentPosition() + "/" + this.getTargetPositionFromState(currentTargetState));
         t.addData("leftServo Position: ", leftServo.getPosition());
         t.addData("Offset: ", this.offset);
+
+         */
 
         if (this.previousTargetState != this.currentTargetState) {
             this.setOffset(0);

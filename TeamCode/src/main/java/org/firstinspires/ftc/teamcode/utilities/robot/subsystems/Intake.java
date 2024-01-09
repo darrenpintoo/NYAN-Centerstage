@@ -32,9 +32,9 @@ public class Intake implements Subsystem {
     // public static double startRotationPosition = 0.23;
     // public static double endRotationPosition = 0.84;
 
-    public static double openClawPosition = 0.4;
-    public static double partlyOpenClawPosition = 0.55;
-    public static double closeClawPosition = 0.64;
+    public static double openClawPosition = 0.44;
+    public static double partlyOpenClawPosition = 0.58;
+    public static double closeClawPosition = 0.63;
     // public static double num = 0;
 
     private int offset = 0;
@@ -47,12 +47,12 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.62;
-    public static double fullIntakeRotationOffset = 0.005;
-    public static double intakeRotationOffset = 0;
+    public static double activatedRotationOffset = 0.76;
+    public static double fullIntakeRotationOffset = 0.15;
+    public static double intakeRotationOffset = 0.20;
 
-    public static double aMax = 1.5;
-    public static double vMax = 1.5;
+    public static double aMax = 3;
+    public static double vMax = 3;
 
     private MotionProfile profile;
 
