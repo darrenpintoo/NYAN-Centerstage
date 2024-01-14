@@ -63,10 +63,8 @@ public class RobotEx {
 
     Telemetry telemetry;
 
-    public ThreeWheelLocalizer localizer1;
-    public ThreeDeadWheelLocalizer localizer;
+    public ThreeWheelLocalizer localizer;
 
-    public ThreeWheelTracker mercLocalizer;
     private double voltageCompensator = 12;
     public PoseVelocity2d position = new PoseVelocity2d(new Vector2d(0, 0), 0);
     public Pose2d pose = new Pose2d(0, 0, 0);
@@ -102,12 +100,7 @@ public class RobotEx {
             subsystem.onInit(hardwareMap, telemetry);
         }
 
-        this.localizer = new ThreeDeadWheelLocalizer(
-                hardwareMap,
-                (Math.PI * DriveConstants.DEAD_WHEEL_SIZE) / DriveConstants.TICKS_PER_REVOLUTION
-        );
-
-        this.localizer1 = new ThreeWheelLocalizer(
+        this.localizer = new ThreeWheelLocalizer(
                 new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 0
                 new BaseEncoder(this.drivetrain.rightBackMotor, 1), // 3
                 new BaseEncoder(this.drivetrain.leftFrontMotor, -1), // 2
@@ -144,10 +137,9 @@ public class RobotEx {
 
         }
 
-        this.localizer1.updatePose();
+        this.localizer.updatePose();
 
 
-        this.position = this.updatePoseEstimate();
 
 
         /*
@@ -226,13 +218,6 @@ public class RobotEx {
         this.pose = new Pose2d(0, 0, 0);
         this.position = new PoseVelocity2d(new Vector2d(0, 0), 0);
     }
-    public PoseVelocity2d updatePoseEstimate() {
-        Twist2dDual<Time> twist = localizer.update();
-        pose = pose.plus(twist.value());
-
-        return twist.velocity().value();
-    }
-
     public void destroy() {
         RobotEx.robotInstance = null;
         internalIMU.destroy();

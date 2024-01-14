@@ -35,6 +35,7 @@ public class PreloadBlueAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot.init(hardwareMap, telemetry);
 
@@ -126,11 +127,7 @@ public class PreloadBlueAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
                 drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-                if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -60, Math.toRadians(90));
-                } else {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(90));
-                }
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, -4, Math.toRadians(90));
                 break;
             case RIGHT:
                 drive.driveForward(robot.drivetrain.rightBackMotor, -85, Math.toRadians(90));
@@ -145,11 +142,7 @@ public class PreloadBlueAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
                 drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-                if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 60, Math.toRadians(90));
-                } else {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -30, Math.toRadians(90));
-                }
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, 4, 90);
                 break;
             case CENTER:
                 drive.driveForward(robot.drivetrain.rightBackMotor, -16, Math.toRadians(-0));
@@ -166,17 +159,25 @@ public class PreloadBlueAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
                 drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-
-                if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(90));
-                } else {
-                    drive.strafeRight(robot.drivetrain.leftFrontMotor, -40, Math.toRadians(90));
-                }
                 break;
-
-
         }
-        robot.pause(5);
+        robot.depositLift.setBoxState(DepositLift.BoxStates.CLOSED);
+        drive.driveForward(robot.drivetrain.rightBackMotor, 114, Math.toRadians(90));
+        robot.intake.setGripperState(Intake.GripperStates.OPEN);
+        robot.intake.setOffset(5);
+        robot.intake.setGripperState(Intake.GripperStates.CLOSED);
+        drive.driveForward(robot.drivetrain.rightBackMotor,-114, Math.toRadians(90));
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+        robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
+        drive.driveForward(robot.drivetrain.rightBackMotor, 10, Math.toRadians(90));
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+        if (DriveConstants.parkPosition == DriveConstants.ParkPositions.LEFT) {
+            drive.strafeRight(robot.drivetrain.leftFrontMotor, -60, Math.toRadians(90));
+        } else {
+            drive.strafeRight(robot.drivetrain.leftFrontMotor, 40, Math.toRadians(90));
+        }
+
+
 
     }
 }

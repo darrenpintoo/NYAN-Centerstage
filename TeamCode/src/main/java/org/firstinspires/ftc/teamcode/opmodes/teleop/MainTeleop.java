@@ -176,6 +176,19 @@ public class MainTeleop extends LinearOpMode {
                     robot.depositLift.incrementOffset(-1);
                 }
             }
+
+            if (currentFrameGamepad1.dpad_up && !previousFrameGamepad1.dpad_up) {
+                robot.intake.setOffset(2);
+            }
+
+            if (currentFrameGamepad1.dpad_left && !previousFrameGamepad1.dpad_left) {
+                robot.intake.setOffset(1);
+            }
+
+            if (currentFrameGamepad1.dpad_down && !previousFrameGamepad1.dpad_down) {
+                robot.intake.setOffset(0);
+            }
+
             {
                 if (currentFrameGamepad2.left_stick_button) {
                     robot.depositLift.setBoxState(DepositLift.BoxStates.CLOSED);
@@ -207,6 +220,7 @@ public class MainTeleop extends LinearOpMode {
 
             telemetry.addData("Frame Time: ", frameTime);
             telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
+            telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
         }
     }
 }

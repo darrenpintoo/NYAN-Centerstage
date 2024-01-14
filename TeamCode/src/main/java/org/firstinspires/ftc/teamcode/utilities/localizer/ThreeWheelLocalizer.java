@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.utilities.localizer;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.BaseEncoder;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 
+@Config
 public class ThreeWheelLocalizer {
 
     private Telemetry telemetry;
@@ -17,18 +21,17 @@ public class ThreeWheelLocalizer {
     private static final double TRACK_WIDTH = 15.0; // Replace with your robot's track width in inches
 
     // Variables to store previous encoder values for dead wheel calculations
-    private int prevLeftParallelTicks;
-    private int prevRightParallelTicks;
-    private int prevBackPerpendicularTicks;
+    private double prevLeftParallelTicks;
+    private double prevRightParallelTicks;
+    private double prevBackPerpendicularTicks;
 
     // Variables to store robot pose (x, y, heading)
     private double robotX = 0.0;
     private double robotY = 0.0;
     private double robotHeading = 0.0;
 
-    public static double bx = 7;
-    public static double trackWidth = -7;
-    public static double fowardOffset = 5;
+    public static double trackWidth = -7.44;
+    public static double fowardOffset = 1.87;
 
 
     public ThreeWheelLocalizer(BaseEncoder lp, BaseEncoder rp, BaseEncoder bp, Telemetry telemetry) {
@@ -42,13 +45,13 @@ public class ThreeWheelLocalizer {
         this.prevBackPerpendicularTicks = bp.getTicks();
     }
     public void updatePose() {
-        int currentLeftParallelTicks = leftParallel.getTicks();
-        int currentRightParallelTicks = rightParallel.getTicks();
-        int currentBackPerpendicularTicks = backPerpendicular.getTicks();
+        double currentLeftParallelTicks = leftParallel.getTicks() * 1.0138;
+        double currentRightParallelTicks = rightParallel.getTicks() * 1.0138;
+        double currentBackPerpendicularTicks = backPerpendicular.getTicks();
 
-        int deltaLeftParallel = currentLeftParallelTicks - prevLeftParallelTicks;
-        int deltaRightParallel = currentRightParallelTicks - prevRightParallelTicks;
-        int deltaBackPerpendicular = currentBackPerpendicularTicks - prevBackPerpendicularTicks;
+        double deltaLeftParallel = currentLeftParallelTicks - prevLeftParallelTicks;
+        double deltaRightParallel = currentRightParallelTicks - prevRightParallelTicks;
+        double deltaBackPerpendicular = currentBackPerpendicularTicks - prevBackPerpendicularTicks;
 
         prevLeftParallelTicks = currentLeftParallelTicks;
         prevRightParallelTicks = currentRightParallelTicks;
@@ -71,12 +74,15 @@ public class ThreeWheelLocalizer {
         robotY += deltaY;
         robotHeading += phi;
 
-        /*
+
+        this.telemetry.addData("Perp: ", deltaPerpendicular);
+        this.telemetry.addData("Back Distance: ", deltaBackDistance);
+        this.telemetry.addData("phi: ", phi);
         this.telemetry.addData("deltaX: ", deltaX);
         this.telemetry.addData("deltaY: ", deltaY);
         this.telemetry.addData("deltaTheta: ", phi);
 
-        this.telemetry.addData("lp: ", deltaLeftParallel);
+        this.telemetry.addData("lp: ", deltaLeftDistance);
         this.telemetry.addData("rp: ", deltaRightDistance);
         this.telemetry.addData("bp: ", deltaBackDistance);
 
@@ -85,5 +91,11 @@ public class ThreeWheelLocalizer {
         this.telemetry.addData("Robot Y (inches): ", robotY);
         this.telemetry.addData("Robot Heading: ", robotHeading);
 
-         */
-    }}
+
+    }
+
+
+    public Pose getPose() {
+        return new Pose(this.robotX, this.robotY, this.robotHeading);
+    }
+}
