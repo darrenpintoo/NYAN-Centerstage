@@ -30,8 +30,10 @@ public class ThreeWheelLocalizer {
     private double robotY = 0.0;
     private double robotHeading = 0.0;
 
+    private Pose pose = new Pose(0, 0, 0);
+
     public static double trackWidth = -7.44;
-    public static double fowardOffset = 1.87;
+    public static double fowardOffset = 2.3;
 
 
     public ThreeWheelLocalizer(BaseEncoder lp, BaseEncoder rp, BaseEncoder bp, Telemetry telemetry) {
@@ -44,6 +46,7 @@ public class ThreeWheelLocalizer {
         this.prevRightParallelTicks = rp.getTicks();
         this.prevBackPerpendicularTicks = bp.getTicks();
     }
+
     public void updatePose() {
         double currentLeftParallelTicks = leftParallel.getTicks() * 1.0138;
         double currentRightParallelTicks = rightParallel.getTicks() * 1.0138;
@@ -70,9 +73,9 @@ public class ThreeWheelLocalizer {
         double deltaY = deltaMiddle * Math.sin(robotHeading) + deltaPerpendicular * Math.cos(robotHeading);
 
         // Update robot pose
-        robotX += deltaX;
-        robotY += deltaY;
-        robotHeading += phi;
+        pose.setX(pose.getX() + deltaX);
+        pose.setY(pose.getY() + deltaY);
+        pose.setHeading(pose.getHeading() + phi);
 
 
         this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
@@ -94,15 +97,19 @@ public class ThreeWheelLocalizer {
          */
 
         // Log telemetry data
-        this.telemetry.addData("Robot X (inches): ", robotX);
-        this.telemetry.addData("Robot Y (inches): ", robotY);
-        this.telemetry.addData("Robot Heading: ", robotHeading);
+        this.telemetry.addData("Robot X (inches): ", this.pose.getX());
+        this.telemetry.addData("Robot Y (inches): ", this.pose.getY());
+        this.telemetry.addData("Robot Heading: ", this.pose.getHeading());
 
 
     }
 
 
     public Pose getPose() {
-        return new Pose(this.robotX, this.robotY, this.robotHeading);
+        return pose;
+    }
+
+    public void setPose(Pose pose) {
+        this.pose = pose;
     }
 }

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.AngleHelper;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.feedback.GeneralPIDController;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
@@ -33,6 +34,7 @@ public class Drivetrain implements Subsystem {
 
     private RobotEx robotInstance;
     private InternalIMU internalIMU;
+    private ThreeWheelLocalizer localizer;
 
     MotorGroup<DcMotorEx> drivetrainMotorGroup;
     private DcMotorEx[] drivetrainMotors;
@@ -89,7 +91,7 @@ public class Drivetrain implements Subsystem {
         this.internalIMU = InternalIMU.getInstance();
         this.robotInstance = RobotEx.getInstance();
 
-        this.rightFrontMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightFrontMotor");
+                this.rightFrontMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightFrontMotor");
         this.leftFrontMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftFrontMotor");
         this.leftBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftBackMotor");
         this.rightBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor");
@@ -153,6 +155,7 @@ public class Drivetrain implements Subsystem {
     @Override
     public void onOpmodeStarted() {
         this.robotInstance = RobotEx.getInstance();
+        this.localizer = robotInstance.localizer;
     }
 
     @Override
@@ -261,7 +264,7 @@ public class Drivetrain implements Subsystem {
     }
 
     public void fieldCentricDriveFromGamepad(double leftJoystickY, double leftJoystickX, double rightJoystickX) {
-        double currentRobotOrientation = this.internalIMU.getCurrentFrameHeadingCCW();
+        double currentRobotOrientation = this.localizer.getPose().getHeading();
 
         this.robotCentricDriveFromGamepad(
                 Math.cos(currentRobotOrientation) * leftJoystickY - Math.sin(currentRobotOrientation) * leftJoystickX,

@@ -92,10 +92,10 @@ public class Intake implements Subsystem {
 
 
         t.addData("Intake Servo Position: ", position);
-        t.addData("Timer: ", timer.seconds());
-        t.addData("Open?: ", this.currentGripperState);
-        t.addData("Rot: ", this.currentRotationState);
-        t.addData("offset: ", offset);
+        // t.addData("Timer: ", timer.seconds());
+        // t.addData("Open?: ", this.currentGripperState);
+        // t.addData("Rot: ", this.currentRotationState);
+        // t.addData("offset: ", offset);
 
         // TODO: Sync with teleop
         if (clawTimer.seconds() > 0.5 && currentGripperState == GripperStates.CLOSED && currentRotationState == RotationStates.FULL_DEFAULT && !waitingForAction) {

@@ -64,7 +64,7 @@ public class DepositLift implements Subsystem{
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.45;
-    public static double rightServoDefaultPosition = 0.45;
+    public static double rightServoDefaultPosition = 0.55;
     public static double tiltAmount = 0.28;
     //
     public static double boxOpenPosition = 0.3;
