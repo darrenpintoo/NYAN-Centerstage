@@ -75,16 +75,23 @@ public class ThreeWheelLocalizer {
         robotHeading += phi;
 
 
+        this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
+        /*
         this.telemetry.addData("Perp: ", deltaPerpendicular);
         this.telemetry.addData("Back Distance: ", deltaBackDistance);
         this.telemetry.addData("phi: ", phi);
+         */
+        /*
         this.telemetry.addData("deltaX: ", deltaX);
         this.telemetry.addData("deltaY: ", deltaY);
         this.telemetry.addData("deltaTheta: ", phi);
+         */
 
+        /*
         this.telemetry.addData("lp: ", deltaLeftDistance);
         this.telemetry.addData("rp: ", deltaRightDistance);
         this.telemetry.addData("bp: ", deltaBackDistance);
+         */
 
         // Log telemetry data
         this.telemetry.addData("Robot X (inches): ", robotX);

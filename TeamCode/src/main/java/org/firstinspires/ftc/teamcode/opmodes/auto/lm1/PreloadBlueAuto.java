@@ -19,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="Preload Blue Auto")
+@Autonomous(name="Preload Blue Auto 2+2 TREVOR WINANDY")
 @Disabled
 public class PreloadBlueAuto extends LinearOpMode {
 

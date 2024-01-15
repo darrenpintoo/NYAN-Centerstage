@@ -257,9 +257,6 @@ public class Drivetrain implements Subsystem {
         this.lastX = leftJoystickX;
         this.lastY = leftJoystickY;
         this.lastRot = rightJoystickX;
-/*
-        telemetry.addData("Rot: ", rightJoystickX);
-        telemetry.addData("for: ", leftJoystickY);*/
 
     }
 

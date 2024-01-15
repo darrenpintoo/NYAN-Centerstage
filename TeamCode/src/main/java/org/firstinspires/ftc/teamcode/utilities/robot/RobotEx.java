@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
@@ -52,13 +51,13 @@ public class RobotEx {
     public PlaneLauncher planeLauncher = new PlaneLauncher();
     private final ElapsedTime frameTimer = new ElapsedTime();
 
-    private final Subsystem[] robotSubsystems = new Subsystem[] {
-            internalIMU,
+    private final Subsystem[] robotSubsystems = new Subsystem[]{
             drivetrain,
             climbLift,
             intake,
             depositLift,
-            planeLauncher
+            planeLauncher,
+            internalIMU,
     };
 
     Telemetry telemetry;
@@ -66,7 +65,6 @@ public class RobotEx {
     public ThreeWheelLocalizer localizer;
 
     private double voltageCompensator = 12;
-    public PoseVelocity2d position = new PoseVelocity2d(new Vector2d(0, 0), 0);
     public Pose2d pose = new Pose2d(0, 0, 0);
 
     private RobotEx() {
@@ -91,8 +89,7 @@ public class RobotEx {
         this.voltageCompensator = this.voltageSensor.getVoltage();
 
 
-
-        for (LynxModule hub: allHubs) {
+        for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
@@ -122,19 +119,18 @@ public class RobotEx {
     @SuppressLint("")
     public double update() {
 
-        double hubCurrent = 0;
-
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
-            hubCurrent += hub.getCurrent(CurrentUnit.AMPS);
         }
 
-        int i = 1;
+        int i = 0;
+        ElapsedTime log = new ElapsedTime();
 
         for (Subsystem subsystem : this.robotSubsystems) {
-
+            i++;
             subsystem.onCyclePassed();
-
+            telemetry.addData("Loop times for " + i + "is: ", log.milliseconds());
+            log.reset();
         }
 
         this.localizer.updatePose();
@@ -143,32 +139,24 @@ public class RobotEx {
 
 
         /*
-         telemetry.addData("Pose: ", this.pose);
-         telemetry.addData("Pos:", this.position);
         telemetry.addData("Parallel Encoder 1 Ticks: ", this.drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", this.drivetrain.leftBackMotor.getCurrentPosition());
         telemetry.addData("Perpendicular Encoder 1 Ticks: ", this.drivetrain.leftFrontMotor.getCurrentPosition());
 */
 
-
-        /*
-        this.localizer.updatePose();
-
-         */
 /*
-
-        Pose2d currentPose = this.localizer.getPoseEstimate();
         telemetry.addData("X: ", currentPose.getX());
         telemetry.addData("Y: ", currentPose.getY());
         telemetry.addData("Heading: ", currentPose.getHeading());*/
-        telemetry.addData("Current Draw: ", hubCurrent);
 
+        /*
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
+
         fieldOverlay.setStrokeWidth(1);
         fieldOverlay.setStroke("#4CAF50");
-
+        */
         // drawRobot(fieldOverlay, currentPose);
 
 
@@ -188,7 +176,7 @@ public class RobotEx {
     }
 
     public void persistData() {
-        // PersistentData.startPose = this.localizer.getPoseEstimate();
+        PersistentData.startPose = this.localizer.getPose();
     }
 
     public double getVoltage() {
@@ -213,11 +201,6 @@ public class RobotEx {
         PersistentData.startPose = new Pose2d();
     }*/
 
-
-    public void resetData() {
-        this.pose = new Pose2d(0, 0, 0);
-        this.position = new PoseVelocity2d(new Vector2d(0, 0), 0);
-    }
     public void destroy() {
         RobotEx.robotInstance = null;
         internalIMU.destroy();
