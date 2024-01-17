@@ -6,11 +6,11 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
@@ -22,13 +22,11 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
-@Autonomous(name = "PID Test")
-public class CloseBlueAuto extends LinearOpMode {
+@Autonomous(name = "Close Red Auto")
+public class CloseRedAuto extends LinearOpMode {
 
 
     PropDetectionBlueFar propDetectionRed;
@@ -51,11 +49,30 @@ public class CloseBlueAuto extends LinearOpMode {
         robot.init(hardwareMap, telemetry);
 
 
+        /*
+        aprilTag = new AprilTagProcessor.Builder().build();
+
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
+                .setCameraResolution(new Size(1280, 720))
+                .addProcessor(aprilTag)
+                .enableLiveView(true)
+                .build();
+
+         */
+
+
+
         waitForStart();
+
+
+        PlacementPosition placementPosition = PlacementPosition.RIGHT;
 
         robot.postInit();
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         PIDDrive drive = new PIDDrive(robot, telemetry);
+        OneWheelOdometryDrive time = new OneWheelOdometryDrive(this, telemetry);
+
 
         /*
         robot.localizer.setPose(new Pose(10, 10, Math.PI / 2));
@@ -64,16 +81,42 @@ public class CloseBlueAuto extends LinearOpMode {
         */
 
 
-        robot.localizer.setPose(new Pose(59, -15, -Math.PI/2));
+        robot.intake.setGripperState(Intake.GripperStates.CLOSED);
+        robot.intake.setRotationState(Intake.RotationStates.ROTATED);
 
-        drive.gotoPoint(new Pose(36, -44, -Math.PI/2));
-        drive.turnToAngle(0);
-        drive.gotoPoint(new Pose(36, -32, 0)); //right path
+        robot.pause(3);
+        robot.intake.setRotationState(Intake.RotationStates.FULL_DEFAULT);
+
+        robot.localizer.setPose(new Pose(59, -15, -Math.PI/2));
+        switch (placementPosition) {
+            case RIGHT:
+                drive.gotoPoint(new Pose(25, -40, -Math.PI/2));
+                drive.turnToAngle(0);
+                drive.gotoPoint(new Pose(25, -53, 0));
+                break;
+            case CENTER:
+                break;
+            case LEFT:
+                break;
+        }
+
+        robot.pause(0.5);
+        switch (placementPosition) {
+            case RIGHT:
+                drive.gotoPoint(new Pose(36, -32, 0)); //right path
+                break;
+            case LEFT:
+                drive.gotoPoint(new Pose(36, -20, 0)); //right path
+                break;
+            case CENTER:
+                break;
+        }
         drive.gotoPoint(new Pose(12,-36,0));
-        drive.gotoPoint(new Pose(12,63,0));
+
+        /*drive.gotoPoint(new Pose(12,63,0));
         drive.gotoPoint(new Pose(12,-36,0));
         drive.gotoPoint(new Pose(36,-44,0));
-
+         */
 
 
 

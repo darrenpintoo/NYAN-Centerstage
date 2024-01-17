@@ -33,12 +33,14 @@ public class ThreeWheelLocalizer {
     // Variables to store robot pose (x, y, heading)
 
     private Pose pose = new Pose(0, 0, 0);
+    private Pose velocity = new Pose(0, 0, 0);
 
     public static double trackWidth = -7.44;
     public static double fowardOffset = 2.3;
 
 
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
+    ElapsedTime updateTimer = new ElapsedTime();
 
     public ThreeWheelLocalizer(BaseEncoder lp, BaseEncoder rp, BaseEncoder bp, InternalIMU imu, Telemetry telemetry) {
         this.leftParallel = lp;
@@ -58,6 +60,10 @@ public class ThreeWheelLocalizer {
     }
 
     public void updatePose() {
+
+        double updateTime = updateTimer.seconds();
+        updateTimer.reset();
+
         double currentLeftParallelTicks = leftParallel.getTicks();
         double currentRightParallelTicks = rightParallel.getTicks();
         double currentBackPerpendicularTicks = backPerpendicular.getTicks();
@@ -82,18 +88,24 @@ public class ThreeWheelLocalizer {
         double deltaY = deltaMiddle * Math.cos(-pose.getHeading()) - deltaPerpendicular * Math.sin(-pose.getHeading());
         double deltaX = -(deltaMiddle * Math.sin(-pose.getHeading()) + deltaPerpendicular * Math.cos(-pose.getHeading()));
 
-        // Update robot pose
-        pose.setX(pose.getX() + deltaX);
-        pose.setY(pose.getY() + deltaY);
-        pose.setHeading(pose.getHeading() + phi);
+        double newPositionX = pose.getX() + deltaX;
+        double newPositionY = pose.getY() + deltaY;
+        double newHeading = pose.getHeading() + phi;
 
-        if (IMUUpdateTimer.seconds() > 0.5) {
+        // Update robot pose
+        pose = new Pose(newPositionX, newPositionY, newHeading);
+        velocity = new Pose(deltaX / updateTime, deltaY / updateTime, phi / updateTime);
+
+
+
+        if (IMUUpdateTimer.seconds() > 0.25) {
             imu.onCyclePassed();
             pose.setHeading(imu.getCurrentFrameHeadingCW());
         }
 
 
         this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
+        this.telemetry.addData("Velocity: ", velocity);
         /*
         this.telemetry.addData("Perp: ", deltaPerpendicular);
         this.telemetry.addData("Back Distance: ", deltaBackDistance);

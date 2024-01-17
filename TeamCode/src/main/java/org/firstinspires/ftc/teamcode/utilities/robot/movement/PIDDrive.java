@@ -99,6 +99,7 @@ public class PIDDrive {
             );
 
 
+            /*
             telemetry.addData("X: ", error.getX());
             telemetry.addData("Y: ", error.getY());
             telemetry.addData("Heading: ", error.getHeading());
@@ -114,6 +115,7 @@ public class PIDDrive {
             telemetry.addData("y: ", Math.sin(angle) * targetDisplacement);
             telemetry.addData("sx: ", startPosition.getX());
             telemetry.addData("sy: ", startPosition.getY());
+             */
             telemetry.update();
             robot.update();
 
@@ -126,6 +128,8 @@ public class PIDDrive {
                     inPosition = true;
                     inPositionTime.reset();
                 }
+            } else if (profileTime.seconds() + DriveConstants.MAX_CORRECTION_TIME> motion.getDuration()) {
+                break;
             } else {
                 inPosition = false;
             }

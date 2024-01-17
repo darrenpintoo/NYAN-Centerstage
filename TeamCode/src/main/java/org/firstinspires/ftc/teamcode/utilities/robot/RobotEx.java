@@ -133,7 +133,7 @@ public class RobotEx {
         for (Subsystem subsystem : this.robotSubsystems) {
             i++;
             subsystem.onCyclePassed();
-            // telemetry.addData("Loop times for " + i + "is: ", log.milliseconds());
+            telemetry.addData("Loop times for " + i + "is: ", log.milliseconds());
             log.reset();
         }
 
