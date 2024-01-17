@@ -264,11 +264,13 @@ public class Drivetrain implements Subsystem {
     }
 
     public void fieldCentricDriveFromGamepad(double leftJoystickY, double leftJoystickX, double rightJoystickX) {
-        double currentRobotOrientation = this.localizer.getPose().getHeading();
+        double currentRobotOrientation = this.localizer.getPose().getHeading() + Math.PI / 2;
+
+        leftJoystickX = -leftJoystickX;
 
         this.robotCentricDriveFromGamepad(
-                Math.cos(currentRobotOrientation) * leftJoystickY - Math.sin(currentRobotOrientation) * leftJoystickX,
-                Math.sin(currentRobotOrientation) * leftJoystickY + Math.cos(currentRobotOrientation) * leftJoystickX,
+                Math.sin(currentRobotOrientation) * leftJoystickX + Math.cos(currentRobotOrientation) * leftJoystickY,
+                (Math.cos(currentRobotOrientation) * leftJoystickX - Math.sin(currentRobotOrientation) * leftJoystickY),
                 rightJoystickX
         );
         // todo: write code for field centric drive

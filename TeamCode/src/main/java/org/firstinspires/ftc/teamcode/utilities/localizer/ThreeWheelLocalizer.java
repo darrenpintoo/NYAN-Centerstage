@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.utilities.localizer;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Internal;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.BaseEncoder;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
 
 @Config
 public class ThreeWheelLocalizer {
@@ -15,6 +18,8 @@ public class ThreeWheelLocalizer {
     private BaseEncoder leftParallel;
     private BaseEncoder rightParallel;
     private BaseEncoder backPerpendicular;
+
+    private InternalIMU imu;
 
     // Constants for wheel positions
     private static final double WHEEL_BASE = 14.5; // Replace with your robot's wheelbase in inches
@@ -26,9 +31,6 @@ public class ThreeWheelLocalizer {
     private double prevBackPerpendicularTicks;
 
     // Variables to store robot pose (x, y, heading)
-    private double robotX = 0.0;
-    private double robotY = 0.0;
-    private double robotHeading = 0.0;
 
     private Pose pose = new Pose(0, 0, 0);
 
@@ -36,7 +38,9 @@ public class ThreeWheelLocalizer {
     public static double fowardOffset = 2.3;
 
 
-    public ThreeWheelLocalizer(BaseEncoder lp, BaseEncoder rp, BaseEncoder bp, Telemetry telemetry) {
+    ElapsedTime IMUUpdateTimer = new ElapsedTime();
+
+    public ThreeWheelLocalizer(BaseEncoder lp, BaseEncoder rp, BaseEncoder bp, InternalIMU imu, Telemetry telemetry) {
         this.leftParallel = lp;
         this.rightParallel = rp;
         this.backPerpendicular = bp;
@@ -45,11 +49,17 @@ public class ThreeWheelLocalizer {
         this.prevLeftParallelTicks = lp.getTicks();
         this.prevRightParallelTicks = rp.getTicks();
         this.prevBackPerpendicularTicks = bp.getTicks();
+
+        this.imu = imu;
+
+        IMUUpdateTimer.reset();
+
+
     }
 
     public void updatePose() {
-        double currentLeftParallelTicks = leftParallel.getTicks() * 1.0138;
-        double currentRightParallelTicks = rightParallel.getTicks() * 1.0138;
+        double currentLeftParallelTicks = leftParallel.getTicks();
+        double currentRightParallelTicks = rightParallel.getTicks();
         double currentBackPerpendicularTicks = backPerpendicular.getTicks();
 
         double deltaLeftParallel = currentLeftParallelTicks - prevLeftParallelTicks;
@@ -69,13 +79,18 @@ public class ThreeWheelLocalizer {
         double deltaMiddle = (deltaLeftDistance + deltaRightDistance) / 2.0;
         double deltaPerpendicular = deltaBackDistance - fowardOffset * phi;
 
-        double deltaX = deltaMiddle * Math.cos(robotHeading) - deltaPerpendicular * Math.sin(robotHeading);
-        double deltaY = deltaMiddle * Math.sin(robotHeading) + deltaPerpendicular * Math.cos(robotHeading);
+        double deltaY = deltaMiddle * Math.cos(-pose.getHeading()) - deltaPerpendicular * Math.sin(-pose.getHeading());
+        double deltaX = -(deltaMiddle * Math.sin(-pose.getHeading()) + deltaPerpendicular * Math.cos(-pose.getHeading()));
 
         // Update robot pose
         pose.setX(pose.getX() + deltaX);
         pose.setY(pose.getY() + deltaY);
         pose.setHeading(pose.getHeading() + phi);
+
+        if (IMUUpdateTimer.seconds() > 0.5) {
+            imu.onCyclePassed();
+            pose.setHeading(imu.getCurrentFrameHeadingCW());
+        }
 
 
         this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
@@ -111,5 +126,7 @@ public class ThreeWheelLocalizer {
 
     public void setPose(Pose pose) {
         this.pose = pose;
+        imu.setHeadingOffset(pose.getHeading());
+        imu.enableHeadingOffsetCorrection();
     }
 }

@@ -57,22 +57,58 @@ public class CloseBlueAuto extends LinearOpMode {
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         PIDDrive drive = new PIDDrive(robot, telemetry);
 
-        robot.localizer.setPose(new Pose(59, -15, 0));
+        /*
+        robot.localizer.setPose(new Pose(10, 10, Math.PI / 2));
+        drive.turnToAngle(Math.PI);
+        drive.gotoPoint(new Pose(10, 15, Math.PI));*
+        */
 
-        /* Trevor
-        drive.gotoPoint(new Pose(36, -44, 0));
+
+        robot.localizer.setPose(new Pose(59, -15, -Math.PI/2));
+
+        drive.gotoPoint(new Pose(36, -44, -Math.PI/2));
+        drive.turnToAngle(0);
         drive.gotoPoint(new Pose(36, -32, 0)); //right path
         drive.gotoPoint(new Pose(12,-36,0));
         drive.gotoPoint(new Pose(12,63,0));
         drive.gotoPoint(new Pose(12,-36,0));
         drive.gotoPoint(new Pose(36,-44,0));
+
+
+
+
+
+
+        /*
+        robot.localizer.setPose(new Pose(10, 10, Math.PI/2));
+
+        drive.gotoPoint(new Pose(20,20,Math.PI/2));
+
          */
 
+
+        /*
+        robot.localizer.setPose(new Pose(-61.8, -15.6, Math.PI/2));
+
+        drive.gotoPoint(new Pose(-35.5,-48.1,Math.PI/2));
+
+
+
+        drive.turnToAngle(0);
+        drive.gotoPoint(new Pose(-17,-12,0));
+        drive.gotoPoint(new Pose(-17,-33.9,0));
+        drive.gotoPoint(new Pose(-17,58.0,0));
+        drive.gotoPoint(new Pose(-17,-33.9,0));
         drive.gotoPoint(new Pose(-35.5,-48.1,0));
-        drive.gotoPoint(new Pose(-16.7,-12,0));
-        drive.gotoPoint(new Pose(-12,-33.9,0));
-        drive.gotoPoint(new Pose(11.8,61.0,0));
-        drive.gotoPoint(new Pose(-12,-33.9,0));
+
+         */
+
+
+
+        /*
+        robot.localizer.setPose(new Pose(0, 0, 0));
+        drive.gotoPoint(new Pose(10, 10, 0));
+         */
 
 
 

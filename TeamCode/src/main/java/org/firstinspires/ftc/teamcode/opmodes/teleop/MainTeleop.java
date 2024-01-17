@@ -200,8 +200,8 @@ public class MainTeleop extends LinearOpMode {
                 robot.pose = new Pose2d(0, 0, 0);
             }
 
-            robot.drivetrain.robotCentricDriveFromGamepad(
-                    currentFrameGamepad1.left_stick_y,
+            robot.drivetrain.fieldCentricDriveFromGamepad(
+                    -currentFrameGamepad1.left_stick_y,
                     currentFrameGamepad1.left_stick_x,
                     currentFrameGamepad1.right_stick_x
             );
@@ -217,7 +217,6 @@ public class MainTeleop extends LinearOpMode {
             }
 
             double frameTime = robot.update();
-
             telemetry.addData("Frame Time: ", frameTime);
             telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
             telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());

@@ -44,7 +44,7 @@ public class DriveConstants {
     public static double MAX_VELOCITY = 55; // If doing 1
     public static double MAX_ACCELERATION = 35;
 
-    public static double MAX_ANGULAR_VELOCITY = Math.toRadians(180);
+    public static double MAX_ANGULAR_VELOCITY = Math.toRadians(360);
     public static double trackWidth = 14;
 
     public static ParkPositions parkPosition = ParkPositions.RIGHT;

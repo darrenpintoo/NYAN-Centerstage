@@ -56,8 +56,7 @@ public class RobotEx {
             climbLift,
             intake,
             depositLift,
-            planeLauncher,
-            internalIMU,
+            planeLauncher
     };
 
     Telemetry telemetry;
@@ -97,10 +96,13 @@ public class RobotEx {
             subsystem.onInit(hardwareMap, telemetry);
         }
 
+        internalIMU.onInit(hardwareMap, telemetry);
+
         this.localizer = new ThreeWheelLocalizer(
                 new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 0
                 new BaseEncoder(this.drivetrain.rightBackMotor, 1), // 3
                 new BaseEncoder(this.drivetrain.leftFrontMotor, -1), // 2
+                internalIMU,
                 telemetry
         );
 
@@ -114,6 +116,8 @@ public class RobotEx {
         for (Subsystem subsystem : this.robotSubsystems) {
             subsystem.onOpmodeStarted();
         }
+
+        internalIMU.onOpmodeStarted();
     }
 
     @SuppressLint("")
