@@ -169,6 +169,8 @@ public class RobotEx {
         */
         // drawRobot(fieldOverlay, currentPose);
 
+        telemetry.update();
+
 
         double frameTime = frameTimer.milliseconds();
         frameTimer.reset();

@@ -28,8 +28,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Close Red Auto")
-public class CloseRedAuto extends LinearOpMode {
+@Autonomous(name = "Close Blue Auto")
+public class CloseBlueAuto extends LinearOpMode {
 
 
     PropDetectionBlueFar propDetectionRed;
@@ -79,8 +79,6 @@ public class CloseRedAuto extends LinearOpMode {
         while (opModeInInit()) {
             telemetry.addLine("ready");
             telemetry.addData("position", propDetector.getPlacementPosition());
-            telemetry.addData("1: ", propDetector.getRedAmount1());
-            telemetry.addData("2: ", propDetector.getRedAmount2());
             telemetry.update();
         }
         waitForStart();

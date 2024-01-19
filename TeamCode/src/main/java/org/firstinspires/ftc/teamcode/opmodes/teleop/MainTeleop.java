@@ -47,6 +47,7 @@ public class MainTeleop extends LinearOpMode {
 
         // Notify subsystems before loop
         robot.postInit();
+
         /*
         aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(
                 CameraConstants.fx,
@@ -62,7 +63,9 @@ public class MainTeleop extends LinearOpMode {
                 .enableLiveView(true)
                 .build();
 
+
          */
+
 
         if (isStopRequested()) return;
 
@@ -95,8 +98,6 @@ public class MainTeleop extends LinearOpMode {
             currentFrameGamepad1.copy(gamepad1);
             currentFrameGamepad2.copy(gamepad2);
 
-
-            telemetry.update();
 
 
             // Manual Lift Handler
@@ -249,6 +250,15 @@ public class MainTeleop extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL3);
             }
 
+            /*
+
+            for (AprilTagDetection detection : aprilTag.getDetections()) {
+                telemetry.addData("I: ", detection.id);
+                telemetry.addData("X: ", detection.ftcPose.x);
+                telemetry.addData("Y: ", detection.ftcPose.y);
+            }
+
+             */
             double frameTime = robot.update();
             telemetry.addData("Frame Time: ", frameTime);
             telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());

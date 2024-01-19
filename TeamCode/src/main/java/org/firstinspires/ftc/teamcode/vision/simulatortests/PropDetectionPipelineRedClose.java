@@ -1,14 +1,19 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 
-public class PropDetectionRed extends OpenCvPipeline {
-
+public class PropDetectionPipelineRedClose implements VisionProcessor {
 
     public Scalar lower = new Scalar(0, 151.0, 86);
     public Scalar upper = new Scalar(240, 255, 160);
@@ -24,25 +29,40 @@ public class PropDetectionRed extends OpenCvPipeline {
     double redAmount3 = 0;
     private final double redThreshold = 2500;
     private volatile PlacementPosition placementPosition = PlacementPosition.CENTER;
+
+    public PropDetectionPipelineRedClose() {
+
+    }
+
     @Override
-    public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, ycrcbMat, Imgproc.COLOR_RGB2YCrCb);
+    public void init(int width, int height, CameraCalibration calibration) {
+
+    }
+
+    @Override
+    public Object processFrame(Mat frame, long captureTimeNanos) {
+
+        Imgproc.cvtColor(frame, ycrcbMat, Imgproc.COLOR_RGB2YCrCb);
 
         Core.inRange(ycrcbMat, lower, upper, binaryMat);
 
         maskedInputMat.release();
-        Core.bitwise_and(input, input, maskedInputMat, binaryMat);
+        Core.bitwise_and(frame, frame, maskedInputMat, binaryMat);
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(100, 200, 100, 100);
-        Rect rect2 = new Rect(350, 190, 100, 100);
-        Rect rect3 = new Rect(500, 200, 100, 100);
+        Rect rect1 = new Rect(100, 260, 100, 100);
+        Rect rect2 = new Rect(330, 230, 100, 100);
+        Rect rect3 = new Rect(500, 230, 100, 100);
 
         // Draw rectangles on the output
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
         drawRectangle(maskedInputMat, rect2, new Scalar(0, 255, 0)); // Green
         drawRectangle(maskedInputMat, rect3, new Scalar(0, 0, 255)); // Green
+
+        drawRectangle(frame, rect1, new Scalar(255, 0, 0)); // Blue
+        drawRectangle(frame, rect2, new Scalar(0, 255, 0)); // Green
+        drawRectangle(frame, rect3, new Scalar(0, 0, 255)); // Green
 
 
 
@@ -70,6 +90,26 @@ public class PropDetectionRed extends OpenCvPipeline {
         // Output the red amounts to the console (you can modify this part)
         return maskedInputMat;
     }
+
+    @Override
+    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+
+
+        /*
+        Paint myPaint = new Paint();
+        myPaint.setColor(Color.rgb(0, 0, 0));
+        myPaint.setStrokeWidth(1);
+
+        // canvas.drawRect(100, 200, 200, 300, myPaint);
+        // canvas.drawRect(350, 190, 450, 300, myPaint);
+        canvas.drawRect((int) (100.0/640 * 1000), (int) (230.0/480 * 1000), (int) (200.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
+        canvas.drawRect((int) (350.0/640 * 1000), (int) (230.0/480 * 1000), (int) (450.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
+
+
+         */
+
+    }
+
 
     // Helper method to calculate the amount of red in a given Mat using countNonZero
     private double calculateRedAmount(Mat mat) {
