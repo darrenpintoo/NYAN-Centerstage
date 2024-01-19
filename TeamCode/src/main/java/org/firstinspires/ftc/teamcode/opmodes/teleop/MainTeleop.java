@@ -1,16 +1,24 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import android.util.Size;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 /**
  * Example teleop code for a basic mecanum drive
@@ -22,10 +30,16 @@ public class MainTeleop extends LinearOpMode {
     // Create new Instance of the robot
     RobotEx robot = RobotEx.getInstance();
 
+
+    private VisionPortal visionPortal;               // Used to manage the video source.
+    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+
+
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetry.setMsTransmissionInterval(10);
+        telemetry.setMsTransmissionInterval(250);
         // Initialize the robot
         robot.init(hardwareMap, telemetry);
 
@@ -33,6 +47,22 @@ public class MainTeleop extends LinearOpMode {
 
         // Notify subsystems before loop
         robot.postInit();
+        /*
+        aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(
+                CameraConstants.fx,
+                CameraConstants.fy,
+                CameraConstants.cx,
+                CameraConstants.cy
+        ).build();
+
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
+                .setCameraResolution(new Size(1280, 720))
+                .addProcessor(aprilTag)
+                .enableLiveView(true)
+                .build();
+
+         */
 
         if (isStopRequested()) return;
 
@@ -53,8 +83,11 @@ public class MainTeleop extends LinearOpMode {
         robot.planeLauncher.setLiftState(PlaneLauncher.AirplaneLiftStates.DOWN);
         robot.update();
 
+        ElapsedTime e = new ElapsedTime();
+
         while(opModeIsActive()) {
 
+            e.reset();
             // Retain information about the previous frame's gamepad
             previousFrameGamepad1.copy(currentFrameGamepad1);
             previousFrameGamepad2.copy(currentFrameGamepad2);
@@ -200,8 +233,8 @@ public class MainTeleop extends LinearOpMode {
                 robot.pose = new Pose2d(0, 0, 0);
             }
 
-            robot.drivetrain.fieldCentricDriveFromGamepad(
-                    -currentFrameGamepad1.left_stick_y,
+            robot.drivetrain.robotCentricDriveFromGamepad(
+                    currentFrameGamepad1.left_stick_y,
                     currentFrameGamepad1.left_stick_x,
                     currentFrameGamepad1.right_stick_x
             );

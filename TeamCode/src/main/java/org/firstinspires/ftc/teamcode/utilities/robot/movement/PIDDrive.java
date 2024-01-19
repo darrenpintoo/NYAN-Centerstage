@@ -30,7 +30,7 @@ public class PIDDrive {
     GeneralPIDController headingController = new GeneralPIDController(1.5, 0, 0, 0);
 
     public static double vMax = 52;
-    public static double aMax = 45;
+    public static double aMax = 40;
 
     public static double kA = 0.0015;
     public static double kV = 1/vMax;
@@ -43,7 +43,7 @@ public class PIDDrive {
         this.telemetry = t;
     }
     public static Pose threshold = new Pose(1, 1, 0.05);
-    public static double thresholdTime = 0.5;
+    public static double thresholdTime = 0.25;
     public void gotoPoint(Pose point) {
         Pose error = new Pose(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -99,6 +99,9 @@ public class PIDDrive {
             );
 
 
+            telemetry.addData("Profile time: ", profileTime.seconds());
+            telemetry.addData("Motion time: ", motion.getDuration());
+
             /*
             telemetry.addData("X: ", error.getX());
             telemetry.addData("Y: ", error.getY());
@@ -128,8 +131,8 @@ public class PIDDrive {
                     inPosition = true;
                     inPositionTime.reset();
                 }
-            } else if (profileTime.seconds() + DriveConstants.MAX_CORRECTION_TIME> motion.getDuration()) {
-                break;
+            } else if (profileTime.seconds() > motion.getDuration() + DriveConstants.MAX_CORRECTION_TIME) {
+               break;
             } else {
                 inPosition = false;
             }

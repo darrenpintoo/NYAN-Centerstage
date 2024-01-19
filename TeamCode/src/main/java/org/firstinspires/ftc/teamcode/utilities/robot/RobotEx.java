@@ -123,22 +123,28 @@ public class RobotEx {
     @SuppressLint("")
     public double update() {
 
+        ElapsedTime log = new ElapsedTime();
+
+        log.reset();
+
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
 
-        int i = 0;
-        ElapsedTime log = new ElapsedTime();
+        // telemetry.addData("Clear Cache: ", log.seconds());
 
+        int i = 0;
+
+        log.reset();
         for (Subsystem subsystem : this.robotSubsystems) {
             i++;
             subsystem.onCyclePassed();
-            telemetry.addData("Loop times for " + i + "is: ", log.milliseconds());
+            // telemetry.addData("Loop times for " + i + "is: ", log.milliseconds());
             log.reset();
         }
 
         this.localizer.updatePose();
-
+        // telemetry.addData("Localizer: ", log.seconds());
 
 
 

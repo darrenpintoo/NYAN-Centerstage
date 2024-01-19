@@ -101,11 +101,12 @@ public class ThreeWheelLocalizer {
         if (IMUUpdateTimer.seconds() > 0.25) {
             imu.onCyclePassed();
             pose.setHeading(imu.getCurrentFrameHeadingCW());
+            IMUUpdateTimer.reset();
         }
 
 
         this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
-        this.telemetry.addData("Velocity: ", velocity);
+        this.telemetry.addData("Velocity: ", velocity.getHeading());
         /*
         this.telemetry.addData("Perp: ", deltaPerpendicular);
         this.telemetry.addData("Back Distance: ", deltaBackDistance);
@@ -136,9 +137,11 @@ public class ThreeWheelLocalizer {
         return pose;
     }
 
-    public void setPose(Pose pose) {
+    public void setPose(Pose pose, boolean override) {
         this.pose = pose;
-        imu.setHeadingOffset(pose.getHeading());
-        imu.enableHeadingOffsetCorrection();
+        if (override) {
+            imu.setHeadingOffset(pose.getHeading());
+            imu.enableHeadingOffsetCorrection();
+        }
     }
 }
