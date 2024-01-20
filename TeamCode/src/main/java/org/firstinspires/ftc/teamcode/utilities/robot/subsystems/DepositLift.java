@@ -249,4 +249,9 @@ public class DepositLift implements Subsystem{
 
         this.profile.updateTargetPosition(getTargetPositionFromState(this.currentTargetState), this.frontLiftMotor.getCurrentPosition());
     }
+
+    public void reset() {
+        this.liftMotors.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.liftMotors.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 }

@@ -179,7 +179,7 @@ public class CloseRedAuto extends LinearOpMode {
                 robot.intake.setGripperState(Intake.GripperStates.CLOSED);
                 robot.pause(0.15);
                 robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-                drive.gotoPoint(new Pose(4,-36,0));
+                drive.gotoPoint(new Pose(10,-36,0));
                 robot.intake.setGripperState(Intake.GripperStates.OPEN);
                 drive.gotoPoint(new Pose(32,-44,0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
@@ -200,10 +200,11 @@ public class CloseRedAuto extends LinearOpMode {
                 robot.pause(0.4);
                 drive.gotoPoint(new Pose(32, -45, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+                visionPortal.close();
                 drive.gotoPoint(new Pose(10, -45, 0));
                 break;
             case LEFT:
-                drive.gotoPoint(new Pose(30, -9, 0)); //right path
+                drive.gotoPoint(new Pose(30, -10, 0)); //right path
                 robot.pause(0.1);
                 detections = aprilTag.getDetections();
                 wok.reset();
@@ -221,10 +222,10 @@ public class CloseRedAuto extends LinearOpMode {
                 robot.intake.reset();
                 drive.gotoPoint(new Pose(4,-36,0));
                 robot.intake.setOffset(3);
-                drive.gotoPoint(new Pose(8,55,0));
+                drive.gotoPoint(new Pose(11,55,0));
                 b = PIDDrive.aMax;
                 PIDDrive.aMax = 10;
-                drive.gotoPoint(new Pose(6,61,0));
+                drive.gotoPoint(new Pose(9,61,0));
                 PIDDrive.aMax = b;
                 robot.intake.setOffset(2);
                 robot.pause(0.4);
@@ -252,6 +253,7 @@ public class CloseRedAuto extends LinearOpMode {
                 robot.pause(0.4);
                 drive.gotoPoint(new Pose(32, -45, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+                visionPortal.close();
                 drive.gotoPoint(new Pose(10, -45, 0));
                 break;
             case CENTER:
@@ -304,12 +306,12 @@ public class CloseRedAuto extends LinearOpMode {
                 robot.pause(0.4);
                 drive.gotoPoint(new Pose(28, -45, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+                visionPortal.close();
                 drive.gotoPoint(new Pose(10, -45, 0));
                 break;
 
         }
 
-        visionPortal.close();
         while (!isStopRequested()) {
             robot.update();
             telemetry.update();

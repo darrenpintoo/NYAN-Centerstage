@@ -234,6 +234,9 @@ public class MainTeleop extends LinearOpMode {
                 robot.pose = new Pose2d(0, 0, 0);
             }
 
+            if (currentFrameGamepad2.right_stick_button && previousFrameGamepad2.right_stick_button) {
+                robot.depositLift.reset();
+            }
             robot.drivetrain.robotCentricDriveFromGamepad(
                     currentFrameGamepad1.left_stick_y,
                     currentFrameGamepad1.left_stick_x,
