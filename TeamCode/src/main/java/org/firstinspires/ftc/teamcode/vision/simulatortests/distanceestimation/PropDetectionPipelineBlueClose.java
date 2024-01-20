@@ -15,8 +15,8 @@ import org.opencv.imgproc.Imgproc;
 
 public class PropDetectionPipelineBlueClose implements VisionProcessor {
 
-    public Scalar lower = new Scalar(0, 151.0, 86);
-    public Scalar upper = new Scalar(240, 255, 160);
+    public Scalar lower = new Scalar(0, 0, 0);
+    public Scalar upper = new Scalar(255, 117.6, 255);
 
 
     private Mat ycrcbMat       = new Mat();
@@ -51,8 +51,8 @@ public class PropDetectionPipelineBlueClose implements VisionProcessor {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(100, 260, 100, 100);
-        Rect rect2 = new Rect(330, 230, 100, 100);
+        Rect rect1 = new Rect(230, 270, 100, 100);
+        Rect rect2 = new Rect(440, 230, 100, 100);
         Rect rect3 = new Rect(500, 230, 100, 100);
 
         // Draw rectangles on the output

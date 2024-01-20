@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineRedClose;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -44,7 +45,7 @@ public class CloseBlueAuto extends LinearOpMode {
 
 
     private VisionPortal visionPortal2;
-    private PropDetectionPipelineRedClose propDetector;
+    private PropDetectionPipelineBlueClose propDetector;
 
     @Override
     public void runOpMode() {
@@ -67,7 +68,7 @@ public class CloseBlueAuto extends LinearOpMode {
 
 
 
-        propDetector = new PropDetectionPipelineRedClose();
+        propDetector = new PropDetectionPipelineBlueClose();
 
         visionPortal2 = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -79,6 +80,8 @@ public class CloseBlueAuto extends LinearOpMode {
         while (opModeInInit()) {
             telemetry.addLine("ready");
             telemetry.addData("position", propDetector.getPlacementPosition());
+            telemetry.addData("1: ", propDetector.getRedAmount1());
+            telemetry.addData("2: ", propDetector.getRedAmount2());
             telemetry.update();
         }
         waitForStart();
