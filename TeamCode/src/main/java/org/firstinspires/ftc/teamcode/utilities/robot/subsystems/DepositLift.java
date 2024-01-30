@@ -50,7 +50,6 @@ public class DepositLift implements Subsystem{
 
     private LiftStates currentTargetState = LiftStates.LEVEL0;
     private LiftStates previousTargetState = LiftStates.LEVEL0;
-
     public BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
     public static double kP = 0.005;
@@ -63,12 +62,12 @@ public class DepositLift implements Subsystem{
     public static double aMax = 3000;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-    public static double leftServoDefaultPosition = 0.45;
-    public static double rightServoDefaultPosition = 0.55;
-    public static double tiltAmount = 0.28;
+    public static double leftServoDefaultPosition = 0.47;
+    public static double rightServoDefaultPosition = 0.53;
+    public static double tiltAmount = 0.26;
     //
-    public static double boxOpenPosition = 0.3;
-    public static double boxClosedPosition = 0.6;
+    public static double boxOpenPosition = 0.6;
+    public static double boxClosedPosition = 1;
 
     public ElapsedTime timer = new ElapsedTime();
     private boolean override = false;
@@ -78,6 +77,7 @@ public class DepositLift implements Subsystem{
     public static int position = 900;
 
     private ElapsedTime boxCloseTimer = new ElapsedTime();
+    private ElapsedTime frameTime = new ElapsedTime();
 
     private MotionProfiledMotion profile = new MotionProfiledMotion(
             new MotionProfile(0, 0, vMax, aMax),
@@ -109,10 +109,10 @@ public class DepositLift implements Subsystem{
         this.backLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.frontLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        this.frontLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        // this.frontLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.backLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        this.frontLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.backLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.frontLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
     }
@@ -122,17 +122,30 @@ public class DepositLift implements Subsystem{
     }
     @Override
     public void onCyclePassed() {
+        frameTime.reset();
+
 
         profile.setPIDCoefficients(kP, kI, kD, kF);
         profile.setProfileCoefficients(kV, kA, vMax, aMax);
 
+
+
+        // t.addData("Deposit -1: ", frameTime.milliseconds());
+
         if (power == 0) {
-            power = profile.getOutput(this.frontLiftMotor.getCurrentPosition());
+            int a = this.frontLiftMotor.getCurrentPosition();
+            // t.addData("Deposit 0: ", frameTime.milliseconds());
+
+            power = profile.getOutput(a);
+            // t.addData("Deposit 1: ", frameTime.milliseconds());
+
         }
+
 
         if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0) {
             power /= 2;
         }
+
         /*
         t.addData("Power:", power);
         t.addData("{Current}/{Target}: ", this.frontLiftMotor.getCurrentPosition() + "/" + this.getTargetPositionFromState(currentTargetState));
@@ -158,7 +171,7 @@ public class DepositLift implements Subsystem{
             this.leftServo.setPosition(leftServoDefaultPosition+tiltAmount);
             this.rightServo.setPosition(rightServoDefaultPosition-tiltAmount);
         } else {
-            if (this.override && this.boxCloseTimer.seconds() < 0.4 && this.currentTargetState != LiftStates.LEVEL0) {
+            if (this.override && this.boxCloseTimer.milliseconds() < 0.4 && this.currentTargetState != LiftStates.LEVEL0) {
                 this.leftServo.setPosition(leftServoDefaultPosition+tiltAmount);
                 this.rightServo.setPosition(rightServoDefaultPosition-tiltAmount);
             } else {

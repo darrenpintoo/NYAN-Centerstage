@@ -63,6 +63,8 @@ public class RobotEx {
 
     public ThreeWheelLocalizer localizer;
 
+    public HardwareMap hardwareMap;
+
     private double voltageCompensator = 12;
     public Pose2d pose = new Pose2d(0, 0, 0);
 
@@ -83,14 +85,11 @@ public class RobotEx {
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
 
 
-        this.allHubs = hardwareMap.getAll(LynxModule.class);
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltageCompensator = this.voltageSensor.getVoltage();
 
 
-        for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
+
 
         for (Subsystem subsystem : this.robotSubsystems) {
             subsystem.onInit(hardwareMap, telemetry);
@@ -100,7 +99,7 @@ public class RobotEx {
 
         this.localizer = new ThreeWheelLocalizer(
                 new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 0
-                new BaseEncoder(this.drivetrain.rightBackMotor, 1), // 3
+                new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 3
                 new BaseEncoder(this.drivetrain.leftFrontMotor, -1), // 2
                 internalIMU,
                 telemetry
@@ -110,9 +109,17 @@ public class RobotEx {
         telemetry.update();
 
         this.telemetry = telemetry;
+        this.hardwareMap = hardwareMap;
     }
 
     public void postInit() {
+
+        this.allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         for (Subsystem subsystem : this.robotSubsystems) {
             subsystem.onOpmodeStarted();
         }
@@ -148,11 +155,11 @@ public class RobotEx {
 
 
 
-        /*
+
         telemetry.addData("Parallel Encoder 1 Ticks: ", this.drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", this.drivetrain.leftBackMotor.getCurrentPosition());
         telemetry.addData("Perpendicular Encoder 1 Ticks: ", this.drivetrain.leftFrontMotor.getCurrentPosition());
-*/
+
 
 /*
         telemetry.addData("X: ", currentPose.getX());

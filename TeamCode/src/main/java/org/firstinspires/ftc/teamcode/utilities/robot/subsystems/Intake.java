@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.utilities.robot.subsystems;
 import android.graphics.Path;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.checkerframework.checker.index.qual.LTEqLengthOf;
+import org.firstinspires.ftc.ftccommon.internal.manualcontrol.commands.DigitalCommands;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.MotionProfile;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
@@ -18,6 +21,8 @@ public class Intake implements Subsystem {
     Servo leftRotationServo;
     Servo rightRotationServo;
     public Servo intakeClawServo;
+
+    DigitalChannel breakBeam;
 
     public enum RotationStates {
         DEFAULT,
@@ -47,8 +52,8 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.73;
-    public static double fullIntakeRotationOffset = 0.145;
+    public static double activatedRotationOffset = 0.76;
+    public static double fullIntakeRotationOffset = 0.14;
     public static double intakeRotationOffset = 0.20;
 
     public static double aMax = 3;
@@ -68,7 +73,11 @@ public class Intake implements Subsystem {
         rightRotationServo = hardwareMap.get(Servo.class, "rightRotationServo");
         intakeClawServo = hardwareMap.get(Servo.class, "intakeClaw");
 
+        breakBeam = hardwareMap.get(DigitalChannel.class, "intakeBreakBeam");
+
         this.t = telemetry;
+
+        breakBeam.setMode(DigitalChannel.Mode.INPUT);
     }
 
     @Override
@@ -92,13 +101,18 @@ public class Intake implements Subsystem {
 
 
         t.addData("Intake Servo Position: ", position);
+        t.addData("Break beam: ", breakBeam.getState());
         // t.addData("Timer: ", timer.seconds());
         // t.addData("Open?: ", this.currentGripperState);
         // t.addData("Rot: ", this.currentRotationState);
         // t.addData("offset: ", offset);
 
+
+        if (!breakBeam.getState() && currentGripperState == GripperStates.OPEN && clawTimer.seconds() > 0.5) {
+            this.setGripperState(GripperStates.CLOSED);
+        }
         // TODO: Sync with teleop
-        if (clawTimer.seconds() > 0.5 && currentGripperState == GripperStates.CLOSED && currentRotationState == RotationStates.FULL_DEFAULT && !waitingForAction) {
+        if (clawTimer.seconds() > 0.25 && currentGripperState == GripperStates.CLOSED && currentRotationState == RotationStates.FULL_DEFAULT && !waitingForAction) {
             this.incrementOffset(2);
             waitingForAction = true;
         }

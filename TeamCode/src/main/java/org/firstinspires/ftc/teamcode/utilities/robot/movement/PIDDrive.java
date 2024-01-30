@@ -30,7 +30,7 @@ public class PIDDrive {
     GeneralPIDController headingController = new GeneralPIDController(1.5, 0, 0, 0);
 
     public static double vMax = 52;
-    public static double aMax = 40;
+    public static double aMax = 45;
 
     public static double kA = 0.0015;
     public static double kV = 1/vMax;

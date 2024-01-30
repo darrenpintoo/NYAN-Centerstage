@@ -154,13 +154,6 @@ public class MainTeleop extends LinearOpMode {
                 }
             }
 
-            // Intake Offset
-            {
-                if (currentFrameGamepad1.y && !previousFrameGamepad1.y) {
-                    robot.intake.setOffset(5);
-                }
-            }
-
             // Manual Plane Launch Handler
             {
                 if (currentFrameGamepad2.a && !previousFrameGamepad2.a) {
@@ -236,6 +229,7 @@ public class MainTeleop extends LinearOpMode {
 
             if (currentFrameGamepad2.right_stick_button && previousFrameGamepad2.right_stick_button) {
                 robot.depositLift.reset();
+                robot.depositLift.setOffset(0);
             }
             robot.drivetrain.robotCentricDriveFromGamepad(
                     currentFrameGamepad1.left_stick_y,
