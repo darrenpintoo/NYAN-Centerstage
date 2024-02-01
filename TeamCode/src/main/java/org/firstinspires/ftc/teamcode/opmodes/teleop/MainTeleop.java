@@ -204,6 +204,10 @@ public class MainTeleop extends LinearOpMode {
                 }
             }
 
+            if (currentFrameGamepad2.b && !previousFrameGamepad2.b) {
+                robot.depositLift.flutterBox();
+            }
+
             if (currentFrameGamepad1.dpad_up && !previousFrameGamepad1.dpad_up) {
                 robot.intake.setOffset(2);
             }

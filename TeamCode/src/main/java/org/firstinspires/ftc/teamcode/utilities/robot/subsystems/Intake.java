@@ -24,6 +24,8 @@ public class Intake implements Subsystem {
 
     DigitalChannel breakBeam;
 
+    DigitalChannel centerProximity;
+
     public enum RotationStates {
         DEFAULT,
         FULL_DEFAULT,
@@ -74,10 +76,12 @@ public class Intake implements Subsystem {
         intakeClawServo = hardwareMap.get(Servo.class, "intakeClaw");
 
         breakBeam = hardwareMap.get(DigitalChannel.class, "intakeBreakBeam");
+        centerProximity = hardwareMap.get(DigitalChannel.class, "intakeCenterProximity");
 
         this.t = telemetry;
 
         breakBeam.setMode(DigitalChannel.Mode.INPUT);
+        centerProximity.setMode(DigitalChannel.Mode.INPUT);
     }
 
     @Override
@@ -102,6 +106,7 @@ public class Intake implements Subsystem {
 
         t.addData("Intake Servo Position: ", position);
         t.addData("Break beam: ", breakBeam.getState());
+        t.addData("Proximity: ", centerProximity.getState());
         // t.addData("Timer: ", timer.seconds());
         // t.addData("Open?: ", this.currentGripperState);
         // t.addData("Rot: ", this.currentRotationState);
@@ -126,7 +131,7 @@ public class Intake implements Subsystem {
             }
         }
 
-        if (clawTimer.seconds() > 0.5 && currentRotationState == RotationStates.ROTATED && currentGripperState != GripperStates.CLOSED) {
+        if (clawTimer.seconds() > 0.3 && currentRotationState == RotationStates.ROTATED && currentGripperState != GripperStates.CLOSED) {
             this.setRotationState(RotationStates.DEFAULT);
         }
         if (this.currentRotationState == RotationStates.DEFAULT && (timer.seconds() > this.profile.getDuration())) {

@@ -36,6 +36,7 @@ public class DepositLift implements Subsystem{
         DEFAULT,
         TILTED
     }
+
     double power;
 
     public DcMotorEx backLiftMotor;
@@ -71,10 +72,13 @@ public class DepositLift implements Subsystem{
 
     public ElapsedTime timer = new ElapsedTime();
     private boolean override = false;
+    private boolean flutter = false;
+    private ElapsedTime flutterTimer = new ElapsedTime();
     public int offset = 0;
     public static int offsetLength = 100;
 
     public static int position = 900;
+    public static double flutterTime = 0.15;
 
     private ElapsedTime boxCloseTimer = new ElapsedTime();
     private ElapsedTime frameTime = new ElapsedTime();
@@ -182,7 +186,13 @@ public class DepositLift implements Subsystem{
         this.previousTargetState = currentTargetState;
         this.override = false;
         this.liftMotors.setPower(power);
+        if (flutter && flutterTimer.seconds() > flutterTime) {
+            this.setBoxState(BoxStates.CLOSED);
+            flutter = false;
+        }
+
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
+
         power = 0;
     }
 
@@ -223,11 +233,19 @@ public class DepositLift implements Subsystem{
         if (this.boxState == state) { return; }
         this.boxState = state;
         boxCloseTimer.reset();
+        flutter = false;
+        flutterTimer.reset();
     }
 
     public void setTiltState(TiltStates state) {
         this.tiltState = state;
         this.override = true;
+    }
+
+    public void flutterBox() {
+        this.setBoxState(BoxStates.OPEN);
+        flutter = true;
+        flutterTimer.reset();
     }
     public void setTargetState(LiftStates state) {
 
