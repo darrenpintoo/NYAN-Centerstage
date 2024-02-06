@@ -86,6 +86,8 @@ public class MainTeleop extends LinearOpMode {
         robot.planeLauncher.setLiftState(PlaneLauncher.AirplaneLiftStates.DOWN);
         robot.update();
 
+        robot.intake.enableTeleop();
+
         ElapsedTime e = new ElapsedTime();
 
         while(opModeIsActive()) {

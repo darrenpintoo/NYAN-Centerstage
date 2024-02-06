@@ -25,6 +25,9 @@ public class Intake implements Subsystem {
     DigitalChannel breakBeam;
 
     DigitalChannel centerProximity;
+    DigitalChannel leftProximity;
+    DigitalChannel rightProximity;
+
 
     public enum RotationStates {
         DEFAULT,
@@ -55,7 +58,7 @@ public class Intake implements Subsystem {
     // public static double placingPosition = 0.76;
 
     public static double activatedRotationOffset = 0.76;
-    public static double fullIntakeRotationOffset = 0.14;
+    public static double fullIntakeRotationOffset = 0.135;
     public static double intakeRotationOffset = 0.20;
 
     public static double aMax = 3;
@@ -67,6 +70,7 @@ public class Intake implements Subsystem {
     private ElapsedTime clawTimer = new ElapsedTime();
     boolean waitingForAction = false;
 
+    boolean inTeleop = false;
 
 
     @Override
@@ -77,11 +81,17 @@ public class Intake implements Subsystem {
 
         breakBeam = hardwareMap.get(DigitalChannel.class, "intakeBreakBeam");
         centerProximity = hardwareMap.get(DigitalChannel.class, "intakeCenterProximity");
+        leftProximity = hardwareMap.get(DigitalChannel.class, "intakeLeftProximity");
+        rightProximity = hardwareMap.get(DigitalChannel.class, "intakeRightProximity");
+
 
         this.t = telemetry;
 
         breakBeam.setMode(DigitalChannel.Mode.INPUT);
         centerProximity.setMode(DigitalChannel.Mode.INPUT);
+        leftProximity.setMode(DigitalChannel.Mode.INPUT);
+        rightProximity.setMode(DigitalChannel.Mode.INPUT);
+
     }
 
     @Override
@@ -106,7 +116,9 @@ public class Intake implements Subsystem {
 
         t.addData("Intake Servo Position: ", position);
         t.addData("Break beam: ", breakBeam.getState());
-        t.addData("Proximity: ", centerProximity.getState());
+        t.addData("Proximity c: ", centerProximity.getState());
+        t.addData("Proximity r: ", rightProximity.getState());
+        t.addData("Proximity l: ", leftProximity.getState());
         // t.addData("Timer: ", timer.seconds());
         // t.addData("Open?: ", this.currentGripperState);
         // t.addData("Rot: ", this.currentRotationState);
@@ -114,6 +126,10 @@ public class Intake implements Subsystem {
 
 
         if (!breakBeam.getState() && currentGripperState == GripperStates.OPEN && clawTimer.seconds() > 0.5) {
+            this.setGripperState(GripperStates.CLOSED);
+        }
+
+        if (inTeleop && !centerProximity.getState() && offset > 0 && currentGripperState == GripperStates.OPEN) {
             this.setGripperState(GripperStates.CLOSED);
         }
         // TODO: Sync with teleop
@@ -235,5 +251,26 @@ public class Intake implements Subsystem {
 
         this.rebuildProfile();
     }
+
+    public boolean getLeftProximity() {
+        return !leftProximity.getState();
+    }
+
+    public boolean getRightProximity() {
+        return !rightProximity.getState();
+    }
+
+    public boolean getCenterProximity() {
+        return !centerProximity.getState();
+    }
+
+    public void enableTeleop() {
+        this.inTeleop = true;
+    }
+
+    public void disableTeleop()  {
+        this.inTeleop = false;
+    }
+
 
 }

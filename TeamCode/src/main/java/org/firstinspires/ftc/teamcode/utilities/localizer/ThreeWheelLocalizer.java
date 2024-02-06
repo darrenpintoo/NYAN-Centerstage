@@ -35,7 +35,7 @@ public class ThreeWheelLocalizer {
     private Pose pose = new Pose(0, 0, 0);
     private Pose velocity = new Pose(0, 0, 0);
 
-    public static double trackWidth = -8.2;
+    public static double trackWidth = -7.98;
     public static double fowardOffset = 2.3;
 
 
