@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.utilities.robot.movement.MotionProf
 import androidx.core.math.MathUtils;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -38,9 +39,12 @@ public class PIDDrive {
     RobotEx robot;
 
     Telemetry telemetry;
-    public PIDDrive(RobotEx robot, Telemetry t) {
+    LinearOpMode opmode;
+
+    public PIDDrive(RobotEx robot, LinearOpMode opmode, Telemetry t) {
         this.robot = robot;
         this.telemetry = t;
+        this.opmode = opmode;
     }
     public static Pose threshold = new Pose(1, 1, 0.05);
     public static double thresholdTime = 0.25;
@@ -69,7 +73,7 @@ public class PIDDrive {
         ElapsedTime inPositionTime = new ElapsedTime();
         ElapsedTime profileTime = new ElapsedTime();
 
-        while (true) {
+        while (!this.opmode.isStopRequested()) {
 
             currentPose = robot.localizer.getPose();
             double targetDisplacement = motion.getPositionFromTime(profileTime.time());

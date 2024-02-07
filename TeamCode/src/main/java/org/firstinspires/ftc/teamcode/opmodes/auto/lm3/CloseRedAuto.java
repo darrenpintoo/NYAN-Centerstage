@@ -93,7 +93,7 @@ public class CloseRedAuto extends LinearOpMode {
         if (isStopRequested()) return;
         robot.postInit();
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        PIDDrive drive = new PIDDrive(robot, telemetry);
+        PIDDrive drive = new PIDDrive(robot, this, telemetry);
         OneWheelOdometryDrive time = new OneWheelOdometryDrive(this, telemetry);
 
         visionPortal = new VisionPortal.Builder()

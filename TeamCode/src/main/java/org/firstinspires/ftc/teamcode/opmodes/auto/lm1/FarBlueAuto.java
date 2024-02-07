@@ -19,7 +19,6 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Disabled
-@Autonomous(name="Far Blue Auto")
 public class FarBlueAuto extends LinearOpMode {
 
 

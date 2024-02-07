@@ -47,8 +47,8 @@ public class Intake implements Subsystem {
     public static double closeClawPosition = 0.63;
     // public static double num = 0;
 
-    private int offset = 0;
-    public static double offsetLength = 0.0175;
+    private double offset = 0;
+    public static double offsetLength = 0.025;
 
     public RotationStates currentRotationState = RotationStates.DEFAULT;
     public GripperStates currentGripperState = GripperStates.OPEN;
@@ -132,6 +132,7 @@ public class Intake implements Subsystem {
         if (inTeleop && !centerProximity.getState() && offset > 0 && currentGripperState == GripperStates.OPEN) {
             this.setGripperState(GripperStates.CLOSED);
         }
+
         // TODO: Sync with teleop
         if (clawTimer.seconds() > 0.25 && currentGripperState == GripperStates.CLOSED && currentRotationState == RotationStates.FULL_DEFAULT && !waitingForAction) {
             this.incrementOffset(2);
@@ -245,7 +246,7 @@ public class Intake implements Subsystem {
 
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(double offset) {
         if (this.offset == offset) { return;}
         this.offset = offset;
 
