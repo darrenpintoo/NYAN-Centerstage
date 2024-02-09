@@ -126,21 +126,27 @@ public class FarBlueAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(-30, 15, Math.PI/2));
                 robot.intake.reset();
                 drive.gotoPoint(new Pose(-40, 15, Math.PI/2));
-                drive.gotoPoint(new Pose(-55,15,0));
+                drive.gotoPoint(new Pose(-40, 15, 0));
+                robot.pause(1);
+                drive.gotoPoint(new Pose(-57,15,0));
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(-55,19, Math.PI));
                 drive.gotoPoint(new Pose(-28, 11, Math.PI));
                 robot.intake.reset();
                 drive.gotoPoint(new Pose(-28, 19, Math.PI));
-                drive.gotoPoint(new Pose(-55,19,0));
+                drive.gotoPoint(new Pose(-28, 19, 0));
+                robot.pause(1);
+                drive.gotoPoint(new Pose(-57,19,0));
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-55, 25, Math.PI/2));
                 drive.gotoPoint(new Pose(-40, 25, Math.PI/2));
                 robot.intake.reset();
                 drive.gotoPoint(new Pose(-45, 15, Math.PI/2));
-                drive.gotoPoint(new Pose(-55,15,0));
+                drive.gotoPoint(new Pose(-45, 15, 0));
+                robot.pause(1);
+                drive.gotoPoint(new Pose(-57,15,0));
                 break;
         }
         drive.gotoPoint(new Pose(-57,-70,0));
@@ -153,10 +159,10 @@ public class FarBlueAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(-37, -65, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(-30, -65, 0));
+                drive.gotoPoint(new Pose(-31, -65, 0));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-23, -65, 0));
+                drive.gotoPoint(new Pose(-27, -65, 0));
                 break;
         }
 

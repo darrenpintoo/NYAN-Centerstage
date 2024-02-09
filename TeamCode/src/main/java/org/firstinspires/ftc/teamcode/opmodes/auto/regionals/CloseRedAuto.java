@@ -236,17 +236,23 @@ public class CloseRedAuto extends LinearOpMode {
 
         if (!backstage) {
             robot.intake.setGripperState(Intake.GripperStates.OPEN);
-            drive.gotoPoint(new Pose(32, -44, 0));
-            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-            drive.gotoPoint(new Pose(32, -53, 0));
+            if (placementPosition == PlacementPosition.CENTER) {
+                drive.gotoPoint(new Pose(27, -44, 0));
+                robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
+                drive.gotoPoint(new Pose(27, -53, 0));
+            } else {
+                drive.gotoPoint(new Pose(32, -44, 0));
+                robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
+                drive.gotoPoint(new Pose(32, -53, 0));
+            }
             wok.reset();
             while (wok.seconds() < 0.5) {
                 robot.drivetrain.robotCentricDriveFromGamepad(0.1, 0, 0);
                 robot.update();
             }
-            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-            robot.pause(0.25);
             robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
+            robot.pause(0.5);
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
             robot.pause(0.5);
             drive.gotoPoint(new Pose(32, -45, 0));
             robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
