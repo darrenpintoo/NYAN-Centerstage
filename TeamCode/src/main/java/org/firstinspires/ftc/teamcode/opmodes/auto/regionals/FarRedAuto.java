@@ -23,14 +23,15 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueFar;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineRedFar;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Far Blue Auto")
-public class FarBlueAuto extends LinearOpMode {
+@Autonomous(name = "Far Red Auto")
+public class FarRedAuto extends LinearOpMode {
 
 
     PropDetectionBlueFar propDetectionRed;
@@ -45,7 +46,7 @@ public class FarBlueAuto extends LinearOpMode {
 
 
     private VisionPortal visionPortal2;
-    private PropDetectionPipelineBlueFar propDetector;
+    private PropDetectionPipelineRedFar propDetector;
 
     @Override
     public void runOpMode() {
@@ -68,7 +69,7 @@ public class FarBlueAuto extends LinearOpMode {
 
 
 
-        propDetector = new PropDetectionPipelineBlueFar();
+        propDetector = new PropDetectionPipelineRedFar();
 
         visionPortal2 = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -107,7 +108,7 @@ public class FarBlueAuto extends LinearOpMode {
 
         ElapsedTime wok = new ElapsedTime();
 
-        robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
+        robot.localizer.setPose(new Pose(59, 15, -Math.PI/2), true);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
 
@@ -123,40 +124,40 @@ public class FarBlueAuto extends LinearOpMode {
 
         switch (placementPosition) {
             case CENTER:
-                drive.gotoPoint(new Pose(-30, 15, Math.PI/2));
+                drive.gotoPoint(new Pose(30, 15, -Math.PI/2));
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(-40, 15, Math.PI/2));
-                drive.gotoPoint(new Pose(-55,15,0));
-                break;
-            case LEFT:
-                drive.gotoPoint(new Pose(-55,19, Math.PI));
-                drive.gotoPoint(new Pose(-28, 11, Math.PI));
-                robot.intake.reset();
-                drive.gotoPoint(new Pose(-28, 19, Math.PI));
-                drive.gotoPoint(new Pose(-55,19,0));
+                drive.gotoPoint(new Pose(40, 15, -Math.PI/2));
+                drive.gotoPoint(new Pose(55,15,0));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-55, 25, Math.PI/2));
-                drive.gotoPoint(new Pose(-40, 25, Math.PI/2));
+                drive.gotoPoint(new Pose(55,19, -Math.PI));
+                drive.gotoPoint(new Pose(28, 11, -Math.PI));
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(-45, 15, Math.PI/2));
-                drive.gotoPoint(new Pose(-55,15,0));
+                drive.gotoPoint(new Pose(28, 19, -Math.PI));
+                drive.gotoPoint(new Pose(55,19,0));
+                break;
+            case LEFT:
+                drive.gotoPoint(new Pose(55, 23, -Math.PI/2));
+                drive.gotoPoint(new Pose(40, 23, -Math.PI/2));
+                robot.intake.reset();
+                drive.gotoPoint(new Pose(45, 15, -Math.PI/2));
+                drive.gotoPoint(new Pose(55,15,0));
                 break;
         }
-        drive.gotoPoint(new Pose(-57,-70,0));
-        drive.gotoPoint((new Pose(-57,-60,0)));
-        drive.gotoPoint((new Pose(-32,-60,0)));
+        drive.gotoPoint(new Pose(57,-70,0));
+        drive.gotoPoint((new Pose(57,-60,0)));
+        drive.gotoPoint((new Pose(32,-60,0)));
 
 
         switch (placementPosition) {
-            case LEFT:
-                drive.gotoPoint(new Pose(-37, -65, 0));
+            case RIGHT:
+                drive.gotoPoint(new Pose(41, -65, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(-30, -65, 0));
+                drive.gotoPoint(new Pose(34, -65, 0));
                 break;
-            case RIGHT:
-                drive.gotoPoint(new Pose(-23, -65, 0));
+            case LEFT:
+                drive.gotoPoint(new Pose(23, -65, 0));
                 break;
         }
 
@@ -165,14 +166,14 @@ public class FarBlueAuto extends LinearOpMode {
         robot.pause(0.25);
 
         switch (placementPosition) {
-            case LEFT:
-                drive.gotoPoint(new Pose(-33, -75, 0));
+            case RIGHT:
+                drive.gotoPoint(new Pose(41, -75, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(-28, -75, 0));
+                drive.gotoPoint(new Pose(34, -75, 0));
                 break;
-            case RIGHT:
-                drive.gotoPoint(new Pose(-23, -75, 0));
+            case LEFT:
+                drive.gotoPoint(new Pose(23, -75, 0));
                 break;
         }
         wok.reset();
@@ -184,7 +185,7 @@ public class FarBlueAuto extends LinearOpMode {
         robot.pause(0.1);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
         robot.pause(0.1);
-        drive.gotoPoint(new Pose(-15,-65,0));
+        drive.gotoPoint(new Pose(15,-65,0));
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
 
         // drive.gotoPoint(new Pose(-34, 36, 0));

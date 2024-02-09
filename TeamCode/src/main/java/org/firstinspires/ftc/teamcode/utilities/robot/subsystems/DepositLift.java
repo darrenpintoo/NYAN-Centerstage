@@ -23,6 +23,7 @@ public class DepositLift implements Subsystem{
     public enum LiftStates {
         LEVEL0,
         LEVEL1,
+        LEVEL1_AUTO,
         LEVEL2,
         LEVEL3
     }
@@ -205,6 +206,9 @@ public class DepositLift implements Subsystem{
                 break;
             case LEVEL1:
                 pos = 430;
+                break;
+            case LEVEL1_AUTO:
+                pos = 500;
                 break;
             case LEVEL2:
                 pos = 700;

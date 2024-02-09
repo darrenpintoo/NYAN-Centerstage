@@ -75,11 +75,18 @@ public class CloseRedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .build();
 
+        boolean backstage = false;
+
         while (opModeInInit()) {
+
+            if (gamepad1.a && gamepad1.b) {
+                backstage = true;
+            }
             telemetry.addLine("ready");
             telemetry.addData("position", propDetector.getPlacementPosition());
             telemetry.addData("1: ", propDetector.getRedAmount1());
             telemetry.addData("2: ", propDetector.getRedAmount2());
+            telemetry.addData("Backstage: ", backstage);
             telemetry.update();
         }
 
@@ -153,19 +160,19 @@ public class CloseRedAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(30, -11, 0)); //right path
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(10, -25, 0));
+                drive.gotoPoint(new Pose(5, -25, 0));
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(21.5, -27, 0)); //right path
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(10, -30, 0));
+                drive.gotoPoint(new Pose(5, -30, 0));
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(22, -32, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(10, -36, 0));
+                drive.gotoPoint(new Pose(5, -36, 0));
                 break;
         }
 
@@ -179,41 +186,41 @@ public class CloseRedAuto extends LinearOpMode {
 
 
 
-        drive.gotoPoint(new Pose(9,56,0));
+        drive.gotoPoint(new Pose(7,56,0));
         PIDDrive.aMax = 35;
         PIDDrive.vMax = 50;
-        drive.gotoPoint(new Pose(9,60,0));
+        drive.gotoPoint(new Pose(7,60,0));
 
 
 
 
-        if (robot.intake.getLeftProximity()) {
-            drive.gotoPoint(new Pose(7.5, 60, 0));
-            drive.gotoPoint(new Pose(7.5, 53, 0));
+        if (robot.intake.getRightProximity()) {
+            drive.gotoPoint(new Pose(6, 60, 0));
+            drive.gotoPoint(new Pose(6, 53, 0));
             robot.intake.reset();
             robot.pause(1.25);
             robot.intake.reset();
             robot.pause(0.5);
             robot.intake.setOffset(2);
-            drive.gotoPoint(new Pose(7.5, 60, 0));
+            drive.gotoPoint(new Pose(6, 60, 0));
 
-        } else if (robot.intake.getRightProximity()) {
-            drive.gotoPoint(new Pose(10.5, 60, 0));
-            drive.gotoPoint(new Pose(10.5, 53, 0));
+        } else if (robot.intake.getLeftProximity()) {
+            drive.gotoPoint(new Pose(9, 60, 0));
+            drive.gotoPoint(new Pose(9, 53, 0));
             robot.intake.reset();
             robot.pause(1.25);
             robot.intake.reset();
             robot.pause(0.5);
             robot.intake.setOffset(2);
-            drive.gotoPoint(new Pose(10.5, 60, 0));
+            drive.gotoPoint(new Pose(9, 60, 0));
         } else {
-            drive.gotoPoint(new Pose(9,53,0));
+            drive.gotoPoint(new Pose(7,53,0));
             robot.intake.reset();
             robot.pause(1.25);
             robot.intake.reset();
             robot.pause(0.5);
             robot.intake.setOffset(2);
-            drive.gotoPoint(new Pose(9,60,0));
+            drive.gotoPoint(new Pose(7,60,0));
         }
 
 
@@ -225,23 +232,32 @@ public class CloseRedAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.15);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(8,-36,0));
-        robot.intake.setGripperState(Intake.GripperStates.OPEN);
-        drive.gotoPoint(new Pose(32,-44,0));
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-        drive.gotoPoint(new Pose(32, -53, 0));
-        wok.reset();
-        while (wok.seconds() < 0.5) {
-            robot.drivetrain.robotCentricDriveFromGamepad(0.15, 0, 0);
-            robot.update();
+        drive.gotoPoint(new Pose(6,-36,0));
+
+        if (!backstage) {
+            robot.intake.setGripperState(Intake.GripperStates.OPEN);
+            drive.gotoPoint(new Pose(32, -44, 0));
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+            drive.gotoPoint(new Pose(32, -53, 0));
+            wok.reset();
+            while (wok.seconds() < 0.5) {
+                robot.drivetrain.robotCentricDriveFromGamepad(0.1, 0, 0);
+                robot.update();
+            }
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+            robot.pause(0.25);
+            robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
+            robot.pause(0.5);
+            drive.gotoPoint(new Pose(32, -45, 0));
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+            drive.gotoPoint(new Pose(13, -45, 0));
+        } else {
+            drive.gotoPoint(new Pose(8,-62, 0));
+            robot.intake.reset();
+            robot.pause(1);
+            robot.intake.reset();
+
         }
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-        robot.pause(0.25);
-        robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
-        robot.pause(0.5);
-        drive.gotoPoint(new Pose(32, -45, 0));
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-        drive.gotoPoint(new Pose(13, -45, 0));
 
 
 
