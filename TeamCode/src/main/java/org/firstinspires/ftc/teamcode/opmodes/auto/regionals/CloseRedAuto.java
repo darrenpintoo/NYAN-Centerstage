@@ -239,11 +239,11 @@ public class CloseRedAuto extends LinearOpMode {
             if (placementPosition == PlacementPosition.CENTER) {
                 drive.gotoPoint(new Pose(27, -44, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-                drive.gotoPoint(new Pose(27, -53, 0));
+                drive.gotoPoint(new Pose(27, -50, 0));
             } else {
                 drive.gotoPoint(new Pose(32, -44, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-                drive.gotoPoint(new Pose(32, -53, 0));
+                drive.gotoPoint(new Pose(32, -50, 0));
             }
             wok.reset();
             while (wok.seconds() < 0.5) {

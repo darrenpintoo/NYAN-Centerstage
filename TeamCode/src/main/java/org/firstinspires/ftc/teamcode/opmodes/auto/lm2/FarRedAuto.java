@@ -5,8 +5,10 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.checkerframework.checker.interning.qual.InternedDistinct;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -26,6 +28,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.List;
 
 @Autonomous(name="Far Red")
+@Disabled
 public class FarRedAuto extends LinearOpMode {
 
 

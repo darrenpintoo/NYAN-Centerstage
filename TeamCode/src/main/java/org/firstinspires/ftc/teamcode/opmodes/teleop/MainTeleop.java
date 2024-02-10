@@ -91,7 +91,7 @@ public class MainTeleop extends LinearOpMode {
 
         ElapsedTime e = new ElapsedTime();
 
-        // robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
+        robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
 
         while(opModeIsActive()) {
 

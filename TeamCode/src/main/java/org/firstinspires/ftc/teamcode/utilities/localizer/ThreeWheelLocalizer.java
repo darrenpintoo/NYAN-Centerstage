@@ -98,11 +98,16 @@ public class ThreeWheelLocalizer {
 
 
 
+        imu.onCyclePassed();
+        pose.setHeading(imu.getCurrentFrameHeadingCW());
+        /*
         if (IMUUpdateTimer.seconds() > 0.25) {
             imu.onCyclePassed();
             pose.setHeading(imu.getCurrentFrameHeadingCW());
             IMUUpdateTimer.reset();
         }
+
+         */
 
 
         this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);

@@ -66,7 +66,7 @@ public class DepositLift implements Subsystem{
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.47;
     public static double rightServoDefaultPosition = 0.53;
-    public static double tiltAmount = 0.26;
+    public static double tiltAmount = 0.28;
     //
     public static double boxOpenPosition = 0.6;
     public static double boxClosedPosition = 1;
@@ -119,6 +119,8 @@ public class DepositLift implements Subsystem{
         this.backLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.frontLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
+
+        this.setTargetState(LiftStates.LEVEL0);
 
     }
 

@@ -5,6 +5,7 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -26,6 +27,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.List;
 
 @Autonomous(name="Far Blue")
+@Disabled
 public class FarBlueAuto extends LinearOpMode {
 
 

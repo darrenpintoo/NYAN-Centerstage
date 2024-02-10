@@ -196,10 +196,14 @@ public class Drivetrain implements Subsystem {
         leftBackPower *= this.weight;
         leftFrontPower *= this.weight;
 
-        this.rightBackMotor.setPower(rightBackPower);
-        this.rightFrontMotor.setPower(rightFrontPower);
-        this.leftBackMotor.setPower(leftBackPower);
-        this.leftFrontMotor.setPower(leftFrontPower);
+        if (lastLeftBackPower == 0 && lastLeftFrontPower == 0 && lastRightBackPower == 0 && lastRightFrontPower == 0 && leftBackPower == 0 && leftFrontPower == 0 && rightBackPower == 0 && rightFrontPower == 0) {
+
+        } else {
+            this.rightBackMotor.setPower(rightBackPower);
+            this.rightFrontMotor.setPower(rightFrontPower);
+            this.leftBackMotor.setPower(leftBackPower);
+            this.leftFrontMotor.setPower(leftFrontPower);
+        }
 
 
         this.lastRightBackPower = this.rightBackPower;

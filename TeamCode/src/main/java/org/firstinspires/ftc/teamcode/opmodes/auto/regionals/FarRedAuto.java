@@ -171,15 +171,36 @@ public class FarRedAuto extends LinearOpMode {
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
         robot.pause(0.25);
 
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        double xCorrection = 0;
+
         switch (placementPosition) {
             case RIGHT:
-                drive.gotoPoint(new Pose(39, -75, 0));
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.id == 6) {
+                        xCorrection = detection.ftcPose.x;
+                        break;
+                    }
+                }
+                drive.gotoPoint(new Pose(37 + xCorrection, -75, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(34, -75, 0));
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.id == 5) {
+                        xCorrection = detection.ftcPose.x;
+                        break;
+                    }
+                }
+                drive.gotoPoint(new Pose(31 + xCorrection, -75, 0));
                 break;
             case LEFT:
-                drive.gotoPoint(new Pose(25, -75, 0));
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.id == 4) {
+                        xCorrection = detection.ftcPose.x;
+                        break;
+                    }
+                }
+                drive.gotoPoint(new Pose(27 + xCorrection, -75, 0));
                 break;
         }
         wok.reset();

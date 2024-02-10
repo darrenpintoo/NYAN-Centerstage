@@ -238,7 +238,7 @@ public class CloseBlueAuto extends LinearOpMode {
             robot.intake.setGripperState(Intake.GripperStates.OPEN);
             drive.gotoPoint(new Pose(-32, -44, 0));
             robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-            drive.gotoPoint(new Pose(-32, -53, 0));
+            drive.gotoPoint(new Pose(-32, -50, 0));
             wok.reset();
             while (wok.seconds() < 0.5) {
                 robot.drivetrain.robotCentricDriveFromGamepad(0.15, 0, 0);
@@ -247,6 +247,7 @@ public class CloseBlueAuto extends LinearOpMode {
             robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
             robot.pause(0.25);
             robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+            robot.pause(1);
             drive.gotoPoint(new Pose(-32, -45, 0));
             robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
             drive.gotoPoint(new Pose(-13, -45, 0));

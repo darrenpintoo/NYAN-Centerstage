@@ -170,15 +170,37 @@ public class FarBlueAuto extends LinearOpMode {
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
         robot.pause(0.25);
 
+
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        double xCorrection = 0;
+
         switch (placementPosition) {
             case LEFT:
-                drive.gotoPoint(new Pose(-33, -75, 0));
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.id == 1) {
+                        xCorrection = detection.ftcPose.x;
+                        break;
+                    }
+                }
+                drive.gotoPoint(new Pose(-37 + xCorrection, -75, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(-28, -75, 0));
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.id == 2) {
+                        xCorrection = detection.ftcPose.x;
+                        break;
+                    }
+                }
+                drive.gotoPoint(new Pose(-31 +xCorrection, -75, 0));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-23, -75, 0));
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.id == 3) {
+                        xCorrection = detection.ftcPose.x;
+                        break;
+                    }
+                }
+                drive.gotoPoint(new Pose(-27 + xCorrection, -75, 0));
                 break;
         }
         wok.reset();
