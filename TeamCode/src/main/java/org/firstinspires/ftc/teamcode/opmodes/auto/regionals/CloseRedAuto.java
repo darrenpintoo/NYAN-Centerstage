@@ -29,7 +29,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Close Red Auto")
+@Disabled
 public class CloseRedAuto extends LinearOpMode {
 
 
@@ -187,8 +187,8 @@ public class CloseRedAuto extends LinearOpMode {
 
 
         drive.gotoPoint(new Pose(7,56,0));
-        PIDDrive.aMax = 35;
-        PIDDrive.vMax = 50;
+        PIDDrive.aMax = 15;
+        PIDDrive.vMax = 30;
         drive.gotoPoint(new Pose(7,60,0));
 
 
@@ -203,7 +203,6 @@ public class CloseRedAuto extends LinearOpMode {
             robot.pause(0.5);
             robot.intake.setOffset(2);
             drive.gotoPoint(new Pose(6, 60, 0));
-
         } else if (robot.intake.getLeftProximity()) {
             drive.gotoPoint(new Pose(9, 60, 0));
             drive.gotoPoint(new Pose(9, 53, 0));

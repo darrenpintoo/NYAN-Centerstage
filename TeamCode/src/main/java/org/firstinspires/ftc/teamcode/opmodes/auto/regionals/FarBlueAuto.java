@@ -29,7 +29,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Far Blue Auto")
+@Disabled
 public class FarBlueAuto extends LinearOpMode {
 
 

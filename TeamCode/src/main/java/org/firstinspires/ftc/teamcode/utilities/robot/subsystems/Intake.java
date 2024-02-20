@@ -125,13 +125,15 @@ public class Intake implements Subsystem {
         // t.addData("offset: ", offset);
 
 
-        if (!breakBeam.getState() && currentGripperState == GripperStates.OPEN && clawTimer.seconds() > 0.5) {
+        if (!breakBeam.getState() && currentGripperState == GripperStates.OPEN && clawTimer.seconds() > 0.5 && offset == 0) {
             this.setGripperState(GripperStates.CLOSED);
         }
 
+        /*
         if (inTeleop && !centerProximity.getState() && offset > 0 && currentGripperState == GripperStates.OPEN) {
             this.setGripperState(GripperStates.CLOSED);
         }
+         */
 
         // TODO: Sync with teleop
         if (clawTimer.seconds() > 0.25 && currentGripperState == GripperStates.CLOSED && currentRotationState == RotationStates.FULL_DEFAULT && !waitingForAction) {

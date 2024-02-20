@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -54,6 +55,9 @@ public class DepositLift implements Subsystem{
     private LiftStates previousTargetState = LiftStates.LEVEL0;
     public BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
+
+    private DigitalChannel magneticLimitSwitch;
+
     public static double kP = 0.005;
     public static double kI = 0;
     public static double kD = 0.001;
@@ -64,9 +68,9 @@ public class DepositLift implements Subsystem{
     public static double aMax = 3000;
     // public static int targetPosition;
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
-    public static double leftServoDefaultPosition = 0.47;
-    public static double rightServoDefaultPosition = 0.53;
-    public static double tiltAmount = 0.28;
+    public static double leftServoDefaultPosition = 0.54;
+    public static double rightServoDefaultPosition = 0.46;
+    public static double tiltAmount = 0.26;
     //
     public static double boxOpenPosition = 0.6;
     public static double boxClosedPosition = 1;
@@ -101,6 +105,7 @@ public class DepositLift implements Subsystem{
         this.liftMotors = new MotorGroup<>(backLiftMotor, frontLiftMotor);
 
         this.boxServo = hardwareMap.get(Servo.class, "BoxOpenServo");
+        this.magneticLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftSwitch");
 
         t = telemetry;
     }
@@ -121,6 +126,8 @@ public class DepositLift implements Subsystem{
 
 
         this.setTargetState(LiftStates.LEVEL0);
+
+        this.magneticLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
     }
 
@@ -150,7 +157,12 @@ public class DepositLift implements Subsystem{
 
 
         if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0) {
+
             power /= 2;
+
+            if (this.magneticLimitSwitch.getState()) {
+                power = -0.1;
+            }
         }
 
         /*
@@ -196,6 +208,7 @@ public class DepositLift implements Subsystem{
 
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
 
+        t.addData("IsDown?: ", magneticLimitSwitch.getState());
         power = 0;
     }
 
@@ -207,7 +220,7 @@ public class DepositLift implements Subsystem{
                 pos = -10;
                 break;
             case LEVEL1:
-                pos = 430;
+                pos = 470;
                 break;
             case LEVEL1_AUTO:
                 pos = 500;

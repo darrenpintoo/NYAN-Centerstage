@@ -98,9 +98,9 @@ public class RobotEx {
         internalIMU.onInit(hardwareMap, telemetry);
 
         this.localizer = new ThreeWheelLocalizer(
-                new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 0
-                new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 3
-                new BaseEncoder(this.drivetrain.leftFrontMotor, -1), // 2
+                new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
+                new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 3
+                new BaseEncoder(this.drivetrain.leftFrontMotor,  1), // 2 // Changed sign
                 internalIMU,
                 telemetry
         );
@@ -223,6 +223,5 @@ public class RobotEx {
 
     public void destroy() {
         RobotEx.robotInstance = null;
-        internalIMU.destroy();
     }
 }

@@ -179,40 +179,40 @@ public class CloseBlueAuto extends LinearOpMode {
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
         // robot.intake.setOffset(3);
 
-        double a = DriveConstants.MAX_ACCELERATION;
-        double v = DriveConstants.MAX_VELOCITY;
+        double a = PIDDrive.aMax;
+        double v = PIDDrive.vMax;
         // PIDDrive.aMax = 35;
         // PIDDrive.vMax = 50;
 
 
 
-        drive.gotoPoint(new Pose(-9,56,0));
-        PIDDrive.aMax = 35;
-        PIDDrive.vMax = 50;
-        drive.gotoPoint(new Pose(-9,60,0));
+        drive.gotoPoint(new Pose(-9,57,0));
+        PIDDrive.aMax = 15;
+        PIDDrive.vMax = 30;
+        drive.gotoPoint(new Pose(-9,61,0));
 
 
 
 
         if (robot.intake.getLeftProximity()) {
-            drive.gotoPoint(new Pose(-7.5, 60, 0));
+            drive.gotoPoint(new Pose(-7.5, 61, 0));
             drive.gotoPoint(new Pose(-7.5, 53, 0));
             robot.intake.reset();
             robot.pause(1.25);
             robot.intake.reset();
             robot.pause(0.5);
             robot.intake.setOffset(2);
-            drive.gotoPoint(new Pose(-7.5, 60, 0));
+            drive.gotoPoint(new Pose(-7.5, 61, 0));
 
         } else if (robot.intake.getRightProximity()) {
-            drive.gotoPoint(new Pose(-10.5, 60, 0));
+            drive.gotoPoint(new Pose(-10.5, 61, 0));
             drive.gotoPoint(new Pose(-10.5, 53, 0));
             robot.intake.reset();
             robot.pause(1.25);
             robot.intake.reset();
             robot.pause(0.5);
             robot.intake.setOffset(2);
-            drive.gotoPoint(new Pose(-10.5, 60, 0));
+            drive.gotoPoint(new Pose(-10.5, 61, 0));
         } else {
             drive.gotoPoint(new Pose(-9,53,0));
             robot.intake.reset();
@@ -220,7 +220,7 @@ public class CloseBlueAuto extends LinearOpMode {
             robot.intake.reset();
             robot.pause(0.5);
             robot.intake.setOffset(2);
-            drive.gotoPoint(new Pose(-9,60,0));
+            drive.gotoPoint(new Pose(-9,61,0));
         }
 
 
@@ -241,7 +241,7 @@ public class CloseBlueAuto extends LinearOpMode {
             drive.gotoPoint(new Pose(-32, -50, 0));
             wok.reset();
             while (wok.seconds() < 0.5) {
-                robot.drivetrain.robotCentricDriveFromGamepad(0.15, 0, 0);
+                robot.drivetrain.robotCentricDriveFromGamepad(0.3, 0, 0);
                 robot.update();
             }
             robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);

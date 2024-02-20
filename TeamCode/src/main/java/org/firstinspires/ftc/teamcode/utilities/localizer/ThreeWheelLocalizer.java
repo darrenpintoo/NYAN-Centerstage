@@ -35,8 +35,8 @@ public class ThreeWheelLocalizer {
     private Pose pose = new Pose(0, 0, 0);
     private Pose velocity = new Pose(0, 0, 0);
 
-    public static double trackWidth = -7.98;
-    public static double fowardOffset = 2.3;
+    public static double trackWidth = -7.1;
+    public static double fowardOffset = 2.9;
 
 
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
@@ -98,16 +98,21 @@ public class ThreeWheelLocalizer {
 
 
 
-        imu.onCyclePassed();
-        pose.setHeading(imu.getCurrentFrameHeadingCW());
-        /*
+        // imu.onCyclePassed();
+        // pose.setHeading(imu.getCurrentFrameHeadingCW());
+
+
         if (IMUUpdateTimer.seconds() > 0.25) {
             imu.onCyclePassed();
             pose.setHeading(imu.getCurrentFrameHeadingCW());
             IMUUpdateTimer.reset();
         }
 
-         */
+
+
+
+
+
 
 
         this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);

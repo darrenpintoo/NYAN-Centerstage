@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
@@ -91,7 +92,9 @@ public class MainTeleop extends LinearOpMode {
 
         ElapsedTime e = new ElapsedTime();
 
-        robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
+        // robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
+
+        // robot.localizer.setPose(new Pose(-59, -15, Math.PI/2), true);
 
         while(opModeIsActive()) {
 
@@ -269,6 +272,7 @@ public class MainTeleop extends LinearOpMode {
             telemetry.addData("Frame Time: ", frameTime);
             telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
             telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
+            telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
         }
     }
 }
