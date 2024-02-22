@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.MotorGroup;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotorEX;
 
 public class ClimbLift implements Subsystem {
 
@@ -20,8 +21,8 @@ public class ClimbLift implements Subsystem {
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.leftLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftLiftMotor");
-        this.rightLiftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightLiftMotor");
+        this.leftLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftLiftMotor"), 0.005);
+        this.rightLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightLiftMotor"), 0.005);
     }
 
     @Override

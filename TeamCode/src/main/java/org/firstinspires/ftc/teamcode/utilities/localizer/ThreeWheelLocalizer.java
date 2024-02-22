@@ -35,7 +35,7 @@ public class ThreeWheelLocalizer {
     private Pose pose = new Pose(0, 0, 0);
     private Pose velocity = new Pose(0, 0, 0);
 
-    public static double trackWidth = -7.1;
+    public static double trackWidth = -7.05;
     public static double fowardOffset = 2.9;
 
 
@@ -85,8 +85,13 @@ public class ThreeWheelLocalizer {
         double deltaMiddle = (deltaLeftDistance + deltaRightDistance) / 2.0;
         double deltaPerpendicular = deltaBackDistance - fowardOffset * phi;
 
-        double deltaY = deltaMiddle * Math.cos(-pose.getHeading()) - deltaPerpendicular * Math.sin(-pose.getHeading());
-        double deltaX = -(deltaMiddle * Math.sin(-pose.getHeading()) + deltaPerpendicular * Math.cos(-pose.getHeading()));
+        double deltaPhi = phi = pose.getHeading();
+        // x = theta; y = dtheta
+
+        // double arcDeltaX = (Math.sin((phi + deltaPhi)) - Math.sin(phi)) / deltaPhi * delt;
+
+        double deltaX = deltaMiddle * Math.sin(pose.getHeading()) - deltaPerpendicular * Math.cos(pose.getHeading());
+        double deltaY = deltaMiddle * Math.cos(pose.getHeading()) + deltaPerpendicular * Math.sin(pose.getHeading());
 
         double newPositionX = pose.getX() + deltaX;
         double newPositionY = pose.getY() + deltaY;
@@ -102,11 +107,14 @@ public class ThreeWheelLocalizer {
         // pose.setHeading(imu.getCurrentFrameHeadingCW());
 
 
-        if (IMUUpdateTimer.seconds() > 0.25) {
+
+        if (IMUUpdateTimer.seconds() > 0.25 && velocity.getHeading() < 1) {
+            IMUUpdateTimer.reset();
             imu.onCyclePassed();
             pose.setHeading(imu.getCurrentFrameHeadingCW());
-            IMUUpdateTimer.reset();
         }
+
+
 
 
 

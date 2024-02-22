@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.MotorGroup;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.RobotOrientation;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.EncoderDrive;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotorEX;
 
 import java.util.ArrayList;
 
@@ -91,10 +92,10 @@ public class Drivetrain implements Subsystem {
         this.internalIMU = InternalIMU.getInstance();
         this.robotInstance = RobotEx.getInstance();
 
-                this.rightFrontMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightFrontMotor");
-        this.leftFrontMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftFrontMotor");
-        this.leftBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftBackMotor");
-        this.rightBackMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor");
+        this.rightFrontMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightFrontMotor"), 1e-9);
+        this.leftFrontMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftFrontMotor"), 1e-9);
+        this.leftBackMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftBackMotor"), 1e-9);
+        this.rightBackMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor"), 1e-9);
 
         // todo: figure out the directions
 

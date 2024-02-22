@@ -57,9 +57,9 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.76;
-    public static double fullIntakeRotationOffset = 0.135;
-    public static double intakeRotationOffset = 0.20;
+    public static double activatedRotationOffset = 0.8;
+    public static double fullIntakeRotationOffset = 0.185;
+    public static double intakeRotationOffset = 0.185;
 
     public static double aMax = 3;
     public static double vMax = 3;
