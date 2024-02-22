@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -66,6 +67,10 @@ public class RobotEx {
 
     public HardwareMap hardwareMap;
 
+    public LinearOpMode opMode;
+
+    public boolean stopRequested = false;
+
     private double voltageCompensator = 12;
     public Pose2d pose = new Pose2d(0, 0, 0);
 
@@ -83,14 +88,13 @@ public class RobotEx {
         return RobotEx.robotInstance;
     }
 
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void init(LinearOpMode opMode) {
 
+        this.hardwareMap = opMode.hardwareMap;
+        this.telemetry = opMode.telemetry;
 
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltageCompensator = this.voltageSensor.getVoltage();
-
-
-
 
         for (Subsystem subsystem : this.robotSubsystems) {
             subsystem.onInit(hardwareMap, telemetry);
@@ -108,12 +112,13 @@ public class RobotEx {
 
 
         telemetry.update();
-
-        this.telemetry = telemetry;
-        this.hardwareMap = hardwareMap;
     }
 
     public void postInit() {
+
+        stopRequested = opMode.isStopRequested();
+
+        if (stopRequested) return;
 
         this.allHubs = hardwareMap.getAll(LynxModule.class);
 
@@ -131,6 +136,12 @@ public class RobotEx {
     @SuppressLint("")
     public double update() {
 
+        stopRequested = opMode.isStopRequested();
+
+        if (stopRequested) return 0;
+
+        telemetry.addData("Run time: ", opMode.getRuntime());
+
         ElapsedTime log = new ElapsedTime();
 
         log.reset();
@@ -139,28 +150,27 @@ public class RobotEx {
             hub.clearBulkCache();
         }
 
-        // telemetry.addData("Clear Cache: ", log.seconds());
+        telemetry.addData("Clear Cache: ", log.milliseconds());
 
         int i = 0;
 
         log.reset();
-        for (Subsystem subsystem : this.robotSubsystems) {
+        for (Subsystem subsystem : robotSubsystems) {
             i++;
             subsystem.onCyclePassed();
-            // telemetry.addData("Loop times for " + i + "is: ", log.milliseconds());
+            telemetry.addData("Loop times for " + i + " is: ", log.milliseconds());
             log.reset();
         }
 
-        this.localizer.updatePose();
-        // telemetry.addData("Localizer: ", log.seconds());
+        localizer.updatePose();
+        telemetry.addData("Localizer: ", log.seconds());
 
 
 
 
-        telemetry.addData("Parallel Encoder 1 Ticks: ", this.drivetrain.rightBackMotor.getCurrentPosition());
-        telemetry.addData("Parallel Encoder 2 Ticks: ", this.drivetrain.leftBackMotor.getCurrentPosition());
-        telemetry.addData("Perpendicular Encoder 1 Ticks: ", this.drivetrain.leftFrontMotor.getCurrentPosition());
-
+        telemetry.addData("Parallel Encoder 1 Ticks: ", drivetrain.rightBackMotor.getCurrentPosition());
+        telemetry.addData("Parallel Encoder 2 Ticks: ", drivetrain.leftBackMotor.getCurrentPosition());
+        telemetry.addData("Perpendicular Encoder 1 Ticks: ", drivetrain.leftFrontMotor.getCurrentPosition());
 
 /*
         telemetry.addData("X: ", currentPose.getX());
@@ -191,8 +201,8 @@ public class RobotEx {
         ElapsedTime elapsedTime = new ElapsedTime();
         elapsedTime.reset();
 
-        while (elapsedTime.seconds() < seconds) {
-            this.update();
+        while (elapsedTime.seconds() < seconds && !stopRequested) {
+            update();
         }
     }
 
@@ -225,4 +235,5 @@ public class RobotEx {
     public void destroy() {
         RobotEx.robotInstance = null;
     }
+
 }

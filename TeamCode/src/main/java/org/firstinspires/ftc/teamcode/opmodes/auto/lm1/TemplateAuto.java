@@ -22,7 +22,7 @@ public class TemplateAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot.init(hardwareMap, telemetry);
+        robot.init(this);
 
         waitForStart();
 

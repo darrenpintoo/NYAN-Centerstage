@@ -41,9 +41,10 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetry.setMsTransmissionInterval(250);
+        telemetry.setMsTransmissionInterval(5);
         // Initialize the robot
-        robot.init(hardwareMap, telemetry);
+        robot.init(this);
+
 
         waitForStart();
 
@@ -96,7 +97,7 @@ public class MainTeleop extends LinearOpMode {
 
         // robot.localizer.setPose(new Pose(-59, -15, Math.PI/2), true);
 
-        while(opModeIsActive()) {
+        while (!robot.stopRequested) {
 
             e.reset();
             // Retain information about the previous frame's gamepad

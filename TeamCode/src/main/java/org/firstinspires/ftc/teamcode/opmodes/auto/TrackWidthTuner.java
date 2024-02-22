@@ -29,7 +29,7 @@ public class TrackWidthTuner extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.setMsTransmissionInterval(50);
         // Initialize the robot
-        robot.init(hardwareMap, telemetry);
+        robot.init(this);
 
         waitForStart();
 

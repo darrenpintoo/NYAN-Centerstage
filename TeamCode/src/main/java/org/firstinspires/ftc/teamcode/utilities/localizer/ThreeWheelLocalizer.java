@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Internal;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.BaseEncoder;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
@@ -37,6 +38,8 @@ public class ThreeWheelLocalizer {
 
     public static double trackWidth = -7.05;
     public static double fowardOffset = 2.9;
+
+    private double headingError = 0;
 
 
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
@@ -85,10 +88,30 @@ public class ThreeWheelLocalizer {
         double deltaMiddle = (deltaLeftDistance + deltaRightDistance) / 2.0;
         double deltaPerpendicular = deltaBackDistance - fowardOffset * phi;
 
-        double deltaPhi = phi = pose.getHeading();
         // x = theta; y = dtheta
 
         // double arcDeltaX = (Math.sin((phi + deltaPhi)) - Math.sin(phi)) / deltaPhi * delt;
+
+        double sineTerm, cosTerm;
+
+        if (MathHelper.epsilonEquals(phi, 0.0)) {
+            sineTerm = 1.0 - phi * phi / 6.0;
+            cosTerm = phi / 2.0;
+        } else {
+            sineTerm = Math.sin(phi) / phi;
+            cosTerm = (1 - Math.cos(phi)) / phi;
+        }
+
+        Pose twist = new Pose(
+                sineTerm * deltaMiddle - cosTerm * deltaPerpendicular,
+                cosTerm * deltaMiddle + sineTerm * deltaPerpendicular,
+                phi
+        );
+
+
+        double deltaXArc = twist.getX() * Math.sin(pose.getHeading()) - twist.getY() * Math.cos(pose.getHeading());
+        double deltaYArc = twist.getX() * Math.cos(pose.getHeading()) + twist.getY() * Math.sin(pose.getHeading());
+
 
         double deltaX = deltaMiddle * Math.sin(pose.getHeading()) - deltaPerpendicular * Math.cos(pose.getHeading());
         double deltaY = deltaMiddle * Math.cos(pose.getHeading()) + deltaPerpendicular * Math.sin(pose.getHeading());
@@ -111,20 +134,15 @@ public class ThreeWheelLocalizer {
         if (IMUUpdateTimer.seconds() > 0.25 && velocity.getHeading() < 1) {
             IMUUpdateTimer.reset();
             imu.onCyclePassed();
-            pose.setHeading(imu.getCurrentFrameHeadingCW());
+
+            double externalHeading = imu.getCurrentFrameHeadingCW();
+            headingError = externalHeading - pose.getHeading();
+            pose.setHeading(externalHeading);
         }
 
-
-
-
-
-
-
-
-
-
-        this.telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
-        this.telemetry.addData("Velocity: ", velocity.getHeading());
+        telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
+        telemetry.addData("Velocity: ", velocity.getHeading());
+        telemetry.addData("Heading Error: ", headingError);
         /*
         this.telemetry.addData("Perp: ", deltaPerpendicular);
         this.telemetry.addData("Back Distance: ", deltaBackDistance);

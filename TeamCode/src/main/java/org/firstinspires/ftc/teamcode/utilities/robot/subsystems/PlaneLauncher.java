@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingServo;
 
 @Config
 public class PlaneLauncher implements Subsystem {
@@ -32,8 +33,8 @@ public class PlaneLauncher implements Subsystem {
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        droneAngleServo = hardwareMap.get(Servo.class, "DroneAngle");
-        droneLaunchServo = hardwareMap.get(Servo.class, "DroneLaunch");
+        droneAngleServo = new CachingServo(hardwareMap.get(Servo.class, "DroneAngle"), 1e-4);
+        droneLaunchServo = new CachingServo(hardwareMap.get(Servo.class, "DroneLaunch"), 1e-4);
     }
 
     @Override

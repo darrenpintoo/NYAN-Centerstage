@@ -2,6 +2,14 @@ package org.firstinspires.ftc.teamcode.utilities.math;
 
 public class MathHelper {
 
+    // Define a small epsilon value for precision comparison
+    private static final double EPSILON = 1e-10;
+
+    // Function to check if two doubles are approximately equal
+    public static boolean epsilonEquals(double a, double b) {
+        return Math.abs(a - b) < EPSILON;
+    }
+
     public static double getDegreesErrorFromCamera(double centerCoordinate, double frameSize, double focalLength) {
         return Math.atan2((centerCoordinate - (frameSize / 2)), focalLength);
     }

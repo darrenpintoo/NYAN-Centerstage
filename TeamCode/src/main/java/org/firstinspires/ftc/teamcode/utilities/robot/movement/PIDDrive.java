@@ -59,8 +59,10 @@ public class PIDDrive {
                 point.getHeading() - currentPose.getHeading()
         );
 
+        double displacement = Math.sqrt(error.getX() * error.getX() + error.getY() * error.getY());
+
         MotionProfile motion = new MotionProfile(
-                0, Math.sqrt(error.getX() * error.getX() + error.getY() * error.getY()), vMax, aMax
+                0, displacement, vMax, aMax
         );
 
         double angle = Math.atan2(error.getY(), error.getX());
@@ -68,7 +70,6 @@ public class PIDDrive {
 
 
         boolean inPosition = false;
-        double displacement = Math.sqrt(error.getX() * error.getX() + error.getY() * error.getY());
 
         ElapsedTime inPositionTime = new ElapsedTime();
         ElapsedTime profileTime = new ElapsedTime();
@@ -106,24 +107,6 @@ public class PIDDrive {
             telemetry.addData("Profile time: ", profileTime.seconds());
             telemetry.addData("Motion time: ", motion.getDuration());
 
-            /*
-            telemetry.addData("X: ", error.getX());
-            telemetry.addData("Y: ", error.getY());
-            telemetry.addData("Heading: ", error.getHeading());
-            telemetry.addData("Angle: ", angle);
-            telemetry.addData("X Target: ", xTarget);
-            telemetry.addData("X Current: ", currentPose.getX());
-            telemetry.addData("Y Target: ", yTarget);
-            telemetry.addData("Y Current: ", currentPose.getY());
-            telemetry.addData("Displacement: ", displacement);
-            telemetry.addData("sin: ", Math.sin(angle));
-            telemetry.addData("cos: ", Math.cos(angle));
-            telemetry.addData("x: ", Math.cos(angle) * targetDisplacement);
-            telemetry.addData("y: ", Math.sin(angle) * targetDisplacement);
-            telemetry.addData("sx: ", startPosition.getX());
-            telemetry.addData("sy: ", startPosition.getY());
-             */
-            telemetry.update();
             robot.update();
 
             if (Math.abs(error.getX()) < threshold.getX() & Math.abs(error.getY()) < threshold.getY() & Math.abs(error.getHeading()) < threshold.getHeading() && profileTime.time() > motion.getDuration()) {

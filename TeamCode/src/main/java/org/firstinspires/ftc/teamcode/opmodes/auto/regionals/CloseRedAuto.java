@@ -51,7 +51,7 @@ public class CloseRedAuto extends LinearOpMode {
     public void runOpMode() {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        robot.init(hardwareMap, telemetry);
+        robot.init(this);
 
 
 
