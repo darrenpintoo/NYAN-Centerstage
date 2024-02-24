@@ -8,7 +8,7 @@ INJECTED from C:\Users\NYAN Robotics\Documents\NYAN2023-2024\FtcRobotController\
 		ADDED from C:\Users\NYAN Robotics\Documents\NYAN2023-2024\FtcRobotController\src\main\AndroidManifest.xml:2:1-79:12
 		INJECTED from C:\Users\NYAN Robotics\Documents\NYAN2023-2024\FtcRobotController\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from C:\Users\NYAN Robotics\Documents\NYAN2023-2024\FtcRobotController\src\main\AndroidManifest.xml:5:11-38
+		ADDED from C:\Users\NYAN Robotics\Documents\NYAN2023-2024\FtcRobotController\src\main\AndroidManifest.xml:5:11-36
 	xmlns:tools
 		ADDED from C:\Users\NYAN Robotics\Documents\NYAN2023-2024\FtcRobotController\src\main\AndroidManifest.xml:3:11-57
 	xmlns:android

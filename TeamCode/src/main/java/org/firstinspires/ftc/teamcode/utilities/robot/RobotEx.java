@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
@@ -89,7 +90,7 @@ public class RobotEx {
     }
 
     public void init(LinearOpMode opMode) {
-
+        this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
 
@@ -131,6 +132,7 @@ public class RobotEx {
         }
 
         internalIMU.onOpmodeStarted();
+        internalIMU.stopAngularVelocityTracking();
     }
 
     @SuppressLint("")
@@ -140,8 +142,8 @@ public class RobotEx {
 
         if (stopRequested) return 0;
 
-        telemetry.addData("Run time: ", opMode.getRuntime());
-
+        telemetry.addData("Run time: ", MathHelper.truncate(opMode.getRuntime(), 3));
+        telemetry.addData("Logic Time: ", MathHelper.truncate(frameTimer.milliseconds(), 3));
         ElapsedTime log = new ElapsedTime();
 
         log.reset();
@@ -149,8 +151,10 @@ public class RobotEx {
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
+        localizer.updatePose();
 
-        telemetry.addData("Clear Cache: ", log.milliseconds());
+
+        // telemetry.addData("Clear Cache: ", log.milliseconds());
 
         int i = 0;
 
@@ -158,12 +162,11 @@ public class RobotEx {
         for (Subsystem subsystem : robotSubsystems) {
             i++;
             subsystem.onCyclePassed();
-            telemetry.addData("Loop times for " + i + " is: ", log.milliseconds());
+            // telemetry.addLine("Loop times for " + i + " is: " + log.milliseconds() + ": " + frameTimer.milliseconds());
             log.reset();
         }
 
-        localizer.updatePose();
-        telemetry.addData("Localizer: ", log.seconds());
+        // telemetry.addData("Localizer: ", log.milliseconds());
 
 
 

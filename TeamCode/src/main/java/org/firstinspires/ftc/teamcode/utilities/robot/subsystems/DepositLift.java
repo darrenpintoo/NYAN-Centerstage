@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.Mot
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.extensions.MotorGroup;
 import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingDcMotorEX;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingServo;
 
 //boxOpen = 0.3 closed = 0.1
 //left servo closed position = 0.55ish  open = 0.80 (better than the 0.85 that we had
@@ -100,9 +101,9 @@ public class DepositLift implements Subsystem{
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
         this.backLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "backDepositMotor"), 0.0025);
         this.frontLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "frontDepositMotor"), 0.0025);
-        this.leftServo = hardwareMap.get(Servo.class, "LeftBox");
-        this.rightServo = hardwareMap.get(Servo.class, "RightBox");
-        this.outtakeServo = hardwareMap.get(Servo.class, "BoxOpenServo");
+        this.leftServo = new CachingServo(hardwareMap.get(Servo.class, "LeftBox"), 1e-3);
+        this.rightServo = new CachingServo(hardwareMap.get(Servo.class, "RightBox"), 1e-3);
+        this.outtakeServo = new CachingServo(hardwareMap.get(Servo.class, "BoxOpenServo"), 1e-3);
 
         this.liftMotors = new MotorGroup<>(backLiftMotor, frontLiftMotor);
 

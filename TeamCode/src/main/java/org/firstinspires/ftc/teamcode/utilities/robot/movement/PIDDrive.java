@@ -74,7 +74,7 @@ public class PIDDrive {
         ElapsedTime inPositionTime = new ElapsedTime();
         ElapsedTime profileTime = new ElapsedTime();
 
-        while (!this.opmode.isStopRequested()) {
+        while (!robot.stopRequested) {
 
             currentPose = robot.localizer.getPose();
             double targetDisplacement = motion.getPositionFromTime(profileTime.time());

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.ftccommon.internal.manualcontrol.commands.DigitalCo
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.MotionProfile;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
+import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingServo;
 
 @Config
 public class Intake implements Subsystem {
@@ -48,7 +49,7 @@ public class Intake implements Subsystem {
     // public static double num = 0;
 
     private double offset = 0;
-    public static double offsetLength = 0.025;
+    public static double offsetLength = 0.0225;
 
     public RotationStates currentRotationState = RotationStates.DEFAULT;
     public GripperStates currentGripperState = GripperStates.OPEN;
@@ -75,9 +76,9 @@ public class Intake implements Subsystem {
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        leftRotationServo = hardwareMap.get(Servo.class, "leftRotationServo");
-        rightRotationServo = hardwareMap.get(Servo.class, "rightRotationServo");
-        intakeClawServo = hardwareMap.get(Servo.class, "intakeClaw");
+        leftRotationServo = new CachingServo(hardwareMap.get(Servo.class, "leftRotationServo"), 1e-3);
+        rightRotationServo = new CachingServo(hardwareMap.get(Servo.class, "rightRotationServo"), 1e-3);
+        intakeClawServo = new CachingServo(hardwareMap.get(Servo.class, "intakeClaw"), 1e-3);
 
         breakBeam = hardwareMap.get(DigitalChannel.class, "intakeBreakBeam");
         centerProximity = hardwareMap.get(DigitalChannel.class, "intakeCenterProximity");

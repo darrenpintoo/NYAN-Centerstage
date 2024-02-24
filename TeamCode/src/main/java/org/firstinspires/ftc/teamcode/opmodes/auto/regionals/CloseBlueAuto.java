@@ -75,6 +75,7 @@ public class CloseBlueAuto extends LinearOpMode {
                 .addProcessor(propDetector)
                 .enableLiveView(true)
                 .build();
+
         boolean backstage = false;
 
         while (opModeInInit()) {
@@ -95,7 +96,7 @@ public class CloseBlueAuto extends LinearOpMode {
 
         PlacementPosition placementPosition = propDetector.getPlacementPosition();
 
-        visionPortal2.close();
+        visionPortal2.stopStreaming();
         if (isStopRequested()) return;
 
         robot.postInit();
@@ -107,6 +108,7 @@ public class CloseBlueAuto extends LinearOpMode {
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
                 .setCameraResolution(new Size(1280, 720))
                 .addProcessor(aprilTag)
+                .enableLiveView(false)
                 .build();
 
 
@@ -126,7 +128,7 @@ public class CloseBlueAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(-32, -40, Math.PI/2));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-27, -40, Math.PI/2));
+                drive.gotoPoint(new Pose(-26, -40, Math.PI/2));
                 break;
         }
 
@@ -142,7 +144,7 @@ public class CloseBlueAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(-32, -50, 0));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-27, -50, 0));
+                drive.gotoPoint(new Pose(-26, -50, 0));
                 break;
         }
         wok.reset();
@@ -176,20 +178,22 @@ public class CloseBlueAuto extends LinearOpMode {
                 break;
         }
 
-        robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        // robot.intake.setOffset(3);
+        robot.intake.setOffset(3);
 
         double a = PIDDrive.aMax;
         double v = PIDDrive.vMax;
-        // PIDDrive.aMax = 35;
-        // PIDDrive.vMax = 50;
+        PIDDrive.aMax = 30;
+        PIDDrive.vMax = 40;
 
 
 
-        drive.gotoPoint(new Pose(-9,57,0));
+        drive.gotoPoint(new Pose(-10,57,0));
         PIDDrive.aMax = 15;
         PIDDrive.vMax = 30;
-        drive.gotoPoint(new Pose(-9,61,0));
+        drive.gotoPoint(new Pose(-10,60,0));
+        robot.intake.setOffset(2);
+
+        /*
 
 
 
@@ -224,11 +228,13 @@ public class CloseBlueAuto extends LinearOpMode {
         }
 
 
+         */
+
         PIDDrive.aMax = a;
         PIDDrive.vMax = v;
         // robot.intake.setOffset(1.5);
         // robot.intake.setOffset(3);
-        robot.pause(0.1);
+        robot.pause(0.8);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.15);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
