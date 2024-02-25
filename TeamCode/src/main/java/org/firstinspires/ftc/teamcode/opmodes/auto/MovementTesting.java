@@ -114,33 +114,54 @@ public class MovementTesting extends LinearOpMode {
 
         ElapsedTime wok = new ElapsedTime();
 
-        robot.localizer.setPose(new Pose(0, 0, 0), true);
+        robot.localizer.setPose(new Pose(0, 0, Math.PI / 2), true);
 
-        /*
+        drive.gotoPoint(new Pose(10, -10, Math.PI / 2));
+        drive.turnToAngle(0);
         for (int i = 0; i < 3; i++) {
-            drive.gotoPoint(new Pose(0, 20, 0));
-            drive.gotoPoint(new Pose(10, 20, 0));
-            drive.gotoPoint(new Pose(0, 10, 0));
-            drive.gotoPoint(new Pose(0, 3, 0));
+            drive.gotoPoint(new Pose(15, -20, 0));
+            drive.gotoPoint(new Pose(20, -15, 0));
+            drive.gotoPoint(new Pose(15, -10, 0));
+            drive.gotoPoint(new Pose(10, -13, 0));
         }
 
-         */
+        drive.gotoPoint(new Pose(10, -10, 0));
+        drive.turnToAngle(Math.toRadians(90));
 
-        drive.gotoPoint(new Pose(0, 20, 0));
+        drive.gotoPoint(new Pose(6, 0, Math.PI / 2));
 
-        for (int i = 0; i < 3; i++) {
+
+        // drive.gotoPoint(new Pose(0, 10, 0));
+        // drive.turnToAngle(Math.toRadians(90));
+        // drive.gotoPoint(new Pose(0, 10, Math.toRadians(90)));
+        // drive.turnToAngle(Math.toRadians(-90));
+        // drive.gotoPoint(new Pose(0, 10, Math.toRadians(-90)));
+        // drive.turnToAngle(Math.toRadians(0));
+        // drive.gotoPoint(new Pose(0, 10, 0));
+        // drive.gotoPoint(new Pose(0, 2, 0));
+
+        /*
+        for (int i = 0; i < 4; i++) {
             // drive.gotoPoint(new Pose(15, 20, 0));
             // drive.gotoPoint(new Pose(0, 20, 0));
 
 
 
-            drive.gotoPoint(new Pose(10, 20, 0));
+            drive.gotoPoint(new Pose(10, 10, 0));
             drive.gotoPoint(new Pose(0, 10, 0));
-            drive.gotoPoint(new Pose(0, 3, 0));
+
+            // drive.gotoPoint(new Pose(0, 10, 0));
+            // drive.gotoPoint(new Pose(0, 3, 0));
         }
 
-
-        drive.gotoPoint(new Pose(0, 3, 0));
+         */
+        // drive.gotoPoint(new Pose(15, 25, 0));
+        // drive.gotoPoint(new Pose(5, 15, 0));
+        // drive.gotoPoint(new Pose(5, 20, 0));
+        // drive.turnToAngle(Math.toRadians(90));
+        // drive.gotoPoint(new Pose(5, 5, 0));
+        // drive.turnToAngle(Math.toRadians(0));
+        // drive.gotoPoint(new Pose(0, 3, 0));
 
 
 

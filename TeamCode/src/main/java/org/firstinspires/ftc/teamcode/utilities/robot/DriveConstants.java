@@ -21,6 +21,8 @@ public class DriveConstants {
 
     public static final double INCHES_PER_REVOLUTION = 2 * WHEEL_SIZE * Math.PI;
     public static final double TICKS_PER_INCH = 1 / (2 * WHEEL_SIZE * Math.PI) * DriveConstants.INCHES_PER_REVOLUTION;
+    public static final double CONVERSION_CONSTANT = (1 / DriveConstants.TICKS_PER_REVOLUTION) * DriveConstants.WHEEL_SIZE * 2 * Math.PI;
+
 
     public static double getEncoderTicksFromInches(double inches) {
         return (inches / DriveConstants.INCHES_PER_REVOLUTION) * DriveConstants.WHEEL_TICKS;
@@ -44,7 +46,7 @@ public class DriveConstants {
     public static double MAX_VELOCITY = 55; // If doing 1
     public static double MAX_ACCELERATION = 35;
 
-    public static double MAX_ANGULAR_VELOCITY = Math.toRadians(360);
+    public static double MAX_ANGULAR_VELOCITY = Math.toRadians(180);
     public static double trackWidth = 14;
 
     public static ParkPositions parkPosition = ParkPositions.RIGHT;

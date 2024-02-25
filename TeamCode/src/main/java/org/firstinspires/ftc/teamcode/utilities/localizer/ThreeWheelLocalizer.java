@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.utilities.localizer;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Internal;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;

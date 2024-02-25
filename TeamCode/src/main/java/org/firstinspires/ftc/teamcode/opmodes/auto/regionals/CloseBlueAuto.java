@@ -28,7 +28,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Close Blue Auto")
+@Disabled
 public class CloseBlueAuto extends LinearOpMode {
 
 

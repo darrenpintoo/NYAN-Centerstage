@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.AngleHelper;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.feedback.GeneralPIDController;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
@@ -35,7 +36,7 @@ public class Drivetrain implements Subsystem {
 
     private RobotEx robotInstance;
     private InternalIMU internalIMU;
-    private ThreeWheelLocalizer localizer;
+    private TwoWheelLocalizer localizer;
 
     MotorGroup<DcMotorEx> drivetrainMotorGroup;
     private DcMotorEx[] drivetrainMotors;

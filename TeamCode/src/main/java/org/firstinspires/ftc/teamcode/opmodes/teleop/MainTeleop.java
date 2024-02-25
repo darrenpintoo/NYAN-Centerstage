@@ -4,7 +4,6 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -42,7 +41,7 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetry.setMsTransmissionInterval(100);
+        telemetry.setMsTransmissionInterval(500);
         // Initialize the robot
         robot.init(this);
 
@@ -116,7 +115,7 @@ public class MainTeleop extends LinearOpMode {
                     robot.depositLift.driveLiftFromGamepad(
                             -currentFrameGamepad2.left_trigger
                     );
-                } else {
+                } else if (currentFrameGamepad2.right_trigger > 0){
                     robot.depositLift.driveLiftFromGamepad(
                             currentFrameGamepad2.right_trigger
                     );
@@ -129,7 +128,7 @@ public class MainTeleop extends LinearOpMode {
                     robot.climbLift.setLiftPower(
                             -currentFrameGamepad1.left_trigger
                     );
-                } else {
+                } else if (currentFrameGamepad1.right_trigger > 0){
                     robot.climbLift.setLiftPower(
                             currentFrameGamepad1.right_trigger
                     );
@@ -237,14 +236,11 @@ public class MainTeleop extends LinearOpMode {
                 }
             }
 
-            if (currentFrameGamepad1.y) {
-                robot.pose = new Pose2d(0, 0, 0);
-            }
-
             if (currentFrameGamepad2.right_stick_button && previousFrameGamepad2.right_stick_button) {
                 robot.depositLift.reset();
                 robot.depositLift.setOffset(0);
             }
+
             robot.drivetrain.robotCentricDriveFromGamepad(
                     currentFrameGamepad1.left_stick_y,
                     currentFrameGamepad1.left_stick_x,
@@ -270,8 +266,9 @@ public class MainTeleop extends LinearOpMode {
             }
 
              */
+
             double frameTime = robot.update();
-            telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
+            // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
             // telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
             // telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
             // telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));

@@ -4,11 +4,7 @@ import android.annotation.SuppressLint;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
-import com.acmerobotics.roadrunner.Vector2d;
+
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -19,6 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizerRoadrunner;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
@@ -64,16 +62,20 @@ public class RobotEx {
 
     Telemetry telemetry;
 
-    public ThreeWheelLocalizer localizer;
+    public TwoWheelLocalizer localizer;
+    public TwoWheelLocalizerRoadrunner localizerRoadrunner;
 
     public HardwareMap hardwareMap;
 
     public LinearOpMode opMode;
 
     public boolean stopRequested = false;
+    public double runTime = 0;
 
     private double voltageCompensator = 12;
-    public Pose2d pose = new Pose2d(0, 0, 0);
+    private double frames = 0;
+    private double currentFrames = 0;
+    private double lastTime = 0;
 
     private RobotEx() {
         if (RobotEx.robotInstance != null) {
@@ -103,6 +105,7 @@ public class RobotEx {
 
         internalIMU.onInit(hardwareMap, telemetry);
 
+        /*
         this.localizer = new ThreeWheelLocalizer(
                 new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
                 new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 3
@@ -111,6 +114,21 @@ public class RobotEx {
                 telemetry
         );
 
+         */
+        this.localizer = new TwoWheelLocalizer(
+                new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
+                new BaseEncoder(this.drivetrain.leftFrontMotor,  1), // 2 // Changed sign
+                internalIMU,
+                telemetry
+        );
+
+        /*
+        this.localizerRoadrunner = new TwoWheelLocalizerRoadrunner(
+                hardwareMap, internalIMU
+        );
+
+
+         */
 
         telemetry.update();
     }
@@ -142,34 +160,51 @@ public class RobotEx {
 
         if (stopRequested) return 0;
 
-        telemetry.addData("Run time: ", MathHelper.truncate(opMode.getRuntime(), 3));
-        telemetry.addData("Logic Time: ", MathHelper.truncate(frameTimer.milliseconds(), 3));
-        ElapsedTime log = new ElapsedTime();
+        runTime = opMode.getRuntime();
 
-        log.reset();
+        if (Math.floor(runTime) != lastTime) {
+            frames = currentFrames;
+            currentFrames = 0;
+            lastTime = Math.floor(runTime);
+        }
+
+        currentFrames += 1;
+
+        telemetry.addLine("Refresh Rate: " + frames + " hz");
+        telemetry.addData("Run time: ", runTime);
+        // ElapsedTime log = new ElapsedTime();
+
+        // log.reset();
 
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
+        // telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
+        // log.reset();
         localizer.updatePose();
+        // localizerRoadrunner.update();
 
+        // telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
 
-        // telemetry.addData("Clear Cache: ", log.milliseconds());
+        // int i = 0;
 
-        int i = 0;
-
-        log.reset();
+        // log.reset();
         for (Subsystem subsystem : robotSubsystems) {
-            i++;
+            // i++;
             subsystem.onCyclePassed();
-            // telemetry.addLine("Loop times for " + i + " is: " + log.milliseconds() + ": " + frameTimer.milliseconds());
-            log.reset();
+            // telemetry.addLine("Loop times for " + i + " is: " + MathHelper.truncate(log.milliseconds(), 3) + ": " + MathHelper.truncate(frameTimer.milliseconds(), 3));
+            // log.reset();
         }
 
         // telemetry.addData("Localizer: ", log.milliseconds());
 
 
 
+
+        // telemetry.addData("X: ", localizerRoadrunner.getPoseEstimate().getX());
+        // telemetry.addData("Y: ", localizerRoadrunner.getPoseEstimate().getY());
+
+        // telemetry.addData("Heading: ", localizerRoadrunner.getPoseEstimate().getHeading());
 
         telemetry.addData("Parallel Encoder 1 Ticks: ", drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", drivetrain.leftBackMotor.getCurrentPosition());

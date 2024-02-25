@@ -97,6 +97,11 @@ public class DepositLift implements Subsystem{
     );
     private Telemetry t;
 
+    int startPosition = 0;
+
+    private ElapsedTime onTimer;
+    private boolean lastSwitchState = true;
+    private boolean onLastTime = false;
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
         this.backLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "backDepositMotor"), 0.0025);
@@ -110,6 +115,7 @@ public class DepositLift implements Subsystem{
         this.boxServo = hardwareMap.get(Servo.class, "BoxOpenServo");
         this.magneticLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftSwitch");
 
+        this.onTimer = new ElapsedTime();
         t = telemetry;
     }
 
@@ -149,17 +155,23 @@ public class DepositLift implements Subsystem{
 
         // t.addData("Deposit -1: ", frameTime.milliseconds());
 
-        if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0) {
+        if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0 && this.offset == 0) {
 
             power /= 2;
 
-            if (this.magneticLimitSwitch.getState() && power == 0) {
-                power = -0.5;
+            if (this.magneticLimitSwitch.getState() && power == 0 && this.profile.timer.seconds() - this.profile.feedforwardProfile.getDuration() < 0.5) {
+                power = -0.4;
             }
         }
 
+        if (!this.magneticLimitSwitch.getState()) {
+            startPosition = frontLiftMotor.getCurrentPosition();
+        }
+
+        this.lastSwitchState = magneticLimitSwitch.getState();
+
         if (power == 0) {
-            int a = this.frontLiftMotor.getCurrentPosition();
+            int a = this.frontLiftMotor.getCurrentPosition() - startPosition;
             // t.addData("Deposit 0: ", frameTime.milliseconds());
 
             power = profile.getOutput(a);
@@ -214,6 +226,7 @@ public class DepositLift implements Subsystem{
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
 
         t.addData("IsDown?: ", magneticLimitSwitch.getState());
+        t.addData("Slides Position: ", frontLiftMotor.getCurrentPosition());
         power = 0;
     }
 
@@ -278,7 +291,7 @@ public class DepositLift implements Subsystem{
         }
         this.previousTargetState = this.currentTargetState;
         this.currentTargetState = state;
-
+        this.offset = 0;
         this.regenerateProfile();
 
     }

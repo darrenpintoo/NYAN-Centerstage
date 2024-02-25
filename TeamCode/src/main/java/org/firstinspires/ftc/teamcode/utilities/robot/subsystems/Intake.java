@@ -60,7 +60,7 @@ public class Intake implements Subsystem {
 
     public static double activatedRotationOffset = 0.8;
     public static double fullIntakeRotationOffset = 0.185;
-    public static double intakeRotationOffset = 0.185;
+    public static double intakeRotationOffset = 0.25;
 
     public static double aMax = 3;
     public static double vMax = 3;
@@ -115,9 +115,9 @@ public class Intake implements Subsystem {
         this.rightRotationServo.setPosition(position);
 
 
-        t.addData("Intake Servo Position: ", position);
+        // t.addData("Intake Servo Position: ", position);
         t.addData("Break beam: ", breakBeam.getState());
-        t.addData("Proximity c: ", centerProximity.getState());
+        // t.addData("Proximity c: ", centerProximity.getState());
         t.addData("Proximity r: ", rightProximity.getState());
         t.addData("Proximity l: ", leftProximity.getState());
         // t.addData("Timer: ", timer.seconds());
