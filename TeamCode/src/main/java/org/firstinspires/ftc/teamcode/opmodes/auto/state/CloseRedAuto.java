@@ -26,8 +26,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Close Blue Auto")
-public class CloseBlueAuto extends LinearOpMode {
+@Autonomous(name = "Close Red Auto")
+public class CloseRedAuto extends LinearOpMode {
 
 
     PropDetectionBlueFar propDetectionRed;
@@ -81,7 +81,9 @@ public class CloseBlueAuto extends LinearOpMode {
 
             if (gamepad1.a && gamepad1.b) {
                 backstage = true;
-            } else if (gamepad1.x && gamepad1.y) {
+            }
+
+            if (gamepad1.y && gamepad1.x) {
                 preload = true;
             }
             telemetry.addLine("ready");
@@ -90,7 +92,6 @@ public class CloseBlueAuto extends LinearOpMode {
             telemetry.addData("2: ", propDetector.getRedAmount2());
             telemetry.addData("Backstage: ", backstage);
             telemetry.addData("Preload: ", preload);
-
             telemetry.update();
         }
 
@@ -122,37 +123,36 @@ public class CloseBlueAuto extends LinearOpMode {
 
         // robot.pause(1);
         robot.intake.setRotationState(Intake.RotationStates.FULL_DEFAULT);
-        robot.localizer.setPose(new Pose(-59, -15, Math.PI/2), true);
+        robot.localizer.setPose(new Pose(59, -15, -Math.PI/2), true);
         switch (placementPosition) {
-            case LEFT:
-                drive.gotoPoint(new Pose(-37, -40, Math.PI/2));
+            case RIGHT:
+                drive.gotoPoint(new Pose(37, -40, -Math.PI/2));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(-32, -40, Math.PI/2));
+                drive.gotoPoint(new Pose(32, -40, -Math.PI/2));
                 break;
-            case RIGHT:
-                drive.gotoPoint(new Pose(-26, -40, Math.PI/2));
+            case LEFT:
+                drive.gotoPoint(new Pose(24, -40, -Math.PI/2));
                 break;
         }
 
         drive.turnToAngle(0);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-        // robot.pause(3);
 
-        double xOffset = 7.5;
+        double xOffset = 2;
+        double yOffset = -6.5;
 
         switch (placementPosition) {
-            case LEFT:
-                drive.gotoPoint(new Pose(-37 + xOffset, -50, 0));
+            case RIGHT:
+                drive.gotoPoint(new Pose(37 + xOffset, -50 + yOffset, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(-32 + xOffset, -50, 0));
+                drive.gotoPoint(new Pose(32 + xOffset, -50 + yOffset, 0));
                 break;
-            case RIGHT:
-                drive.gotoPoint(new Pose(-26 + xOffset, -50, 0));
+            case LEFT:
+                drive.gotoPoint(new Pose(24 + xOffset, -50 + yOffset, 0));
                 break;
         }
-        // robot.pause(5);
 
 
         wok.reset();
@@ -171,46 +171,46 @@ public class CloseBlueAuto extends LinearOpMode {
 
         if (!preload) {
             switch (placementPosition) {
-                case RIGHT:
-                    drive.gotoPoint(new Pose(-30 + xOffset, -11, 0)); //right path
+                case LEFT:
+                    drive.gotoPoint(new Pose(30 + xOffset, -11 + yOffset, 0)); //right path
                     robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                     robot.intake.reset();
-                    drive.gotoPoint(new Pose(-10 + xOffset, -25, 0));
+                    drive.gotoPoint(new Pose(3 + xOffset, -25 + yOffset, 0));
                     break;
                 case CENTER:
-                    drive.gotoPoint(new Pose(-21.5 + xOffset, -27, 0)); //right path
+                    drive.gotoPoint(new Pose(19 + xOffset, -27 + yOffset, 0)); //right path
                     robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                     robot.intake.reset();
-                    drive.gotoPoint(new Pose(-10 + xOffset, -30, 0));
+                    drive.gotoPoint(new Pose(3 + xOffset, -30 + yOffset, 0));
                     break;
-                case LEFT:
-                    drive.gotoPoint(new Pose(-22 + xOffset, -32, 0));
+                case RIGHT:
+                    drive.gotoPoint(new Pose(22 + xOffset, -32 + yOffset, 0));
                     robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                     robot.intake.reset();
-                    drive.gotoPoint(new Pose(-10 + xOffset, -36, 0));
+                    drive.gotoPoint(new Pose(3 + xOffset, -36 + yOffset, 0));
                     break;
             }
 
             robot.intake.setOffset(3);
 
 
-            drive.gotoPoint(new Pose(-9 + xOffset, 57, 0));
+            drive.gotoPoint(new Pose(6 + xOffset, 57 + yOffset, 0));
             PIDDrive.aMax = 15;
             PIDDrive.vMax = 30;
-            drive.gotoPoint(new Pose(-9 + xOffset, 60, 0));
+            drive.gotoPoint(new Pose(6 + xOffset, 60 + yOffset, 0));
             robot.intake.setOffset(2);
 
 
-            if (robot.intake.getLeftProximity()) {
-                robot.localizer.setPose(new Pose(-11 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            if (robot.intake.getRightProximity()) {
+                robot.localizer.setPose(new Pose(8 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
 
-            } else if (robot.intake.getRightProximity()) {
-                robot.localizer.setPose(new Pose(-7 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            } else if (robot.intake.getLeftProximity()) {
+                robot.localizer.setPose(new Pose(4 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
             }
 
-            drive.gotoPoint(new Pose(-9 + xOffset, 60, 0));
+            drive.gotoPoint(new Pose(6 + xOffset, 60 + yOffset, 0));
 
             PIDDrive.aMax = a;
             PIDDrive.vMax = v;
@@ -220,13 +220,13 @@ public class CloseBlueAuto extends LinearOpMode {
             robot.intake.setGripperState(Intake.GripperStates.CLOSED);
             robot.pause(0.15);
             robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-            drive.gotoPoint(new Pose(-9 + xOffset, -36, 0));
+            drive.gotoPoint(new Pose(5 + xOffset, -36 + yOffset, 0));
 
             if (!backstage) {
                 robot.intake.setGripperState(Intake.GripperStates.OPEN);
-                drive.gotoPoint(new Pose(-30 + xOffset, -44, 0));
+                drive.gotoPoint(new Pose(30 + xOffset, -44 + yOffset, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-                drive.gotoPoint(new Pose(-30 + xOffset, -50, 0));
+                drive.gotoPoint(new Pose(30 + xOffset, -50 + yOffset, 0));
                 wok.reset();
                 while (wok.seconds() < 0.5) {
                     robot.drivetrain.robotCentricDriveFromGamepad(0.3, 0, 0);
@@ -236,12 +236,12 @@ public class CloseBlueAuto extends LinearOpMode {
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
                 robot.pause(1);
-                drive.gotoPoint(new Pose(-30 + xOffset, -45, 0));
+                drive.gotoPoint(new Pose(30 + xOffset, -45 + yOffset, 0));
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-                drive.gotoPoint(new Pose(-13 + xOffset, -45, 0));
+                drive.gotoPoint(new Pose(13 + xOffset, -45 + yOffset, 0));
             } else {
-                drive.gotoPoint(new Pose(-10 + xOffset, -58, 0));
-                drive.turnToAngle(Math.PI);
+                drive.gotoPoint(new Pose(10 + xOffset, -58 + yOffset, 0));
+                drive.turnToAngle(-Math.PI);
                 robot.intake.reset();
                 robot.pause(1);
                 robot.intake.reset();
@@ -264,29 +264,27 @@ public class CloseBlueAuto extends LinearOpMode {
 
 
         } else {
-
             switch (placementPosition) {
-                case RIGHT:
-                    drive.gotoPoint(new Pose(-30 + xOffset, -11, 0)); //right path
+                case LEFT:
+                    drive.gotoPoint(new Pose(30 + xOffset, -11 + yOffset, 0)); //right path
                     robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                     robot.intake.reset();
                     break;
                 case CENTER:
-                    drive.gotoPoint(new Pose(-21.5 + xOffset, -27, 0)); //right path
+                    drive.gotoPoint(new Pose(19 + xOffset, -27 + yOffset, 0)); //right path
                     robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                     robot.intake.reset();
                     break;
-                case LEFT:
-                    drive.gotoPoint(new Pose(-22 + xOffset, -32, 0));
+                case RIGHT:
+                    drive.gotoPoint(new Pose(22 + xOffset, -32 + yOffset, 0));
                     robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                     robot.intake.reset();
                     break;
             }
 
-            drive.gotoPoint(new Pose(-58 + xOffset, -50, 0)); //right path
+            drive.gotoPoint(new Pose(58 + xOffset, -50 + yOffset, 0)); //right path
 
         }
-
         visionPortal.close();
 
         while (!isStopRequested()) {
@@ -391,7 +389,7 @@ public class CloseBlueAuto extends LinearOpMode {
 
         for (AprilTagDetection detection : currentDetections) {
             if (detection.id == id) {
-                drive.strafeRight(robot.drivetrain.leftFrontMotor, -detection.ftcPose.x*3, Math.toRadians(90));
+                drive.strafeRight(robot.drivetrain.leftFrontMotor, -detection.ftcPose.x*3, -Math.toRadians(90));
                 break;
             }
         }

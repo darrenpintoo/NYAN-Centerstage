@@ -238,7 +238,7 @@ public class DepositLift implements Subsystem{
                 pos = -10;
                 break;
             case LEVEL1:
-                pos = 470;
+                pos = 430;
                 break;
             case LEVEL1_AUTO:
                 pos = 500;
