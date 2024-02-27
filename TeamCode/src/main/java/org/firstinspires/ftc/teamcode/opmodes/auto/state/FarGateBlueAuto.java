@@ -88,7 +88,7 @@ public class FarGateBlueAuto extends LinearOpMode {
         waitForStart();
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.LEFT;// propDetector.getPlacementPosition();
+        PlacementPosition placementPosition = PlacementPosition.RIGHT;// propDetector.getPlacementPosition();
 
         if (isStopRequested()) return;
 
@@ -156,7 +156,10 @@ public class FarGateBlueAuto extends LinearOpMode {
         robot.intake.setOffset(2.7);
         drive.gotoPoint(new Pose(-8.5 + xOffset, 37, 0));
         robot.pause(0.25);
-        if (robot.intake.getRightProximity()) {
+
+        if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
+
+        } else if (robot.intake.getRightProximity()) {
             robot.localizer.setPose(new Pose(-6.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             // drive.gotoPoint(new Pose(-10.5 + xOffset, 37, 0));
         } else if (robot.intake.getLeftProximity()) {
@@ -200,7 +203,7 @@ public class FarGateBlueAuto extends LinearOpMode {
         robot.pause(0.25);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
         robot.pause(0.5);
-        drive.gotoPoint(new Pose(-20 + xOffset, -65, 0));
+        drive.gotoPoint(new Pose(-20 + xOffset, -68, 0));
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
 
 

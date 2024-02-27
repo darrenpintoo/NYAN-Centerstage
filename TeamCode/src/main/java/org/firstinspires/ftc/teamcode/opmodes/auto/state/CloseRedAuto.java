@@ -201,12 +201,13 @@ public class CloseRedAuto extends LinearOpMode {
             robot.intake.setOffset(2);
 
 
+            // if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
             if (robot.intake.getRightProximity()) {
-                robot.localizer.setPose(new Pose(8 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+                robot.localizer.setPose(new Pose(7.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
 
             } else if (robot.intake.getLeftProximity()) {
-                robot.localizer.setPose(new Pose(4 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+                robot.localizer.setPose(new Pose(4.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
             }
 
@@ -220,7 +221,7 @@ public class CloseRedAuto extends LinearOpMode {
             robot.intake.setGripperState(Intake.GripperStates.CLOSED);
             robot.pause(0.15);
             robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-            drive.gotoPoint(new Pose(5 + xOffset, -36 + yOffset, 0));
+            drive.gotoPoint(new Pose(4 + xOffset, -36 + yOffset, 0));
 
             if (!backstage) {
                 robot.intake.setGripperState(Intake.GripperStates.OPEN);

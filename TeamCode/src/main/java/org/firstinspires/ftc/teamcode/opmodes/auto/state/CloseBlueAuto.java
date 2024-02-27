@@ -97,7 +97,7 @@ public class CloseBlueAuto extends LinearOpMode {
         waitForStart();
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.LEFT;// propDetector.getPlacementPosition();
+        PlacementPosition placementPosition = PlacementPosition.CENTER;// propDetector.getPlacementPosition();
 
         visionPortal2.stopStreaming();
         if (isStopRequested()) return;
@@ -197,20 +197,21 @@ public class CloseBlueAuto extends LinearOpMode {
             drive.gotoPoint(new Pose(-9 + xOffset, 57, 0));
             PIDDrive.aMax = 15;
             PIDDrive.vMax = 30;
-            drive.gotoPoint(new Pose(-9 + xOffset, 60, 0));
-            robot.intake.setOffset(2);
+            drive.gotoPoint(new Pose(-8 + xOffset, 60, 0));
+            robot.intake.setOffset(1.9);
 
+            if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
 
-            if (robot.intake.getLeftProximity()) {
-                robot.localizer.setPose(new Pose(-11 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            } else if (robot.intake.getLeftProximity()) {
+                robot.localizer.setPose(new Pose(-10 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
 
             } else if (robot.intake.getRightProximity()) {
-                robot.localizer.setPose(new Pose(-7 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+                robot.localizer.setPose(new Pose(-6 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
             }
 
-            drive.gotoPoint(new Pose(-9 + xOffset, 60, 0));
+            drive.gotoPoint(new Pose(-8 + xOffset, 60, 0));
 
             PIDDrive.aMax = a;
             PIDDrive.vMax = v;
@@ -220,7 +221,7 @@ public class CloseBlueAuto extends LinearOpMode {
             robot.intake.setGripperState(Intake.GripperStates.CLOSED);
             robot.pause(0.15);
             robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-            drive.gotoPoint(new Pose(-9 + xOffset, -36, 0));
+            drive.gotoPoint(new Pose(-6 + xOffset, -36, 0));
 
             if (!backstage) {
                 robot.intake.setGripperState(Intake.GripperStates.OPEN);
