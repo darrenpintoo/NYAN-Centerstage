@@ -91,7 +91,7 @@ public class FarGateBlueAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        visionPortal2.close();
+        visionPortal2.stopStreaming();
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
