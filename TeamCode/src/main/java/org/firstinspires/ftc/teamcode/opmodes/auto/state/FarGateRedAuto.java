@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueFar;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineRedFar;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -45,7 +46,7 @@ public class FarGateRedAuto extends LinearOpMode {
 
 
     private VisionPortal visionPortal2;
-    private PropDetectionPipelineBlueFar propDetector;
+    private PropDetectionPipelineRedFar propDetector;
 
     @Override
     public void runOpMode() {
@@ -68,7 +69,7 @@ public class FarGateRedAuto extends LinearOpMode {
 
 
 
-        propDetector = new PropDetectionPipelineBlueFar();
+        propDetector = new PropDetectionPipelineRedFar();
 
         visionPortal2 = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -88,7 +89,7 @@ public class FarGateRedAuto extends LinearOpMode {
         waitForStart();
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.CENTER;// propDetector.getPlacementPosition();
+        PlacementPosition placementPosition = propDetector.getPlacementPosition();
 
         if (isStopRequested()) return;
 
@@ -99,7 +100,7 @@ public class FarGateRedAuto extends LinearOpMode {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
-                .setCameraResolution(new Size(1280, 720))
+                .setCameraResolution(new Size(640, 480))
                 .addProcessor(aprilTag)
                 .enableLiveView(false)
                 .build();
@@ -138,6 +139,7 @@ public class FarGateRedAuto extends LinearOpMode {
                 drive.turnToAngle(-Math.PI / 2);
                 break;
             case LEFT:
+                robot.pause(1);
                 drive.gotoPoint(new Pose(40, 25, -Math.PI / 2));
                 robot.intake.reset();
                 robot.pause(0.25);
@@ -208,7 +210,7 @@ public class FarGateRedAuto extends LinearOpMode {
         robot.pause(0.25);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
         robot.pause(0.5);
-        drive.gotoPoint(new Pose(20 + xOffset, -65 + yOffset, 0));
+        drive.gotoPoint(new Pose(20 + xOffset, -68 + yOffset, 0));
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
 
 

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
@@ -48,9 +50,9 @@ public class PropDetectionPipelineRedFar implements VisionProcessor {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(230, 270, 100, 100);
-        Rect rect2 = new Rect(440, 230, 100, 100);
-        Rect rect3 = new Rect(500, 230, 100, 100);
+        Rect rect1 = new Rect(70, 300, 100, 100);
+        Rect rect2 = new Rect(230, 230, 100, 100);
+        Rect rect3 = new Rect(500, 280, 100, 100);
 
         // Draw rectangles on the output
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
@@ -88,11 +90,11 @@ public class PropDetectionPipelineRedFar implements VisionProcessor {
         return maskedInputMat;
     }
 
-    @Override
+
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
 
-        /*
+
         Paint myPaint = new Paint();
         myPaint.setColor(Color.rgb(0, 0, 0));
         myPaint.setStrokeWidth(1);
@@ -103,7 +105,7 @@ public class PropDetectionPipelineRedFar implements VisionProcessor {
         canvas.drawRect((int) (350.0/640 * 1000), (int) (230.0/480 * 1000), (int) (450.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
 
 
-         */
+
 
     }
 

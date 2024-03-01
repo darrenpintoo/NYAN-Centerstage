@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineRedClose;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -42,7 +43,7 @@ public class CloseRedAuto extends LinearOpMode {
 
 
     private VisionPortal visionPortal2;
-    private PropDetectionPipelineBlueClose propDetector;
+    private PropDetectionPipelineRedClose propDetector;
 
     @Override
     public void runOpMode() {
@@ -65,7 +66,7 @@ public class CloseRedAuto extends LinearOpMode {
 
 
 
-        propDetector = new PropDetectionPipelineBlueClose();
+        propDetector = new PropDetectionPipelineRedClose();
 
         visionPortal2 = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -98,7 +99,7 @@ public class CloseRedAuto extends LinearOpMode {
         waitForStart();
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.LEFT;// propDetector.getPlacementPosition();
+        PlacementPosition placementPosition =  propDetector.getPlacementPosition();
 
         visionPortal2.stopStreaming();
         if (isStopRequested()) return;
@@ -110,7 +111,7 @@ public class CloseRedAuto extends LinearOpMode {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
-                .setCameraResolution(new Size(1280, 720))
+                .setCameraResolution(new Size(640, 480))
                 .addProcessor(aprilTag)
                 .enableLiveView(false)
                 .build();
@@ -147,7 +148,7 @@ public class CloseRedAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(37 + xOffset, -50 + yOffset, 0));
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(32 + xOffset, -50 + yOffset, 0));
+                drive.gotoPoint(new Pose(31 + xOffset, -50 + yOffset, 0));
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(24 + xOffset, -50 + yOffset, 0));
@@ -202,16 +203,19 @@ public class CloseRedAuto extends LinearOpMode {
 
 
             // if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
-            if (robot.intake.getRightProximity()) {
-                robot.localizer.setPose(new Pose(7.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
-
-
+            if (robot.intake.getCenterProximity() && robot.intake.getRightProximity()) {
+                robot.localizer.setPose(new Pose(7 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            } else if (robot.intake.getCenterProximity() && robot.intake.getLeftProximity()) {
+                robot.localizer.setPose(new Pose(5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            } else if (robot.intake.getRightProximity()) {
+                robot.localizer.setPose(new Pose(9 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             } else if (robot.intake.getLeftProximity()) {
-                robot.localizer.setPose(new Pose(4.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
-
+                robot.localizer.setPose(new Pose(3 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             }
 
-            drive.gotoPoint(new Pose(6 + xOffset, 60 + yOffset, 0));
+            drive.gotoPoint(new Pose(6 + xOffset, robot.localizer.getPose().getY() - 1, 0));
+
+            drive.gotoPoint(new Pose(6 + xOffset, robot.localizer.getPose().getY() + 1.25, 0));
 
             PIDDrive.aMax = a;
             PIDDrive.vMax = v;

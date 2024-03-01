@@ -27,7 +27,7 @@ public class PropDetectionPipelineBlueClose implements VisionProcessor {
     double redAmount2 = 0;
 
     double redAmount3 = 0;
-    private final double redThreshold = 3000;
+    private final double redThreshold = 3500;
     private volatile PlacementPosition placementPosition = PlacementPosition.CENTER;
 
     public PropDetectionPipelineBlueClose() {
@@ -51,9 +51,9 @@ public class PropDetectionPipelineBlueClose implements VisionProcessor {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(230, 270, 100, 100);
-        Rect rect2 = new Rect(440, 230, 100, 100);
-        Rect rect3 = new Rect(500, 230, 100, 100);
+        Rect rect1 = new Rect(90, 330, 100, 100);
+        Rect rect2 = new Rect(280, 250, 100, 100);
+        Rect rect3 = new Rect(510, 320, 100, 100);
 
         // Draw rectangles on the output
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
@@ -91,22 +91,22 @@ public class PropDetectionPipelineBlueClose implements VisionProcessor {
         return maskedInputMat;
     }
 
-    @Override
+
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
 
-        /*
+
         Paint myPaint = new Paint();
         myPaint.setColor(Color.rgb(0, 0, 0));
         myPaint.setStrokeWidth(1);
 
-        // canvas.drawRect(100, 200, 200, 300, myPaint);
-        // canvas.drawRect(350, 190, 450, 300, myPaint);
-        canvas.drawRect((int) (100.0/640 * 1000), (int) (230.0/480 * 1000), (int) (200.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
-        canvas.drawRect((int) (350.0/640 * 1000), (int) (230.0/480 * 1000), (int) (450.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
+         //canvas.drawRect(100, 200, 200, 300, myPaint);
+         //canvas.drawRect(350, 190, 450, 300, myPaint);
+        //canvas.drawRect((int) (100.0/640 * 1000), (int) (230.0/480 * 1000), (int) (200.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
+        //canvas.drawRect((int) (350.0/640 * 1000), (int) (230.0/480 * 1000), (int) (450.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
 
 
-         */
+
 
     }
 

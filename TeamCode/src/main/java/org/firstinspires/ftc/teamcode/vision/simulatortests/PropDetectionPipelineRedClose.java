@@ -27,7 +27,7 @@ public class PropDetectionPipelineRedClose implements VisionProcessor {
     double redAmount2 = 0;
 
     double redAmount3 = 0;
-    private final double redThreshold = 3000;
+    private final double redThreshold = 3500;
     private volatile PlacementPosition placementPosition = PlacementPosition.CENTER;
 
     public PropDetectionPipelineRedClose() {
@@ -51,9 +51,9 @@ public class PropDetectionPipelineRedClose implements VisionProcessor {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(100, 260, 100, 100);
-        Rect rect2 = new Rect(330, 230, 100, 100);
-        Rect rect3 = new Rect(500, 230, 100, 100);
+        Rect rect1 = new Rect(0, 270, 100, 100);
+        Rect rect2 = new Rect(210, 240, 100, 100);
+        Rect rect3 = new Rect(410, 290, 100, 100);
 
         // Draw rectangles on the output
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
@@ -91,8 +91,9 @@ public class PropDetectionPipelineRedClose implements VisionProcessor {
         return maskedInputMat;
     }
 
-    @Override
+
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+
 
 
         /*
@@ -106,7 +107,7 @@ public class PropDetectionPipelineRedClose implements VisionProcessor {
         canvas.drawRect((int) (350.0/640 * 1000), (int) (230.0/480 * 1000), (int) (450.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
 
 
-         */
+        */
 
     }
 

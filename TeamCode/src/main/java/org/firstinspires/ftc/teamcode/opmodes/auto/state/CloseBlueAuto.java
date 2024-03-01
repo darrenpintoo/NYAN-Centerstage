@@ -97,7 +97,7 @@ public class CloseBlueAuto extends LinearOpMode {
         waitForStart();
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.CENTER;// propDetector.getPlacementPosition();
+        PlacementPosition placementPosition = propDetector.getPlacementPosition();
 
         visionPortal2.stopStreaming();
         if (isStopRequested()) return;
@@ -109,7 +109,7 @@ public class CloseBlueAuto extends LinearOpMode {
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
-                .setCameraResolution(new Size(1280, 720))
+                .setCameraResolution(new Size(640, 480))
                 .addProcessor(aprilTag)
                 .enableLiveView(false)
                 .build();
@@ -200,18 +200,20 @@ public class CloseBlueAuto extends LinearOpMode {
             drive.gotoPoint(new Pose(-8 + xOffset, 60, 0));
             robot.intake.setOffset(1.9);
 
-            if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
 
+            if (robot.intake.getCenterProximity() && robot.intake.getLeftProximity()) {
+                robot.localizer.setPose(new Pose(-9 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            } else if (robot.intake.getCenterProximity() && robot.intake.getRightProximity()) {
+                robot.localizer.setPose(new Pose(-7 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             } else if (robot.intake.getLeftProximity()) {
-                robot.localizer.setPose(new Pose(-10 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
-
-
+                robot.localizer.setPose(new Pose(-11 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             } else if (robot.intake.getRightProximity()) {
-                robot.localizer.setPose(new Pose(-6 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
-
+                robot.localizer.setPose(new Pose(-5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             }
 
-            drive.gotoPoint(new Pose(-8 + xOffset, 60, 0));
+            drive.gotoPoint(new Pose(-8 + xOffset, robot.localizer.getPose().getY() - 1, 0));
+
+            drive.gotoPoint(new Pose(-8 + xOffset, robot.localizer.getPose().getY() + 1.25, 0));
 
             PIDDrive.aMax = a;
             PIDDrive.vMax = v;

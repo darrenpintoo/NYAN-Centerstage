@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -27,7 +28,9 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "Far Gate Blue Auto")
 public class FarGateBlueAuto extends LinearOpMode {
@@ -53,12 +56,6 @@ public class FarGateBlueAuto extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot.init(this);
 
-
-
-
-
-
-
         aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(
                 CameraConstants.fx,
                 CameraConstants.fy,
@@ -77,6 +74,8 @@ public class FarGateBlueAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .build();
 
+
+
         while (opModeInInit()) {
             telemetry.addLine("ready");
             telemetry.addData("position", propDetector.getPlacementPosition());
@@ -88,22 +87,24 @@ public class FarGateBlueAuto extends LinearOpMode {
         waitForStart();
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.RIGHT;// propDetector.getPlacementPosition();
+        PlacementPosition placementPosition = propDetector.getPlacementPosition();
 
         if (isStopRequested()) return;
 
-        robot.postInit();
-        robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        PIDDrive drive = new PIDDrive(robot, this, telemetry);
-        OneWheelOdometryDrive time = new OneWheelOdometryDrive(this, telemetry);
+        visionPortal2.close();
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
-                .setCameraResolution(new Size(1280, 720))
+                .setCameraResolution(new Size(640, 480))
                 .addProcessor(aprilTag)
                 .enableLiveView(false)
                 .build();
 
+        visionPortal.setProcessorEnabled(aprilTag, true);
+
+        robot.postInit();
+        robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
         ElapsedTime wok = new ElapsedTime();
 
@@ -138,6 +139,7 @@ public class FarGateBlueAuto extends LinearOpMode {
                 drive.turnToAngle(Math.PI / 2);
                 break;
             case RIGHT:
+                robot.pause(1);
                 drive.gotoPoint(new Pose(-40, 25, Math.PI / 2));
                 robot.intake.reset();
                 robot.pause(0.25);
@@ -153,7 +155,7 @@ public class FarGateBlueAuto extends LinearOpMode {
         PIDDrive.aMax = 15;
         PIDDrive.vMax = 25;
         // drive.gotoPoint(new Pose(-8.5 + xOffset, 30, 0));
-        robot.intake.setOffset(2.7);
+        robot.intake.setOffset(2.4);
         drive.gotoPoint(new Pose(-8.5 + xOffset, 37, 0));
         robot.pause(0.25);
 
@@ -178,18 +180,70 @@ public class FarGateBlueAuto extends LinearOpMode {
         PIDDrive.vMax = 50;
         drive.gotoPoint(new Pose(-4 + xOffset, -55, 0));
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
+
+        double xCorrection = 0;
+        double targetID = 0;
+
+        if (placementPosition == PlacementPosition.LEFT) {
+            targetID = 1;
+        } else if (placementPosition == PlacementPosition.CENTER) {
+            targetID = 2;
+        } else {
+            targetID = 3;
+        }
+
+
+        visionPortal.setProcessorEnabled(aprilTag, true);
+
+
         switch (placementPosition) {
             case CENTER:
-                drive.gotoPoint(new Pose(-30 + xOffset, -73, 0));
+                drive.gotoPoint(new Pose(-30 + xOffset, -60, 0));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-25 + xOffset, -73, 0));
+                drive.gotoPoint(new Pose(-25 + xOffset, -60, 0));
+
                 break;
             case LEFT:
-                drive.gotoPoint(new Pose(-38 + xOffset, -73, 0));
+                drive.gotoPoint(new Pose(-38 + xOffset, -60, 0));
                 break;
         }
 
+        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+
+        if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+            }
+
+
+            exposureControl.setExposure((long) 10, TimeUnit.MILLISECONDS);
+
+        }
+
+        wok.reset();
+
+        while (wok.seconds() < 2) {
+            telemetry.addData("correction: ", xCorrection);
+            telemetry.addData("id: ", targetID);
+            telemetry.addData("fps: ", visionPortal.getFps());
+            robot.update();
+        }
+
+
+        for (AprilTagDetection detection : aprilTag.getDetections()) {
+            if (detection.id == targetID) {
+                xCorrection = detection.ftcPose.x;
+                break;
+            }
+        }
+
+
+        drive.gotoPoint(new Pose(
+                robot.localizer.getPose().getX() + xOffset + xCorrection,
+                -73,
+                0
+        ));
 
         wok.reset();
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
