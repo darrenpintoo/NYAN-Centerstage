@@ -58,6 +58,8 @@ public class AprilTag extends LinearOpMode {
             for (AprilTagDetection detection : currentDetections) {
                 telemetry.addData("id: ", detection.id);
                 telemetry.addData("pos x: ", detection.ftcPose.x);
+                telemetry.addData("pos y: ", detection.ftcPose.y);
+
             }
 
             telemetry.update();

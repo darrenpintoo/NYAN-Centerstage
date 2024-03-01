@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name = "Far Gate Blue Auto")
+@Autonomous(name = "Far Gate Blue Auto", preselectTeleOp = "Main Teleop")
 public class FarGateBlueAuto extends LinearOpMode {
 
 
@@ -101,6 +101,8 @@ public class FarGateBlueAuto extends LinearOpMode {
                 .build();
 
         visionPortal.setProcessorEnabled(aprilTag, true);
+
+        FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
 
         robot.postInit();
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -182,6 +184,9 @@ public class FarGateBlueAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
 
         double xCorrection = 0;
+        double yCorrection = 0;
+        double zCorrection = 0;
+        double rot = 0;
         double targetID = 0;
 
         if (placementPosition == PlacementPosition.LEFT) {
@@ -192,16 +197,13 @@ public class FarGateBlueAuto extends LinearOpMode {
             targetID = 3;
         }
 
-
-        visionPortal.setProcessorEnabled(aprilTag, true);
-
-
+        
         switch (placementPosition) {
             case CENTER:
                 drive.gotoPoint(new Pose(-30 + xOffset, -60, 0));
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(-25 + xOffset, -60, 0));
+                drive.gotoPoint(new Pose(-26 + xOffset, -60, 0));
 
                 break;
             case LEFT:
@@ -209,27 +211,7 @@ public class FarGateBlueAuto extends LinearOpMode {
                 break;
         }
 
-        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-
-        if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-                exposureControl.setMode(ExposureControl.Mode.Manual);
-            }
-
-
-            exposureControl.setExposure((long) 10, TimeUnit.MILLISECONDS);
-
-        }
-
         wok.reset();
-
-        while (wok.seconds() < 2) {
-            telemetry.addData("correction: ", xCorrection);
-            telemetry.addData("id: ", targetID);
-            telemetry.addData("fps: ", visionPortal.getFps());
-            robot.update();
-        }
-
 
         for (AprilTagDetection detection : aprilTag.getDetections()) {
             if (detection.id == targetID) {
@@ -238,9 +220,37 @@ public class FarGateBlueAuto extends LinearOpMode {
             }
         }
 
+        while (wok.seconds() < 5) {
+            for (AprilTagDetection detection : aprilTag.getDetections()) {
+                if (detection.id == targetID) {
+                    xCorrection = detection.ftcPose.x;
+                    yCorrection = detection.ftcPose.y;
+                    zCorrection = detection.ftcPose.z;
+                    rot = detection.ftcPose.yaw;
+                    break;
+                }
+            }
+            telemetry.addData("correction: ", xCorrection);
+            telemetry.addData("correction: ", yCorrection);
+
+            telemetry.addData("correction: ", zCorrection);
+            telemetry.addData("correction: ", rot);
+
+
+
+            telemetry.addData("id: ", targetID);
+            telemetry.addData("fps: ", visionPortal.getFps());
+            telemetry.addData("detections: ", aprilTag.getDetections().size());
+
+            robot.update();
+        }
+
+
+
+
 
         drive.gotoPoint(new Pose(
-                robot.localizer.getPose().getX() + xOffset + xCorrection,
+                robot.localizer.getPose().getX() - xCorrection,
                 -73,
                 0
         ));

@@ -27,7 +27,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Close Red Auto")
+@Autonomous(name = "Close Red Auto", preselectTeleOp = "Main Teleop")
 public class CloseRedAuto extends LinearOpMode {
 
 
