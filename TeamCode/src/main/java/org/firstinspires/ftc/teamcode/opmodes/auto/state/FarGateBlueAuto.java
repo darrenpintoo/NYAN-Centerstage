@@ -120,12 +120,15 @@ public class FarGateBlueAuto extends LinearOpMode {
 
         double a = DriveConstants.MAX_ACCELERATION;
         double v = DriveConstants.MAX_VELOCITY;
+
+        double pixelOffset = 0;
+        double yPixelOffset = 0;
         PIDDrive.aMax = 35;
         PIDDrive.vMax = 50;
 
         switch (placementPosition) {
             case CENTER:
-                drive.gotoPoint(new Pose(-30, 18, Math.PI / 2));
+                drive.gotoPoint(new Pose(-31, 18, Math.PI / 2));
                 robot.intake.reset();
                 robot.pause(0.75);
                 drive.gotoPoint(new Pose(-40, 33, Math.PI / 2));
@@ -139,13 +142,16 @@ public class FarGateBlueAuto extends LinearOpMode {
                 robot.pause(0.5);
                 drive.gotoPoint(new Pose(-32, 27, Math.PI));
                 drive.turnToAngle(Math.PI / 2);
+
+                pixelOffset = -1;
+                yPixelOffset = 1;
                 break;
             case RIGHT:
                 robot.pause(1);
                 drive.gotoPoint(new Pose(-40, 25, Math.PI / 2));
                 robot.intake.reset();
                 robot.pause(0.25);
-                drive.gotoPoint(new Pose(-50, 14, Math.PI / 2));
+                drive.gotoPoint(new Pose(-50, 12.5, Math.PI / 2));
 
                 break;
         }
@@ -158,21 +164,21 @@ public class FarGateBlueAuto extends LinearOpMode {
         PIDDrive.vMax = 25;
         // drive.gotoPoint(new Pose(-8.5 + xOffset, 30, 0));
         robot.intake.setOffset(2.4);
-        drive.gotoPoint(new Pose(-8.5 + xOffset, 37, 0));
+        drive.gotoPoint(new Pose(-8.5 + pixelOffset + xOffset, 37 + yPixelOffset, 0));
         robot.pause(0.25);
 
         if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
 
         } else if (robot.intake.getRightProximity()) {
-            robot.localizer.setPose(new Pose(-6.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            robot.localizer.setPose(new Pose(-6.5 + + pixelOffset + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             // drive.gotoPoint(new Pose(-10.5 + xOffset, 37, 0));
         } else if (robot.intake.getLeftProximity()) {
-            robot.localizer.setPose(new Pose(-10.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            robot.localizer.setPose(new Pose(-10.5 + pixelOffset + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
             // drive.gotoPoint(new Pose(-6.5 + xOffset, 37, 0));
         }
 
-        drive.gotoPoint(new Pose(-8.5 + xOffset, 37, 0));
+        drive.gotoPoint(new Pose(-8.5 + pixelOffset + xOffset, 37.5 + yPixelOffset, 0));
 
         robot.pause(0.25);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
@@ -184,8 +190,8 @@ public class FarGateBlueAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
 
         double xCorrection = 0;
-        double yCorrection = 0;
-        double zCorrection = 0;
+        double x = 0;
+        double y = 0;
         double rot = 0;
         double targetID = 0;
 
@@ -197,10 +203,10 @@ public class FarGateBlueAuto extends LinearOpMode {
             targetID = 3;
         }
 
-        
+
         switch (placementPosition) {
             case CENTER:
-                drive.gotoPoint(new Pose(-30 + xOffset, -60, 0));
+                drive.gotoPoint(new Pose(-31 + xOffset, -60, 0));
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-26 + xOffset, -60, 0));
@@ -213,9 +219,13 @@ public class FarGateBlueAuto extends LinearOpMode {
 
         wok.reset();
 
+        /*
         for (AprilTagDetection detection : aprilTag.getDetections()) {
             if (detection.id == targetID) {
                 xCorrection = detection.ftcPose.x;
+                x = detection.ftcPose.range * Math.cos(Math.toRadians(detection.ftcPose.bearing));
+                y = detection.ftcPose.range * Math.sin(Math.toRadians(detection.ftcPose.bearing));
+
                 break;
             }
         }
@@ -223,19 +233,21 @@ public class FarGateBlueAuto extends LinearOpMode {
         while (wok.seconds() < 5) {
             for (AprilTagDetection detection : aprilTag.getDetections()) {
                 if (detection.id == targetID) {
+                    telemetry.addData("iddd: ", detection.id);
                     xCorrection = detection.ftcPose.x;
-                    yCorrection = detection.ftcPose.y;
-                    zCorrection = detection.ftcPose.z;
+                    x = detection.ftcPose.range * Math.cos(Math.toRadians(detection.ftcPose.bearing));
+                    y = detection.ftcPose.range * Math.sin(Math.toRadians(detection.ftcPose.bearing));
                     rot = detection.ftcPose.yaw;
                     break;
                 }
+                telemetry.addData("correction: ", detection.ftcPose.x);
+
+
             }
-            telemetry.addData("correction: ", xCorrection);
-            telemetry.addData("correction: ", yCorrection);
+            telemetry.addData("true correction: ", xCorrection);
 
-            telemetry.addData("correction: ", zCorrection);
-            telemetry.addData("correction: ", rot);
-
+            telemetry.addData("x: ", x);
+            telemetry.addData("y: ", y);
 
 
             telemetry.addData("id: ", targetID);
@@ -245,12 +257,14 @@ public class FarGateBlueAuto extends LinearOpMode {
             robot.update();
         }
 
+         */
+
 
 
 
 
         drive.gotoPoint(new Pose(
-                robot.localizer.getPose().getX() - xCorrection,
+                robot.localizer.getPose().getX() + xCorrection,
                 -73,
                 0
         ));
