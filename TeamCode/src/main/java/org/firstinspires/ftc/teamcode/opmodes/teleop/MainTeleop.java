@@ -32,12 +32,6 @@ public class MainTeleop extends LinearOpMode {
     // Create new Instance of the robot
     RobotEx robot = RobotEx.getInstance();
 
-
-    private VisionPortal visionPortal;               // Used to manage the video source.
-    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-
-
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -50,26 +44,6 @@ public class MainTeleop extends LinearOpMode {
 
         // Notify subsystems before loop
         robot.postInit();
-
-
-        /*
-        aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(
-                CameraConstants.fx,
-                CameraConstants.fy,
-                CameraConstants.cx,
-                CameraConstants.cy
-        ).build();
-
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
-                .setCameraResolution(new Size(1280, 720))
-                .addProcessor(aprilTag)
-                .enableLiveView(true)
-                .build();
-
-
-         */
-
 
         if (isStopRequested()) return;
 
@@ -91,7 +65,7 @@ public class MainTeleop extends LinearOpMode {
         robot.update();
 
         robot.intake.enableTeleop();
-
+        Intake.GripperStates lastGripperState = robot.intake.currentGripperState;
         ElapsedTime e = new ElapsedTime();
 
         // robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
@@ -144,6 +118,11 @@ public class MainTeleop extends LinearOpMode {
                     robot.intake.setGripperState(
                             robot.intake.currentGripperState == Intake.GripperStates.CLOSED ? Intake.GripperStates.OPEN : Intake.GripperStates.CLOSED
                     );
+
+                    lastGripperState = robot.intake.currentGripperState;
+
+                } else if (lastGripperState != robot.intake.currentGripperState && robot.intake.currentGripperState == Intake.GripperStates.CLOSED) {
+                    gamepad1.rumble(250);
                 }
             }
 
@@ -258,15 +237,23 @@ public class MainTeleop extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL3);
             }
 
-            /*
 
-            for (AprilTagDetection detection : aprilTag.getDetections()) {
-                telemetry.addData("I: ", detection.id);
-                telemetry.addData("X: ", detection.ftcPose.x);
-                telemetry.addData("Y: ", detection.ftcPose.y);
+
+            for (AprilTagDetection detection : robot.backCamera.aprilTagProcessor.getDetections()) {
+                telemetry.addData("id: ", detection.id);
+                telemetry.addData("x: ", detection.ftcPose.x);
+                telemetry.addData("y: ", detection.ftcPose.y);
+                telemetry.addData("z: ", detection.ftcPose.z);
+
+                telemetry.addData("yaw: ", detection.ftcPose.yaw);
+
+
+
             }
 
-             */
+
+
+            lastGripperState = robot.intake.currentGripperState;
 
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));

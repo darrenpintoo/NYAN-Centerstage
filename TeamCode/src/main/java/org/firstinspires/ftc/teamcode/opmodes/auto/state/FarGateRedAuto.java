@@ -54,12 +54,6 @@ public class FarGateRedAuto extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot.init(this);
 
-
-
-
-
-
-
         aprilTag = new AprilTagProcessor.Builder().setLensIntrinsics(
                 CameraConstants.fx,
                 CameraConstants.fy,
@@ -78,6 +72,8 @@ public class FarGateRedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .build();
 
+
+
         while (opModeInInit()) {
             telemetry.addLine("ready");
             telemetry.addData("position", propDetector.getPlacementPosition());
@@ -93,10 +89,7 @@ public class FarGateRedAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        robot.postInit();
-        robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        PIDDrive drive = new PIDDrive(robot, this, telemetry);
-        OneWheelOdometryDrive time = new OneWheelOdometryDrive(this, telemetry);
+        visionPortal2.stopStreaming();
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
@@ -105,6 +98,13 @@ public class FarGateRedAuto extends LinearOpMode {
                 .enableLiveView(false)
                 .build();
 
+        visionPortal.setProcessorEnabled(aprilTag, true);
+
+        FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
+
+        robot.postInit();
+        robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
         ElapsedTime wok = new ElapsedTime();
 
@@ -118,6 +118,10 @@ public class FarGateRedAuto extends LinearOpMode {
 
         double a = DriveConstants.MAX_ACCELERATION;
         double v = DriveConstants.MAX_VELOCITY;
+
+        double pixelOffset = 0;
+        double yPixelOffset = 0;
+
         PIDDrive.aMax = 35;
         PIDDrive.vMax = 50;
 
@@ -161,21 +165,21 @@ public class FarGateRedAuto extends LinearOpMode {
         PIDDrive.aMax = 15;
         PIDDrive.vMax = 25;
         // drive.gotoPoint(new Pose(-8.5 + xOffset, 30, 0));
-        robot.intake.setOffset(2.6);
-        drive.gotoPoint(new Pose(8.5 + xOffset, 37 + yOffset, 0));
+        robot.intake.setOffset(2.5);
+        drive.gotoPoint(new Pose(8.5 + pixelOffset + xOffset, 37 + yOffset + yPixelOffset, 0));
         robot.pause(0.25);
 
         if (robot.intake.getLeftProximity() && robot.intake.getRightProximity() || robot.intake.getCenterProximity()) {
         } else if (robot.intake.getLeftProximity()) {
-            robot.localizer.setPose(new Pose(6.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            robot.localizer.setPose(new Pose(6.5 + pixelOffset + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             // drive.gotoPoint(new Pose(-10.5 + xOffset, 37, 0));
         } else if (robot.intake.getRightProximity()) {
-            robot.localizer.setPose(new Pose(10.5 + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            robot.localizer.setPose(new Pose(10.5 + pixelOffset+ xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
 
             // drive.gotoPoint(new Pose(-6.5 + xOffset, 37, 0));
         }
 
-        drive.gotoPoint(new Pose(8.5 + xOffset, 37 + yOffset, 0));
+        drive.gotoPoint(new Pose(8.5 + pixelOffset + xOffset, 37 + yOffset + yPixelOffset, 0));
 
         robot.pause(0.25);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);

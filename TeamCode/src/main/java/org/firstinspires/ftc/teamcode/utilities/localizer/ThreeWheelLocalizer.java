@@ -149,8 +149,8 @@ public class ThreeWheelLocalizer {
 
 
         telemetry.addData("Forward Offset: ", deltaBackDistance / phi);
-        telemetry.addData("Velocity: ", velocity.getHeading());
-        telemetry.addData("Heading Error: ", actualHeading - pose.getHeading());
+        // telemetry.addData("Velocity: ", velocity.getHeading());
+        // telemetry.addData("Heading Error: ", actualHeading - pose.getHeading());
         /*
         this.telemetry.addData("Perp: ", deltaPerpendicular);
         this.telemetry.addData("Back Distance: ", deltaBackDistance);
@@ -171,7 +171,7 @@ public class ThreeWheelLocalizer {
         // Log telemetry data
         this.telemetry.addData("Robot X (inches): ", this.pose.getX());
         this.telemetry.addData("Robot Y (inches): ", this.pose.getY());
-        this.telemetry.addData("Robot Heading: ", this.pose.getHeading());
+        this.telemetry.addData("Robot Heading (deg): ", this.pose.getHeading() * 180 / Math.PI);
 
 
     }

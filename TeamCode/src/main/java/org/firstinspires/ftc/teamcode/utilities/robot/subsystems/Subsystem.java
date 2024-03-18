@@ -14,5 +14,4 @@ public interface Subsystem {
     void onOpmodeStarted();
 
     void onCyclePassed();
-
 }

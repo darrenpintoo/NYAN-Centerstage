@@ -245,10 +245,13 @@ public class CloseRedAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 drive.gotoPoint(new Pose(13 + xOffset, -45 + yOffset, 0));
             } else {
-                drive.gotoPoint(new Pose(10 + xOffset, -58 + yOffset, 0));
-                drive.turnToAngle(-Math.PI);
+                drive.gotoPoint(new Pose(5 + xOffset, -61 + yOffset, 0));
+                robot.pause(0.5);
                 robot.intake.reset();
                 robot.pause(1);
+                robot.intake.setRotationState(Intake.RotationStates.FULL_DEFAULT);
+                robot.intake.setOffset(0);
+                robot.pause(0.5);
                 robot.intake.reset();
             }
 

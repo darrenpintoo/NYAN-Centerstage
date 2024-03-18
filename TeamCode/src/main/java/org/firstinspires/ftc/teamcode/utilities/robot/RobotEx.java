@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.utilities.robot;
 
 import android.annotation.SuppressLint;
+import android.util.Size;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
@@ -13,11 +15,13 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizerRoadrunner;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
+import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.BackCamera;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
@@ -25,6 +29,9 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.ClimbLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.mercurialftc.mercurialftc.silversurfer.encoderticksconverter.EncoderTicksConverter;
 import org.mercurialftc.mercurialftc.silversurfer.encoderticksconverter.Units;
 import org.mercurialftc.mercurialftc.silversurfer.geometry.Pose2D;
@@ -36,6 +43,31 @@ import org.mercurialftc.mercurialftc.util.hardware.Encoder;
 
 import java.util.List;
 
+/*
+Robot Configuration
+Control Hub
+    Motors:
+        0 - rightBackMotor
+        1 - rightFrontMotor
+        2 - leftFrontMotor
+        3 - leftBackMotor
+    Servos:
+        0 - intakeClaw
+        1 - boxOpen
+        2 - rightBox
+        3 - leftBox
+        4 - leftIntakeServo
+        5 - rightIntakeServo
+    DPIO
+        0/1 - breakBeams
+        2/3 - leftProximity
+        4/5 - centerProximity
+        6/7 - rightProximity
+Expansion Hub
+    Motors:
+    Servos:
+
+ */
 public class RobotEx {
     private static RobotEx robotInstance = null;
 
@@ -50,6 +82,7 @@ public class RobotEx {
     public VoltageSensor voltageSensor;
 
     public PlaneLauncher planeLauncher = new PlaneLauncher();
+    public BackCamera backCamera = new BackCamera();
     private final ElapsedTime frameTimer = new ElapsedTime();
 
     private final Subsystem[] robotSubsystems = new Subsystem[]{
@@ -57,13 +90,13 @@ public class RobotEx {
             climbLift,
             intake,
             depositLift,
-            planeLauncher
+            planeLauncher,
+            backCamera
     };
 
     Telemetry telemetry;
 
-    public TwoWheelLocalizer localizer;
-    public TwoWheelLocalizerRoadrunner localizerRoadrunner;
+    public ThreeWheelLocalizer localizer;
 
     public HardwareMap hardwareMap;
 
@@ -76,6 +109,7 @@ public class RobotEx {
     private double frames = 0;
     private double currentFrames = 0;
     private double lastTime = 0;
+
 
     private RobotEx() {
         if (RobotEx.robotInstance != null) {
@@ -105,7 +139,7 @@ public class RobotEx {
 
         internalIMU.onInit(hardwareMap, telemetry);
 
-        /*
+
         this.localizer = new ThreeWheelLocalizer(
                 new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
                 new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 3
@@ -114,13 +148,15 @@ public class RobotEx {
                 telemetry
         );
 
-         */
+         /*
         this.localizer = new TwoWheelLocalizer(
                 new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
                 new BaseEncoder(this.drivetrain.leftFrontMotor,  1), // 2 // Changed sign
                 internalIMU,
                 telemetry
         );
+
+         */
 
         /*
         this.localizerRoadrunner = new TwoWheelLocalizerRoadrunner(

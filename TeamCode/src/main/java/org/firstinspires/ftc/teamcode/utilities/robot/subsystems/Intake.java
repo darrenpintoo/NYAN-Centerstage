@@ -49,7 +49,7 @@ public class Intake implements Subsystem {
     // public static double num = 0;
 
     private double offset = 0;
-    public static double offsetLength = 0.0225;
+    public static double offsetLength = 0.026;
 
     public RotationStates currentRotationState = RotationStates.DEFAULT;
     public GripperStates currentGripperState = GripperStates.OPEN;
@@ -58,9 +58,9 @@ public class Intake implements Subsystem {
     // public static double defaultPosition = 0.2;
     // public static double placingPosition = 0.76;
 
-    public static double activatedRotationOffset = 0.8;
-    public static double fullIntakeRotationOffset = 0.185;
-    public static double intakeRotationOffset = 0.25;
+    public static double activatedRotationOffset = 0.78;
+    public static double fullIntakeRotationOffset = 0.14;
+    public static double intakeRotationOffset = 0.205;
 
     public static double aMax = 3;
     public static double vMax = 3;
@@ -115,11 +115,16 @@ public class Intake implements Subsystem {
         this.rightRotationServo.setPosition(position);
 
 
-        // t.addData("Intake Servo Position: ", position);
+        /*
+        t.addData("Intake Servo Position: ", rightRotationServo.getPosition());
+        t.addData("Intake Servo Position: ", leftRotationServo.getPosition());
+
         t.addData("Break beam: ", breakBeam.getState());
-        // t.addData("Proximity c: ", centerProximity.getState());
+        t.addData("Proximity c: ", centerProximity.getState());
         t.addData("Proximity r: ", rightProximity.getState());
         t.addData("Proximity l: ", leftProximity.getState());
+
+         */
         // t.addData("Timer: ", timer.seconds());
         // t.addData("Open?: ", this.currentGripperState);
         // t.addData("Rot: ", this.currentRotationState);

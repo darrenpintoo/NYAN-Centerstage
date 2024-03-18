@@ -133,6 +133,7 @@ public class FarGateBlueAuto extends LinearOpMode {
                 robot.pause(0.75);
                 drive.gotoPoint(new Pose(-40, 33, Math.PI / 2));
                 drive.gotoPoint(new Pose(-8, 33, Math.PI / 2));
+                pixelOffset = -1;
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(-32, 15, Math.PI / 2));
@@ -143,7 +144,7 @@ public class FarGateBlueAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(-32, 27, Math.PI));
                 drive.turnToAngle(Math.PI / 2);
 
-                pixelOffset = -1;
+                pixelOffset = -2;
                 yPixelOffset = 1;
                 break;
             case RIGHT:
@@ -163,14 +164,14 @@ public class FarGateBlueAuto extends LinearOpMode {
         PIDDrive.aMax = 15;
         PIDDrive.vMax = 25;
         // drive.gotoPoint(new Pose(-8.5 + xOffset, 30, 0));
-        robot.intake.setOffset(2.4);
+        robot.intake.setOffset(2.5);
         drive.gotoPoint(new Pose(-8.5 + pixelOffset + xOffset, 37 + yPixelOffset, 0));
         robot.pause(0.25);
 
         if (robot.intake.getRightProximity() && robot.intake.getLeftProximity() || robot.intake.getCenterProximity()) {
 
         } else if (robot.intake.getRightProximity()) {
-            robot.localizer.setPose(new Pose(-6.5 + + pixelOffset + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
+            robot.localizer.setPose(new Pose(-6.5 + pixelOffset + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
             // drive.gotoPoint(new Pose(-10.5 + xOffset, 37, 0));
         } else if (robot.intake.getLeftProximity()) {
             robot.localizer.setPose(new Pose(-10.5 + pixelOffset + xOffset, robot.localizer.getPose().getY(), robot.localizer.getPose().getHeading()), false);
@@ -178,7 +179,7 @@ public class FarGateBlueAuto extends LinearOpMode {
             // drive.gotoPoint(new Pose(-6.5 + xOffset, 37, 0));
         }
 
-        drive.gotoPoint(new Pose(-8.5 + pixelOffset + xOffset, 37.5 + yPixelOffset, 0));
+        drive.gotoPoint(new Pose(-8.5 + pixelOffset + xOffset, 37 + yPixelOffset, 0));
 
         robot.pause(0.25);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
@@ -206,14 +207,14 @@ public class FarGateBlueAuto extends LinearOpMode {
 
         switch (placementPosition) {
             case CENTER:
-                drive.gotoPoint(new Pose(-31 + xOffset, -60, 0));
+                drive.gotoPoint(new Pose(-32.5 + xOffset, -60, 0));
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-26 + xOffset, -60, 0));
 
                 break;
             case LEFT:
-                drive.gotoPoint(new Pose(-38 + xOffset, -60, 0));
+                drive.gotoPoint(new Pose(-42 + xOffset, -60, 0));
                 break;
         }
 
@@ -281,8 +282,8 @@ public class FarGateBlueAuto extends LinearOpMode {
         robot.pause(0.25);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
         robot.pause(0.5);
-        drive.gotoPoint(new Pose(-20 + xOffset, -68, 0));
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+        drive.gotoPoint(new Pose(-20 + xOffset, -68, 0));
 
 
         // drive.gotoPoint(new Pose(-8, -30, 0));

@@ -36,7 +36,7 @@ public class Drivetrain implements Subsystem {
 
     private RobotEx robotInstance;
     private InternalIMU internalIMU;
-    private TwoWheelLocalizer localizer;
+    private ThreeWheelLocalizer localizer;
 
     MotorGroup<DcMotorEx> drivetrainMotorGroup;
     private DcMotorEx[] drivetrainMotors;

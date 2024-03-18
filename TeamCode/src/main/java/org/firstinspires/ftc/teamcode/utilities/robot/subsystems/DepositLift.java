@@ -86,13 +86,14 @@ public class DepositLift implements Subsystem{
     public static int offsetLength = 100;
 
     public static int position = 900;
-    public static double flutterTime = 0.15;
+    public static double flutterTime = 0.2;
 
     private ElapsedTime boxCloseTimer = new ElapsedTime();
     private ElapsedTime frameTime = new ElapsedTime();
 
     private MotionProfiledMotion profile = new MotionProfiledMotion(
             new MotionProfile(0, 0, vMax, aMax),
+
             new GeneralPIDController(kP, kI, kD, kF)
     );
     private Telemetry t;
@@ -106,13 +107,13 @@ public class DepositLift implements Subsystem{
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
         this.backLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "backDepositMotor"), 0.0025);
         this.frontLiftMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "frontDepositMotor"), 0.0025);
-        this.leftServo = new CachingServo(hardwareMap.get(Servo.class, "LeftBox"), 1e-3);
-        this.rightServo = new CachingServo(hardwareMap.get(Servo.class, "RightBox"), 1e-3);
-        this.outtakeServo = new CachingServo(hardwareMap.get(Servo.class, "BoxOpenServo"), 1e-3);
+        this.leftServo = new CachingServo(hardwareMap.get(Servo.class, "leftBox"), 1e-3);
+        this.rightServo = new CachingServo(hardwareMap.get(Servo.class, "rightBox"), 1e-3);
+        this.outtakeServo = new CachingServo(hardwareMap.get(Servo.class, "boxOpenServo"), 1e-3);
 
         this.liftMotors = new MotorGroup<>(backLiftMotor, frontLiftMotor);
 
-        this.boxServo = hardwareMap.get(Servo.class, "BoxOpenServo");
+        this.boxServo = hardwareMap.get(Servo.class, "boxOpenServo");
         this.magneticLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftSwitch");
 
         this.onTimer = new ElapsedTime();
@@ -159,8 +160,9 @@ public class DepositLift implements Subsystem{
 
             power /= 2;
 
+
             if (this.magneticLimitSwitch.getState() && power == 0 && this.profile.timer.seconds() - this.profile.feedforwardProfile.getDuration() < 0.5) {
-                power = -0.4;
+               power = -0.4;
             }
         }
 
@@ -215,6 +217,7 @@ public class DepositLift implements Subsystem{
                 this.rightServo.setPosition(rightServoDefaultPosition);
             }
         }
+
         this.previousTargetState = currentTargetState;
         this.override = false;
         this.liftMotors.setPower(power);
