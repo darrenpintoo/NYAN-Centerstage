@@ -6,8 +6,8 @@ public class CameraConstants {
 
     public static class FrontCamera {
         private final static double[][] CAMERA_MATRIX_ARRAY = new double[][]{
-                new double[]{1.02345122e+03, 0D, 5.92369453e+02},
-                new double[]{0D, 1.01729018e+03, 3.75351779e+02},
+                new double[]{633.978, 0D, 305.785},
+                new double[]{0D, 633.978, 248.325},
                 new double[]{0D, 0D, 1D}
         };
 
@@ -32,8 +32,8 @@ public class CameraConstants {
 
     public static class BackCamera {
         private final static double[][] CAMERA_MATRIX_ARRAY = new double[][]{
-                new double[]{646.522, 0D, 330.161},
-                new double[]{0D, 646.522, 246.454 },
+                new double[]{640.861, 0D, 313.689},
+                new double[]{0D, 640.861, 255.993},
                 new double[]{0D, 0D, 1D}
         };
                 /*new double[][]{

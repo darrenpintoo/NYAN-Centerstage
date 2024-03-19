@@ -243,11 +243,7 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addData("id: ", detection.id);
                 telemetry.addData("x: ", detection.ftcPose.x);
                 telemetry.addData("y: ", detection.ftcPose.y);
-                telemetry.addData("z: ", detection.ftcPose.z);
-
-                telemetry.addData("yaw: ", detection.ftcPose.yaw);
-
-
+                // telemetry.addData("z: ", detection.ftcPose.z);
 
             }
 

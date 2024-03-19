@@ -45,6 +45,7 @@ public class BackCamera implements Subsystem {
 
         FtcDashboard.getInstance().startCameraStream(backVisionPortal, 0);
 
+        /*
         if (backVisionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Camera", "Waiting");
             telemetry.update();
@@ -61,8 +62,11 @@ public class BackCamera implements Subsystem {
             exposureControl.setMode(ExposureControl.Mode.Manual);
         }
 
+
         exposureControl.setExposure(CameraConstants.BackCamera.exposure, TimeUnit.MILLISECONDS);
         gainControl.setGain(CameraConstants.BackCamera.gain);
+        
+         */
     }
 
     @Override
