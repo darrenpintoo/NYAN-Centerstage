@@ -42,9 +42,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /*
  * This OpMode helps calibrate a webcam or RC phone camera, useful for AprilTag pose estimation
@@ -96,7 +100,28 @@ public class UtilityCameraFrameCapture extends LinearOpMode
                     .build();
         }
 
+
         FtcDashboard.getInstance().startCameraStream(portal, 0);
+
+        if (portal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            telemetry.addData("Camera", "Waiting");
+            telemetry.update();
+            while (portal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            }
+            telemetry.addData("Camera", "Ready");
+            telemetry.update();
+        }
+
+        ExposureControl exposureControl = portal.getCameraControl(ExposureControl.class);
+        GainControl gainControl = portal.getCameraControl(GainControl.class);
+
+        if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+            exposureControl.setMode(ExposureControl.Mode.Manual);
+        }
+
+
+        exposureControl.setExposure(CameraConstants.FrontCamera.exposure, TimeUnit.MILLISECONDS);
+        gainControl.setGain(CameraConstants.FrontCamera.gain);
 
         while (!isStopRequested())
         {

@@ -35,8 +35,8 @@ public class ThreeWheelLocalizer {
     private Pose pose = new Pose(0, 0, 0);
     private Pose velocity = new Pose(0, 0, 0);
 
-    public static double trackWidth = -6.9;
-    public static double fowardOffset = 2.9;
+    public static double trackWidth = 7.05;
+    public static double fowardOffset = 5.359;
 
     private double headingError = 0;
 
@@ -68,9 +68,9 @@ public class ThreeWheelLocalizer {
         double updateTime = updateTimer.seconds();
         updateTimer.reset();
 
-        double currentLeftParallelTicks = leftParallel.getTicks() * 0.9819;
-        double currentRightParallelTicks = rightParallel.getTicks() * 0.9819;
-        double currentBackPerpendicularTicks = backPerpendicular.getTicks() * 0.98;
+        double currentLeftParallelTicks = leftParallel.getTicks();
+        double currentRightParallelTicks = rightParallel.getTicks();
+        double currentBackPerpendicularTicks = backPerpendicular.getTicks();
 
         double deltaLeftParallel = currentLeftParallelTicks - prevLeftParallelTicks;
         double deltaRightParallel = currentRightParallelTicks - prevRightParallelTicks;
@@ -86,11 +86,8 @@ public class ThreeWheelLocalizer {
         double deltaBackDistance = (deltaBackPerpendicular / DriveConstants.TICKS_PER_REVOLUTION) * DriveConstants.WHEEL_SIZE * 2 * Math.PI;
 
         double phi = (deltaLeftDistance - deltaRightDistance) / trackWidth;
-        phi = imu.getCurrentFrameHeadingCW() - pose.getHeading();
         double deltaMiddle = (deltaLeftDistance + deltaRightDistance) / 2.0;
         double deltaPerpendicular = deltaBackDistance - fowardOffset * phi;
-        imu.onCyclePassed();
-        phi = imu.getCurrentFrameHeadingCW() - pose.getHeading();
         // x = theta; y = dtheta
 
         // double arcDeltaX = (Math.sin((phi + deltaPhi)) - Math.sin(phi)) / deltaPhi * delt;
@@ -115,7 +112,6 @@ public class ThreeWheelLocalizer {
         actualHeading += phi;
         double deltaX = twist.getX() * Math.sin(pose.getHeading()) - twist.getY() * Math.cos(pose.getHeading());
         double deltaY = twist.getX() * Math.cos(pose.getHeading()) + twist.getY() * Math.sin(pose.getHeading());
-
 
         // double deltaX = deltaMiddle * Math.sin(pose.getHeading()) - deltaPerpendicular * Math.cos(pose.getHeading());
         // double deltaY = deltaMiddle * Math.cos(pose.getHeading()) + deltaPerpendicular * Math.sin(pose.getHeading());

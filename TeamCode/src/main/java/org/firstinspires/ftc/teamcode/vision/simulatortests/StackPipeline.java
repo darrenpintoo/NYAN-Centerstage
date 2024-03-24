@@ -29,6 +29,8 @@ public class StackPipeline implements VisionProcessor {
     private Mat thresholdMat       = new Mat();
     private Mat contourMat = new Mat();
 
+    private double lastCaptureTime = 0;
+
 
     private final ArrayList<MatOfPoint> listOfContours = new ArrayList<>();
     Mat kernel1 = Imgproc.getStructuringElement(Imgproc.MORPH_ERODE, new Size(3, 3));
@@ -54,10 +56,7 @@ public class StackPipeline implements VisionProcessor {
         Imgproc.morphologyEx(frame, frame, Imgproc.MORPH_ERODE, kernel1);
         Imgproc.morphologyEx(frame, frame, Imgproc.MORPH_DILATE, kernel2);
 
-
         Imgproc.findContours(frame, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
-
-
 
         MatOfPoint largestContour = new MatOfPoint();
         double largestContourArea = -1;
@@ -93,7 +92,7 @@ public class StackPipeline implements VisionProcessor {
 
             double conversionPixelsToDegrees = CameraConstants.FrontCamera.fovXDeg / frame.size().width;
 
-            double linearDegreesErrorX = -(centerXCoordinate - (frame.size().width / 2)) * conversionPixelsToDegrees;
+            // double linearDegreesErrorX = -(centerXCoordinate - (frame.size().width / 2)) * conversionPixelsToDegrees;
             double curvedDegreesErrorX = -Math.toDegrees(Math.atan2((centerXCoordinate - (frame.size().width / 2)), CameraConstants.FrontCamera.fx));
             double curvedDegreesErrorY = -Math.toDegrees(Math.atan2((centerYCoordinate - (frame.size().height / 2)), CameraConstants.FrontCamera.fy));
 
@@ -124,6 +123,7 @@ public class StackPipeline implements VisionProcessor {
 
                 telemetry.addData("Hypotenuse Y: ", hypotenuseY);
                 telemetry.addData("Hypotenuse X: ", hypotenuseX);
+                telemetry.addData("Delay: ", captureTimeNanos - lastCaptureTime);
             }
             // t.addData("Distance: ", distanceToCamera);
 
@@ -133,6 +133,8 @@ public class StackPipeline implements VisionProcessor {
 
         telemetry.addLine("Contours: " + listOfContours.size());
         telemetry.update();
+
+        lastCaptureTime = captureTimeNanos;
         return null;
     }
 

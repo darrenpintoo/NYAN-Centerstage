@@ -39,15 +39,16 @@ public class TwoWheelLocalizer {
     private Pose pose = new Pose(0, 0, 0);
     private Pose velocity = new Pose(0, 0, 0);
 
-    public static double trackWidth = -7;
-    public static double fowardOffset = 2.3;
+    public static double trackWidth = 7.05;
+    public static double fowardOffset = 5.359;
 
     private double headingError = 0;
 
     private double actualHeading = 0;
 
 
-
+    private Pose perpendicularPosition = new Pose(0.366, -5.359, 0);
+    private Pose parallelPosition = new Pose(3.543, -5.964, Math.PI / 2);
 
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
@@ -63,8 +64,6 @@ public class TwoWheelLocalizer {
         this.imu = imu;
 
         IMUUpdateTimer.reset();
-
-
     }
 
     public void updatePose() {
@@ -157,7 +156,7 @@ public class TwoWheelLocalizer {
         // telemetry.addData("Velocity: ", velocity.getHeading());
         // telemetry.addData("Heading Error: ", actualHeading - pose.getHeading());
 
-        // this.telemetry.addData("Perp: ", deltaPerpendicular);
+        this.telemetry.addData("Perp: ", deltaPerpendicular);
         // this.telemetry.addData("Middle: ", deltaMiddle);
         // this.telemetry.addData("Back Distance: ", deltaBackDistance);
         // this.telemetry.addData("phi: ", phi);

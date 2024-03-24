@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
@@ -70,7 +71,9 @@ public class MainTeleop extends LinearOpMode {
 
         // robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
 
-        // robot.localizer.setPose(new Pose(-59, -15, Math.PI/2), true);
+        robot.localizer.setPose(new Pose(0, 0, 0), true);
+
+        PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
         while (!robot.stopRequested) {
 
@@ -239,13 +242,35 @@ public class MainTeleop extends LinearOpMode {
 
 
 
+
             for (AprilTagDetection detection : robot.backCamera.aprilTagProcessor.getDetections()) {
                 telemetry.addData("id: ", detection.id);
+
+                double x = detection.ftcPose.x;
+                double y = detection.ftcPose.y;
+
+                double rotatedHeading = -robot.localizer.getPose().getHeading();
+
+                double x2 = x * Math.cos(rotatedHeading) + y * Math.sin(rotatedHeading);
+                double y2 = x * -Math.sin(rotatedHeading) + y * Math.cos(rotatedHeading);
+
                 telemetry.addData("x: ", detection.ftcPose.x);
                 telemetry.addData("y: ", detection.ftcPose.y);
-                // telemetry.addData("z: ", detection.ftcPose.z);
+
+                telemetry.addData("x trig: ", x2);
+                telemetry.addData("y trig: ", y2);
+
+
+                if (gamepad1.x && detection.id == 3) {
+                    robot.localizer.setPose(new Pose(-x2, y2, robot.localizer.getPose().getHeading()), false);
+                    drive.gotoPoint(new Pose(0, 10, 0));
+                }
 
             }
+
+
+
+
 
 
 
@@ -253,9 +278,9 @@ public class MainTeleop extends LinearOpMode {
 
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
-            // telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
-            // telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
-            // telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
+            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW() * 180 / Math.PI);
+            telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
+            telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
         }
     }
 }
