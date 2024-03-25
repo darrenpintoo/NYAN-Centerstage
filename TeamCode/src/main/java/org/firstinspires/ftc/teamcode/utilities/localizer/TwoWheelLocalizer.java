@@ -44,7 +44,7 @@ public class TwoWheelLocalizer {
 
 
     private Pose perpendicularPosition = new Pose(0.366, -5.359, 0);
-    private Pose parallelPosition = new Pose(-3.543, -5.964, Math.PI / 2);
+    private Pose parallelPosition = new Pose(3.543, -5.964, Math.PI / 2);
 
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
@@ -86,7 +86,7 @@ public class TwoWheelLocalizer {
         double deltaBackDistance = deltaBackPerpendicular * DriveConstants.CONVERSION_CONSTANT;
 
         double phi = imu.getCurrentFrameHeadingCW() - pose.getHeading();
-        double deltaMiddle = deltaLeftDistance - parallelPosition.getX() * phi;
+        double deltaMiddle = deltaLeftDistance + parallelPosition.getX() * phi;
         double deltaPerpendicular = deltaBackDistance + perpendicularPosition.getY() * phi;
 
         double sineTerm, cosTerm;
@@ -150,13 +150,13 @@ public class TwoWheelLocalizer {
         // telemetry.addData("Heading Error: ", actualHeading - pose.getHeading());
 
         this.telemetry.addData("Perp: ", deltaPerpendicular);
-        // this.telemetry.addData("Middle: ", deltaMiddle);
+        this.telemetry.addData("Middle: ", deltaMiddle);
         // this.telemetry.addData("Back Distance: ", deltaBackDistance);
         // this.telemetry.addData("phi: ", phi);
 
 
-        this.telemetry.addData("deltaX: ", deltaX);
-        this.telemetry.addData("deltaY: ", deltaY);
+        // this.telemetry.addData("deltaX: ", deltaX);
+        // this.telemetry.addData("deltaY: ", deltaY);
         // this.telemetry.addData("deltaTheta: ", phi);
 
 
