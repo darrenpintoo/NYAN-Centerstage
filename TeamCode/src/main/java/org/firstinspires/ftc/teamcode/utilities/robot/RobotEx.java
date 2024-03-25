@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizerRoadrunner;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
@@ -76,6 +77,7 @@ public class RobotEx {
     Telemetry telemetry;
 
     public TwoWheelLocalizer localizer;
+    public TwoWheelLocalizerRoadrunner localizerRoadrunner;
 
     public HardwareMap hardwareMap;
 
@@ -141,13 +143,13 @@ public class RobotEx {
                 telemetry
         );
 
-        /*
+
         this.localizerRoadrunner = new TwoWheelLocalizerRoadrunner(
                 hardwareMap, internalIMU
         );
 
 
-         */
+
 
         telemetry.update();
     }
@@ -201,7 +203,7 @@ public class RobotEx {
         // telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
         // log.reset();
         localizer.updatePose();
-        // localizerRoadrunner.update();
+        localizerRoadrunner.update();
 
         // telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
 
@@ -220,8 +222,8 @@ public class RobotEx {
 
 
 
-        // telemetry.addData("X: ", localizerRoadrunner.getPoseEstimate().getX());
-        // telemetry.addData("Y: ", localizerRoadrunner.getPoseEstimate().getY());
+        telemetry.addData("X: ", localizerRoadrunner.getPoseEstimate().getX());
+        telemetry.addData("Y: ", localizerRoadrunner.getPoseEstimate().getY());
 
         // telemetry.addData("Heading: ", localizerRoadrunner.getPoseEstimate().getHeading());
 

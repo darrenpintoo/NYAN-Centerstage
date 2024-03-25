@@ -25,6 +25,11 @@ public class Camera implements Subsystem {
     WebcamName backCameraObject;
     WebcamName frontCameraObject;
 
+    boolean setFrontProperties = false;
+    boolean setBackProperties = false;
+
+    Telemetry telemetry;
+
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
         backCameraObject = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -57,56 +62,72 @@ public class Camera implements Subsystem {
 
         FtcDashboard.getInstance().startCameraStream(frontVisionPortal, 0);
 
-
-        if (backVisionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Camera", "Waiting");
-            telemetry.update();
-            while (backVisionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            }
-            telemetry.addData("Camera", "Ready");
-            telemetry.update();
-        }
-
-        ExposureControl exposureControl = backVisionPortal.getCameraControl(ExposureControl.class);
-        GainControl gainControl = backVisionPortal.getCameraControl(GainControl.class);
-
-        if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-            exposureControl.setMode(ExposureControl.Mode.Manual);
-        }
-
-
-        exposureControl.setExposure(CameraConstants.BackCamera.exposure, TimeUnit.MILLISECONDS);
-        gainControl.setGain(CameraConstants.BackCamera.gain);
-
-        if (frontVisionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Camera", "Waiting");
-            telemetry.update();
-            while (frontVisionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            }
-            telemetry.addData("Camera", "Ready");
-            telemetry.update();
-        }
-
-        exposureControl = frontVisionPortal.getCameraControl(ExposureControl.class);
-        gainControl = frontVisionPortal.getCameraControl(GainControl.class);
-
-        if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-            exposureControl.setMode(ExposureControl.Mode.Manual);
-        }
-
-
-        exposureControl.setExposure(CameraConstants.FrontCamera.exposure, TimeUnit.MILLISECONDS);
-        gainControl.setGain(CameraConstants.FrontCamera.gain);
-
+        this.telemetry = telemetry;
     }
 
     @Override
     public void onOpmodeStarted() {
-
+        setBackCameraProperties();
+        setFrontCameraProperties();
     }
 
     @Override
     public void onCyclePassed() {
+        if (!setFrontProperties) {
+            setFrontCameraProperties();
+        }
 
+        if (!setBackProperties) {
+            setBackCameraProperties();
+        }
+
+        telemetry.addData("Front Camera Active: ", isFrontCameraActive());
+        telemetry.addData("Back Camera Active: ", isBackCameraActive());
+
+
+    }
+
+    private void setFrontCameraProperties() {
+        if (!isFrontCameraActive()) return;
+
+        setFrontProperties = true;
+
+        setCameraProperties(
+                frontVisionPortal,
+                CameraConstants.FrontCamera.exposure,
+                CameraConstants.FrontCamera.gain
+        );
+    }
+
+    private void setBackCameraProperties() {
+        if (!isBackCameraActive()) return;
+
+        setBackProperties = true;
+
+        setCameraProperties(
+                backVisionPortal,
+                CameraConstants.BackCamera.exposure,
+                CameraConstants.BackCamera.gain
+        );
+    }
+    private void setCameraProperties(VisionPortal portal, long exposure, int gain) {
+
+        ExposureControl exposureControl = portal.getCameraControl(ExposureControl.class);
+        GainControl gainControl = portal.getCameraControl(GainControl.class);
+
+        if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+            exposureControl.setMode(ExposureControl.Mode.Manual);
+        }
+
+        exposureControl.setExposure(exposure, TimeUnit.MILLISECONDS);
+        gainControl.setGain(gain);
+    }
+
+    public boolean isFrontCameraActive() {
+        return frontVisionPortal.getCameraState() == VisionPortal.CameraState.STREAMING;
+    }
+
+    public boolean isBackCameraActive() {
+        return backVisionPortal.getCameraState() == VisionPortal.CameraState.STREAMING;
     }
 }

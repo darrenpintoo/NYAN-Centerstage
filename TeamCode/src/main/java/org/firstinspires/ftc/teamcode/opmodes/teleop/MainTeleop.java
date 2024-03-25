@@ -243,6 +243,9 @@ public class MainTeleop extends LinearOpMode {
 
 
 
+            if (gamepad1.left_stick_button) {
+                drive.gotoPoint(new Pose(0, 0, 0));
+            }
             for (AprilTagDetection detection : robot.backCamera.aprilTagProcessor.getDetections()) {
                 telemetry.addData("id: ", detection.id);
 
@@ -261,10 +264,13 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addData("y trig: ", y2);
 
 
+                /*
                 if (gamepad1.x && detection.id == 3) {
                     robot.localizer.setPose(new Pose(-x2, y2, robot.localizer.getPose().getHeading()), false);
                     drive.gotoPoint(new Pose(0, 10, 0));
                 }
+
+                 */
 
             }
 

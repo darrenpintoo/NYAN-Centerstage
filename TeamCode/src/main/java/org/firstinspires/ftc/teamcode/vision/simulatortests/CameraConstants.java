@@ -27,8 +27,8 @@ public class CameraConstants {
         public final static double fovYDeg = Math.toDegrees(2 * Math.atan2(HEIGHT, 2 * fy));
 
         public final static long MS_TO_PROCESS_FRAME = 2;
-        public final static long exposure = 10;
-        public final static int gain = 1;
+        public final static long exposure = 25;
+        public final static int gain = 100;
     }
 
 
@@ -63,8 +63,8 @@ public class CameraConstants {
 
         public final static long MS_TO_PROCESS_FRAME = 2;
 
-        public final static long exposure = 5;
-        public final static int gain = 1;
+        public final static long exposure = 25;
+        public final static int gain = 100;
     }
 
     private final static double[][] CAMERA_MATRIX_ARRAY = new double[][]{

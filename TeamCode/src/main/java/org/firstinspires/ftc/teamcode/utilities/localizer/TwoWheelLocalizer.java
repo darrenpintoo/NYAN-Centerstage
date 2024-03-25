@@ -25,10 +25,6 @@ public class TwoWheelLocalizer {
 
     private InternalIMU imu;
 
-    // Constants for wheel positions
-    private static final double WHEEL_BASE = 14.5; // Replace with your robot's wheelbase in inches
-    private static final double TRACK_WIDTH = 15.0; // Replace with your robot's track width in inches
-
     // Variables to store previous encoder values for dead wheel calculations
     private double prevLeftParallelTicks;
     private double prevRightParallelTicks;
@@ -48,7 +44,7 @@ public class TwoWheelLocalizer {
 
 
     private Pose perpendicularPosition = new Pose(0.366, -5.359, 0);
-    private Pose parallelPosition = new Pose(3.543, -5.964, Math.PI / 2);
+    private Pose parallelPosition = new Pose(-3.543, -5.964, Math.PI / 2);
 
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
@@ -71,6 +67,8 @@ public class TwoWheelLocalizer {
         double updateTime = updateTimer.seconds();
         updateTimer.reset();
 
+        imu.onCyclePassed();
+
         double currentLeftParallelTicks = leftParallel.getTicks();
         double currentBackPerpendicularTicks = backPerpendicular.getTicks();
 
@@ -88,13 +86,8 @@ public class TwoWheelLocalizer {
         double deltaBackDistance = deltaBackPerpendicular * DriveConstants.CONVERSION_CONSTANT;
 
         double phi = imu.getCurrentFrameHeadingCW() - pose.getHeading();
-        double deltaMiddle = deltaLeftDistance;
-        double deltaPerpendicular = deltaBackDistance - fowardOffset * phi;
-        imu.onCyclePassed();
-        phi = imu.getCurrentFrameHeadingCW() - pose.getHeading();
-        // x = theta; y = dtheta
-
-        // double arcDeltaX = (Math.sin((phi + deltaPhi)) - Math.sin(phi)) / deltaPhi * delt;
+        double deltaMiddle = deltaLeftDistance - parallelPosition.getX() * phi;
+        double deltaPerpendicular = deltaBackDistance + perpendicularPosition.getY() * phi;
 
         double sineTerm, cosTerm;
 
@@ -162,8 +155,8 @@ public class TwoWheelLocalizer {
         // this.telemetry.addData("phi: ", phi);
 
 
-        // this.telemetry.addData("deltaX: ", deltaX);
-        // this.telemetry.addData("deltaY: ", deltaY);
+        this.telemetry.addData("deltaX: ", deltaX);
+        this.telemetry.addData("deltaY: ", deltaY);
         // this.telemetry.addData("deltaTheta: ", phi);
 
 

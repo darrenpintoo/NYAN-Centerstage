@@ -21,11 +21,6 @@ public class ThreeWheelLocalizer {
 
     private InternalIMU imu;
 
-    // Constants for wheel positions
-    private static final double WHEEL_BASE = 14.5; // Replace with your robot's wheelbase in inches
-    private static final double TRACK_WIDTH = 15.0; // Replace with your robot's track width in inches
-
-    // Variables to store previous encoder values for dead wheel calculations
     private double prevLeftParallelTicks;
     private double prevRightParallelTicks;
     private double prevBackPerpendicularTicks;
