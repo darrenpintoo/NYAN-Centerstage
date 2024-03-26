@@ -98,10 +98,12 @@ public class DepositLift implements Subsystem{
     );
     private Telemetry t;
 
-    int startPosition = 0;
+    private int startPosition = 0;
+    private int currentSlidesPosition = 0;
 
     private ElapsedTime onTimer;
     private boolean lastSwitchState = true;
+    private boolean currentSwitchState = false;
     private boolean onLastTime = false;
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -113,7 +115,7 @@ public class DepositLift implements Subsystem{
 
         this.liftMotors = new MotorGroup<>(backLiftMotor, frontLiftMotor);
 
-        this.boxServo = hardwareMap.get(Servo.class, "boxOpenServo");
+        this.boxServo = new CachingServo(hardwareMap.get(Servo.class, "boxOpenServo"), 1e-3);
         this.magneticLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftSwitch");
 
         this.onTimer = new ElapsedTime();
@@ -153,6 +155,8 @@ public class DepositLift implements Subsystem{
         profile.setProfileCoefficients(kV, kA, vMax, aMax);
 
 
+        currentSlidesPosition = frontLiftMotor.getCurrentPosition();
+        currentSwitchState = magneticLimitSwitch.getState();
 
         // t.addData("Deposit -1: ", frameTime.milliseconds());
 
@@ -161,19 +165,19 @@ public class DepositLift implements Subsystem{
             power /= 2;
 
 
-            if (this.magneticLimitSwitch.getState() && power == 0 && this.profile.timer.seconds() - this.profile.feedforwardProfile.getDuration() < 0.5) {
+            if (currentSwitchState && power == 0 && this.profile.timer.seconds() - this.profile.feedforwardProfile.getDuration() < 0.5) {
                power = -0.4;
             }
         }
 
-        if (!this.magneticLimitSwitch.getState()) {
-            startPosition = frontLiftMotor.getCurrentPosition();
+        if (!currentSwitchState) {
+            startPosition = currentSlidesPosition;
         }
 
-        this.lastSwitchState = magneticLimitSwitch.getState();
+        this.lastSwitchState = currentSwitchState;
 
         if (power == 0) {
-            int a = this.frontLiftMotor.getCurrentPosition() - startPosition;
+            int a = currentSlidesPosition - startPosition;
             // t.addData("Deposit 0: ", frameTime.milliseconds());
 
             power = profile.getOutput(a);
@@ -228,8 +232,8 @@ public class DepositLift implements Subsystem{
 
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
 
-        t.addData("IsDown?: ", magneticLimitSwitch.getState());
-        t.addData("Slides Position: ", frontLiftMotor.getCurrentPosition());
+        t.addData("IsDown?: ", currentSwitchState);
+        t.addData("Slides Position: ", currentSlidesPosition);
         power = 0;
     }
 
@@ -318,7 +322,7 @@ public class DepositLift implements Subsystem{
     private void regenerateProfile() {
         timer.reset();
 
-        this.profile.updateTargetPosition(getTargetPositionFromState(this.currentTargetState), this.frontLiftMotor.getCurrentPosition());
+        this.profile.updateTargetPosition(getTargetPositionFromState(this.currentTargetState), currentSlidesPosition);
     }
 
     public void reset() {

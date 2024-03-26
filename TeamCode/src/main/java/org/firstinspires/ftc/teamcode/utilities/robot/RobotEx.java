@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizerRoadrunner;
+import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
@@ -106,10 +107,12 @@ public class RobotEx {
         return RobotEx.robotInstance;
     }
 
-    public void init(LinearOpMode opMode) {
+
+
+    public void init(LinearOpMode opMode, Telemetry telemetry) {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
-        this.telemetry = opMode.telemetry;
+        this.telemetry = telemetry;
 
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltageCompensator = this.voltageSensor.getVoltage();
@@ -143,15 +146,11 @@ public class RobotEx {
                 telemetry
         );
 
-
-        this.localizerRoadrunner = new TwoWheelLocalizerRoadrunner(
-                hardwareMap, internalIMU
-        );
-
-
-
-
         telemetry.update();
+    }
+
+    public void init(LinearOpMode opMode) {
+        this.init(opMode, opMode.telemetry);
     }
 
     public void postInit() {
@@ -193,48 +192,38 @@ public class RobotEx {
 
         telemetry.addLine("Refresh Rate: " + frames + " hz");
         telemetry.addData("Run time: ", runTime);
-        // ElapsedTime log = new ElapsedTime();
+        ElapsedTime log = new ElapsedTime();
 
-        // log.reset();
+        log.reset();
+
 
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
-        // telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
-        // log.reset();
+
+
+        telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
+        log.reset();
         localizer.updatePose();
-        localizerRoadrunner.update();
 
-        // telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
+        telemetry.addData("localizer: ", MathHelper.truncate(log.milliseconds(), 3));
 
-        // int i = 0;
+        int i = 0;
 
-        // log.reset();
+
+        log.reset();
         for (Subsystem subsystem : robotSubsystems) {
-            // i++;
+            i++;
             subsystem.onCyclePassed();
-            // telemetry.addLine("Loop times for " + i + " is: " + MathHelper.truncate(log.milliseconds(), 3) + ": " + MathHelper.truncate(frameTimer.milliseconds(), 3));
-            // log.reset();
+            telemetry.addLine("Loop times for " + i + " is: " + MathHelper.truncate(log.milliseconds(), 3) + ": " + MathHelper.truncate(frameTimer.milliseconds(), 3));
+            log.reset();
         }
+        telemetry.update();
 
-        // telemetry.addData("Localizer: ", log.milliseconds());
-
-
-
-
-        telemetry.addData("X: ", localizerRoadrunner.getPoseEstimate().getX());
-        telemetry.addData("Y: ", localizerRoadrunner.getPoseEstimate().getY());
-
-        // telemetry.addData("Heading: ", localizerRoadrunner.getPoseEstimate().getHeading());
 
         telemetry.addData("Parallel Encoder 1 Ticks: ", drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", drivetrain.leftBackMotor.getCurrentPosition());
         telemetry.addData("Perpendicular Encoder 1 Ticks: ", drivetrain.leftFrontMotor.getCurrentPosition());
-
-/*
-        telemetry.addData("X: ", currentPose.getX());
-        telemetry.addData("Y: ", currentPose.getY());
-        telemetry.addData("Heading: ", currentPose.getHeading());*/
 
         /*
         TelemetryPacket packet = new TelemetryPacket();
@@ -246,7 +235,6 @@ public class RobotEx {
         */
         // drawRobot(fieldOverlay, currentPose);
 
-        telemetry.update();
 
 
         double frameTime = frameTimer.milliseconds();

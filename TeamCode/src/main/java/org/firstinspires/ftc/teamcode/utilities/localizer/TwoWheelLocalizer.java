@@ -64,13 +64,15 @@ public class TwoWheelLocalizer {
 
     public void updatePose() {
 
-        double updateTime = updateTimer.seconds();
-        updateTimer.reset();
 
         imu.onCyclePassed();
 
-        double currentLeftParallelTicks = leftParallel.getTicks();
+        double currentLeftParallelTicks = leftParallel.getTicks() * 0.9899;
         double currentBackPerpendicularTicks = backPerpendicular.getTicks();
+
+        double updateTime = updateTimer.seconds();
+        updateTimer.reset();
+
 
         double deltaLeftParallel = currentLeftParallelTicks - prevLeftParallelTicks;
         double deltaBackPerpendicular = currentBackPerpendicularTicks - prevBackPerpendicularTicks;
@@ -149,8 +151,8 @@ public class TwoWheelLocalizer {
         // telemetry.addData("Velocity: ", velocity.getHeading());
         // telemetry.addData("Heading Error: ", actualHeading - pose.getHeading());
 
-        this.telemetry.addData("Perp: ", deltaPerpendicular);
-        this.telemetry.addData("Middle: ", deltaMiddle);
+        // this.telemetry.addData("Perp: ", deltaPerpendicular);
+        // this.telemetry.addData("Middle: ", deltaMiddle);
         // this.telemetry.addData("Back Distance: ", deltaBackDistance);
         // this.telemetry.addData("phi: ", phi);
 
@@ -170,6 +172,8 @@ public class TwoWheelLocalizer {
         this.telemetry.addData("Robot X (inches): ", this.pose.getX());
         this.telemetry.addData("Robot Y (inches): ", this.pose.getY());
         this.telemetry.addData("Robot Heading: ", this.pose.getHeading());
+
+        this.telemetry.addData("Update TIme: ", updateTimer.milliseconds());
 
 
     }

@@ -38,7 +38,7 @@ public class MainTeleop extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.setMsTransmissionInterval(500);
         // Initialize the robot
-        robot.init(this);
+        robot.init(this, telemetry);
 
 
         waitForStart();
@@ -249,6 +249,9 @@ public class MainTeleop extends LinearOpMode {
             for (AprilTagDetection detection : robot.backCamera.aprilTagProcessor.getDetections()) {
                 telemetry.addData("id: ", detection.id);
 
+                if (detection.ftcPose == null) {
+                    continue;
+                }
                 double x = detection.ftcPose.x;
                 double y = detection.ftcPose.y;
 
@@ -284,9 +287,9 @@ public class MainTeleop extends LinearOpMode {
 
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
-            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW() * 180 / Math.PI);
-            telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
-            telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
+            // telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW() * 180 / Math.PI);
+            // telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
+            // telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
         }
     }
 }
