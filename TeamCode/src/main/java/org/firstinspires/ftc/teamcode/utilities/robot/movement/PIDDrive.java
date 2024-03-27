@@ -89,7 +89,8 @@ public class PIDDrive {
             double targetDisplacement = motion.getPositionFromTime(currentProfileTime);
             double xTarget = cosineTerm * targetDisplacement + startPosition.getX();
             double yTarget = sineTerm * targetDisplacement + startPosition.getY();
-            double headingTarget = MathHelper.lerp(startPosition.getHeading(), point.getHeading(), currentProfileTime / duration);
+            // double headingTarget = MathHelper.lerp(startPosition.getHeading(), point.getHeading(), Math.min(currentProfileTime, duration) / duration);
+
             error = new Pose(
                     xTarget - currentPose.getX(),
                     yTarget - currentPose.getY(),
@@ -109,12 +110,15 @@ public class PIDDrive {
                     feedbackY + feedforwardY,
                     -MathUtils.clamp(headingController.getOutputFromError(
                              error.getHeading()
-                    ), -0.6, 0.6)
+                    ), -0.5, 0.5)
             );
 
 
             telemetry.addData("Profile time: ", currentProfileTime);
             telemetry.addData("Motion time: ", duration);
+            telemetry.addData("Start Heading: ", startPosition.getHeading());
+            telemetry.addData("End Heading: ", point.getHeading());
+
 
             robot.update();
             error.map(Math::abs);
