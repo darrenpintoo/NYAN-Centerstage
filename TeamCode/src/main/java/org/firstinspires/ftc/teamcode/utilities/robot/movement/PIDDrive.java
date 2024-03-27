@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.utilities.controltheory.MotionProfiledMoti
 import org.firstinspires.ftc.teamcode.utilities.controltheory.feedback.GeneralPIDController;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.MotionProfile;
 import org.firstinspires.ftc.teamcode.utilities.math.AngleHelper;
+import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -30,10 +31,10 @@ public class PIDDrive {
     GeneralPIDController yController = new GeneralPIDController(0.2, 0, 0, 0);
     GeneralPIDController headingController = new GeneralPIDController(1.5, 0, 0, 0);
 
-    public static double vMax = 52;
-    public static double aMax = 45;
+    public static double vMax = 55;
+    public static double aMax = 55;
 
-    public static double kA = 0.0015;
+    public static double kA = 0.003;
     public static double kV = 1/vMax;
 
     RobotEx robot;
@@ -46,12 +47,14 @@ public class PIDDrive {
         this.telemetry = t;
         this.opmode = opmode;
     }
-    public static Pose threshold = new Pose(1, 1, 0.05);
+    public static Pose threshold = new Pose(1, 1, Math.toRadians(2));
     public static double thresholdTime = 0.25;
     public void gotoPoint(Pose point) {
         Pose error = new Pose(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
         Pose currentPose = robot.localizer.getPose();
+        Pose currentVelocity = robot.localizer.getVelocity();
+
         Pose startPosition = new Pose(currentPose.getX(), currentPose.getY(), currentPose.getHeading());
         error = new Pose(
                 point.getX() - currentPose.getX(),
@@ -66,8 +69,11 @@ public class PIDDrive {
         );
 
         double angle = Math.atan2(error.getY(), error.getX());
+        double sineTerm = Math.sin(angle);
+        double cosineTerm = Math.cos(angle);
 
-
+        double duration = motion.getDuration();
+        double currentProfileTime = 0;
 
         boolean inPosition = false;
 
@@ -77,20 +83,23 @@ public class PIDDrive {
         while (!robot.stopRequested) {
 
             currentPose = robot.localizer.getPose();
-            double targetDisplacement = motion.getPositionFromTime(profileTime.time());
-            double xTarget = Math.cos(angle) * targetDisplacement + startPosition.getX();
-            double yTarget = Math.sin(angle) * targetDisplacement + startPosition.getY();
+            currentVelocity = robot.localizer.getVelocity();
+            currentProfileTime = profileTime.seconds();
 
+            double targetDisplacement = motion.getPositionFromTime(currentProfileTime);
+            double xTarget = cosineTerm * targetDisplacement + startPosition.getX();
+            double yTarget = sineTerm * targetDisplacement + startPosition.getY();
+            double headingTarget = MathHelper.lerp(startPosition.getHeading(), point.getHeading(), currentProfileTime / duration);
             error = new Pose(
                     xTarget - currentPose.getX(),
                     yTarget - currentPose.getY(),
                     point.getHeading() - currentPose.getHeading()
             );
 
-            double feedforward = motion.getAccelerationFromTime(profileTime.time()) * kA + motion.getVelocityFromTime(profileTime.time()) * kV;
+            double feedforward = motion.getAccelerationFromTime(currentProfileTime) * kA + motion.getVelocityFromTime(currentProfileTime) * kV;
 
-            double feedforwardX = feedforward * Math.cos(angle);
-            double feedforwardY = feedforward * Math.sin(angle);
+            double feedforwardX = feedforward * cosineTerm;
+            double feedforwardY = feedforward * sineTerm;
 
             double feedbackX = xController.getOutputFromError(error.getX());
             double feedbackY = yController.getOutputFromError(error.getY());
@@ -104,21 +113,23 @@ public class PIDDrive {
             );
 
 
-            telemetry.addData("Profile time: ", profileTime.seconds());
-            telemetry.addData("Motion time: ", motion.getDuration());
+            telemetry.addData("Profile time: ", currentProfileTime);
+            telemetry.addData("Motion time: ", duration);
 
             robot.update();
+            error.map(Math::abs);
+            currentVelocity = new Pose(currentVelocity).map(Math::abs);
 
-            if (Math.abs(error.getX()) < threshold.getX() & Math.abs(error.getY()) < threshold.getY() & Math.abs(error.getHeading()) < threshold.getHeading() && profileTime.time() > motion.getDuration()) {
+            if (error.lessThan(threshold) && currentProfileTime > duration) {
                 if (inPosition) {
-                    if (inPositionTime.seconds() > thresholdTime) {
+                    if (inPositionTime.seconds() > thresholdTime || currentVelocity.lessThan(threshold)) {
                         break;
                     }
                 } else {
                     inPosition = true;
                     inPositionTime.reset();
                 }
-            } else if (profileTime.seconds() > motion.getDuration() + DriveConstants.MAX_CORRECTION_TIME) {
+            } else if (currentProfileTime > duration + DriveConstants.MAX_CORRECTION_TIME) {
                break;
             } else {
                 inPosition = false;

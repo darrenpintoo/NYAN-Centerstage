@@ -173,7 +173,11 @@ public class TwoWheelLocalizer {
         this.telemetry.addData("Robot Y (inches): ", this.pose.getY());
         this.telemetry.addData("Robot Heading: ", this.pose.getHeading());
 
-        this.telemetry.addData("Update TIme: ", updateTimer.milliseconds());
+        this.telemetry.addData("Velocity x: ", this.velocity.getX());
+        this.telemetry.addData("Velocity y: ", this.velocity.getY());
+
+
+        this.telemetry.addData("Update Time: ", updateTimer.milliseconds());
 
 
     }
@@ -181,6 +185,9 @@ public class TwoWheelLocalizer {
 
     public Pose getPose() {
         return pose;
+    }
+    public Pose getVelocity() {
+        return velocity;
     }
 
     public void setPose(Pose pose, boolean override) {

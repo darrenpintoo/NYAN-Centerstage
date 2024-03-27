@@ -87,16 +87,18 @@ public class Drivetrain implements Subsystem {
     private double trackWidth = 12;
     private double wheelBase = 6.5;
     private double lateralMultiplier = -1.2;
+    public static double LATERAL_MULTIPLIER = 1.33;
+
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
 
         this.internalIMU = InternalIMU.getInstance();
         this.robotInstance = RobotEx.getInstance();
 
-        this.rightFrontMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightFrontMotor"), 1e-9);
-        this.leftFrontMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftFrontMotor"), 1e-9);
-        this.leftBackMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftBackMotor"), 1e-9);
-        this.rightBackMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor"), 1e-9);
+        this.rightFrontMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightFrontMotor"), 1e-5);
+        this.leftFrontMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftFrontMotor"), 1e-5);
+        this.leftBackMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "leftBackMotor"), 1e-5);
+        this.rightBackMotor = new CachingDcMotorEX((DcMotorEx) hardwareMap.get(DcMotor.class, "rightBackMotor"), 1e-5);
 
         // todo: figure out the directions
 
@@ -257,6 +259,7 @@ public class Drivetrain implements Subsystem {
         }
 */
         leftJoystickY = -leftJoystickY;
+        leftJoystickX *= LATERAL_MULTIPLIER;
 
         double multiple = RobotEx.getInstance().getPowerMultiple();
 

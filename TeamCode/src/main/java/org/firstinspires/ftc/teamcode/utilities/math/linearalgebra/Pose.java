@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.utilities.math.linearalgebra;
 
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleConsumer;
+import java.util.function.Function;
+
 public class Pose {
     private double x;
     private double y;
@@ -13,6 +17,12 @@ public class Pose {
         this.x = x;
         this.y = y;
         this.heading = heading;
+    }
+
+    public Pose(Pose other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.heading = other.heading;
     }
 
     public double getX() {
@@ -44,7 +54,6 @@ public class Pose {
         this.setY(this.getY() + other.getY());
         this.setHeading(this.getHeading() + other.getHeading());
     }
-
     public Pose rotated(double angle) {
         double x = this.getX();
         double y = this.getY();
@@ -61,6 +70,26 @@ public class Pose {
         this.setY(this.getY() * other);
 
         return this;
+    }
+
+    public Pose abs() {
+        this.setX(Math.abs(this.getX()));
+        this.setY(Math.abs(this.getY()));
+        this.setHeading(Math.abs(this.getHeading()));
+
+        return this;
+    }
+
+    public Pose map(Function<Double, Double> func) {
+        this.setX(func.apply(this.getX()));
+        this.setY(func.apply(this.getY()));
+        this.setHeading(func.apply(this.getHeading()));
+
+        return this;
+    }
+
+    public boolean lessThan(Pose other) {
+        return (this.getX() < other.getX()) && (this.getY() < other.getY()) && (this.getHeading() < other.getHeading());
     }
 
 }

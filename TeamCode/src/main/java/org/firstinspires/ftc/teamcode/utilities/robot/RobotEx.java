@@ -78,8 +78,6 @@ public class RobotEx {
     Telemetry telemetry;
 
     public TwoWheelLocalizer localizer;
-    public TwoWheelLocalizerRoadrunner localizerRoadrunner;
-
     public HardwareMap hardwareMap;
 
     public LinearOpMode opMode;
@@ -122,22 +120,6 @@ public class RobotEx {
         }
 
         internalIMU.onInit(hardwareMap, telemetry);
-
-
-        // Left: parallel 1
-        // Right: parallel 2
-        // Perpendicular: perpendicular
-        /*
-        this.localizer = new ThreeWheelLocalizer(
-                new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
-                new BaseEncoder(this.drivetrain.leftBackMotor, -1), // 3
-                new BaseEncoder(this.drivetrain.leftFrontMotor,  -1), // 2 // Changed sign
-                internalIMU,
-                telemetry
-        );
-
-         */
-
 
         this.localizer = new TwoWheelLocalizer(
                 new BaseEncoder(this.drivetrain.rightBackMotor, -1), // 0 LEFT // Swapped w/ 3
@@ -190,35 +172,19 @@ public class RobotEx {
 
         currentFrames += 1;
 
-        telemetry.addLine("Refresh Rate: " + frames + " hz");
-        telemetry.addData("Run time: ", runTime);
         ElapsedTime log = new ElapsedTime();
 
         log.reset();
-
 
         for (LynxModule hub : allHubs) {
             hub.clearBulkCache();
         }
 
-
-        telemetry.addData("Clear Cache: ", MathHelper.truncate(log.milliseconds(), 3));
-        log.reset();
         localizer.updatePose();
 
-        telemetry.addData("localizer: ", MathHelper.truncate(log.milliseconds(), 3));
-
-        int i = 0;
-
-
-        log.reset();
         for (Subsystem subsystem : robotSubsystems) {
-            i++;
             subsystem.onCyclePassed();
-            telemetry.addLine("Loop times for " + i + " is: " + MathHelper.truncate(log.milliseconds(), 3) + ": " + MathHelper.truncate(frameTimer.milliseconds(), 3));
-            log.reset();
         }
-        telemetry.update();
 
 
         telemetry.addData("Parallel Encoder 1 Ticks: ", drivetrain.rightBackMotor.getCurrentPosition());
@@ -236,6 +202,11 @@ public class RobotEx {
         // drawRobot(fieldOverlay, currentPose);
 
 
+
+        telemetry.addLine("Refresh Rate: " + frames + " hz");
+        telemetry.addData("Run time: ", runTime);
+
+        telemetry.update();
 
         double frameTime = frameTimer.milliseconds();
         frameTimer.reset();
