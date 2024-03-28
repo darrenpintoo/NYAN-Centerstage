@@ -76,6 +76,7 @@ public class InternalIMU implements Subsystem {
         this.onCyclePassed();
         this.startTilt = this.getCurrentFrameTilt();
         this.startFrameRobotOrientation = this.getCurrentFrameRobotOrientation();
+        this.headingOffset = 0;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class InternalIMU implements Subsystem {
     }
 
     public double getCurrentFrameHeadingCW() {
-        return this.enabledHeadingOffset ? this.currentFrameOrientation.firstAngle + this.headingOffset : this.currentFrameOrientation.firstAngle;
+        return this.enabledHeadingOffset ? this.currentFrameOrientation.firstAngle - this.headingOffset : this.currentFrameOrientation.firstAngle;
     }
 
     public AngularVelocity getCurrentFrameVelocity() {
@@ -171,6 +172,10 @@ public class InternalIMU implements Subsystem {
 
     public void setHeadingOffset(double headingOffset) {
         this.headingOffset = headingOffset;
+    }
+
+    public void incrementHeadingOffset(double headingOffset) {
+        this.headingOffset += headingOffset;
     }
 
     public void enableHeadingOffsetCorrection() {

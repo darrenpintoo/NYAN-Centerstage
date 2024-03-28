@@ -5,19 +5,27 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.StackPipeline;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.StackProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Camera implements Subsystem {
 
     public AprilTagProcessor aprilTagProcessor;
+    public StackPipeline stackProcessor;
     public VisionPortal backVisionPortal;
     public VisionPortal frontVisionPortal;
 
@@ -29,6 +37,9 @@ public class Camera implements Subsystem {
     boolean setBackProperties = false;
 
     Telemetry telemetry;
+
+    ArrayList<AprilTagDetection> detections = new ArrayList<>();
+    public Pose backCameraPose = new Pose(-8, 0, 0);
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -43,9 +54,12 @@ public class Camera implements Subsystem {
         ).setDrawAxes(true).setDrawTagOutline(true).setDrawCubeProjection(true).build();
 
 
+        stackProcessor = new StackPipeline(telemetry);
+
         frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(frontCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
+                .addProcessor(stackProcessor)
                 .enableLiveView(true)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
@@ -60,7 +74,7 @@ public class Camera implements Subsystem {
                 .setShowStatsOverlay(true)
                 .build();
 
-        FtcDashboard.getInstance().startCameraStream(frontVisionPortal, 0);
+        FtcDashboard.getInstance().startCameraStream(backVisionPortal, 0);
 
         this.telemetry = telemetry;
     }
@@ -84,7 +98,11 @@ public class Camera implements Subsystem {
         telemetry.addData("Front Camera Active: ", isFrontCameraActive());
         telemetry.addData("Back Camera Active: ", isBackCameraActive());
 
+        if (isFrontCameraActive()) {
+            telemetry.addData("Strafe: ", stackProcessor.getCorrection().getX());
+        }
 
+        detections = aprilTagProcessor.getDetections();
     }
 
     private void setFrontCameraProperties() {
@@ -129,5 +147,19 @@ public class Camera implements Subsystem {
 
     public boolean isBackCameraActive() {
         return backVisionPortal.getCameraState() == VisionPortal.CameraState.STREAMING;
+    }
+
+    public ArrayList<AprilTagDetection> getDetections() {
+        return detections;
+    }
+
+    public Pose getRobotPoseFromTags() {
+        Pose estimate = new Pose();
+
+        for (AprilTagDetection detection : detections) {
+
+        }
+
+        return estimate;
     }
 }

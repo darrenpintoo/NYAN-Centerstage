@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import android.util.Size;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,19 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.utilities.localizer.ThreeWheelLocalizer;
-import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
+import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 /**
  * Example teleop code for a basic mecanum drive
@@ -75,6 +68,7 @@ public class MainTeleop extends LinearOpMode {
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
+        ElapsedTime t = new ElapsedTime();
         while (!robot.stopRequested) {
 
             e.reset();
@@ -246,7 +240,13 @@ public class MainTeleop extends LinearOpMode {
             if (gamepad1.left_stick_button) {
                 drive.gotoPoint(new Pose(0, 0, 0));
             }
-            for (AprilTagDetection detection : robot.backCamera.aprilTagProcessor.getDetections()) {
+
+            if (currentFrameGamepad1.right_stick_button && !previousFrameGamepad1.right_stick_button) {
+                robot.localizer.setPose(new Pose(0, 0, Math.PI / 2), true );
+            }
+
+            for (AprilTagDetection detection : robot.camera.aprilTagProcessor.getDetections()) {
+                if (detection.id != 3) continue;
                 telemetry.addData("id: ", detection.id);
 
                 if (detection.ftcPose == null) {
@@ -260,20 +260,21 @@ public class MainTeleop extends LinearOpMode {
                 double x2 = x * Math.cos(rotatedHeading) + y * Math.sin(rotatedHeading);
                 double y2 = x * -Math.sin(rotatedHeading) + y * Math.cos(rotatedHeading);
 
-                telemetry.addData("x: ", detection.ftcPose.x);
-                telemetry.addData("y: ", detection.ftcPose.y);
-
                 telemetry.addData("x trig: ", x2);
                 telemetry.addData("y trig: ", y2);
 
+                Pose a = AprilTagLocalization.getRobotPositionFromTag(detection, robot.localizer.getPose().getHeading(), robot.camera.backCameraPose);
 
-                /*
+                telemetry.addData("Global x: ", a.getX());
+                telemetry.addData("Global y: ", a.getY());
                 if (gamepad1.x && detection.id == 3) {
-                    robot.localizer.setPose(new Pose(-x2, y2, robot.localizer.getPose().getHeading()), false);
-                    drive.gotoPoint(new Pose(0, 10, 0));
+                    robot.localizer.setPose(new Pose(a.getX(), a.getY(), robot.localizer.getPose().getHeading()), false);
+                    Pose target = AprilTagLocalization.getTagPosition(detection);
+                    target.add(new Pose(0, 10, 0));
+                    drive.gotoPoint(target);
                 }
 
-                 */
+
 
             }
 
@@ -287,7 +288,7 @@ public class MainTeleop extends LinearOpMode {
 
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
-            // telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW() * 180 / Math.PI);
+            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
             // telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
             // telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
         }

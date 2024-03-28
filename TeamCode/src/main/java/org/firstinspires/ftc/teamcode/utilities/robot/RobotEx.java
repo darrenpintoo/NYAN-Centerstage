@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
-import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizerRoadrunner;
-import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Drivetrain;
@@ -63,7 +61,7 @@ public class RobotEx {
     public VoltageSensor voltageSensor;
 
     public PlaneLauncher planeLauncher = new PlaneLauncher();
-    public Camera backCamera = new Camera();
+    public Camera camera = new Camera();
     private final ElapsedTime frameTimer = new ElapsedTime();
 
     private final Subsystem[] robotSubsystems = new Subsystem[]{
@@ -72,7 +70,7 @@ public class RobotEx {
             intake,
             depositLift,
             planeLauncher,
-            backCamera
+            camera
     };
 
     Telemetry telemetry;

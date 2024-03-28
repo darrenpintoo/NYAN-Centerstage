@@ -4,11 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utilities.math.AngleHelper;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.BaseEncoder;
 import org.firstinspires.ftc.teamcode.utilities.robot.DriveConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.InternalIMU;
+import org.mercurialftc.mercurialftc.silversurfer.geometry.angle.Angle;
 
 
 // -0.1 X, 7.1 Y when turning right 90 deg
@@ -49,6 +51,8 @@ public class TwoWheelLocalizer {
     ElapsedTime IMUUpdateTimer = new ElapsedTime();
     ElapsedTime updateTimer = new ElapsedTime();
 
+    Pose offsetPose = new Pose();
+
     public TwoWheelLocalizer(BaseEncoder lp, BaseEncoder bp, InternalIMU imu, Telemetry telemetry) {
         this.leftParallel = lp;
         this.backPerpendicular = bp;
@@ -87,7 +91,7 @@ public class TwoWheelLocalizer {
         double deltaLeftDistance = deltaLeftParallel * DriveConstants.CONVERSION_CONSTANT;
         double deltaBackDistance = deltaBackPerpendicular * DriveConstants.CONVERSION_CONSTANT;
 
-        double phi = imu.getCurrentFrameHeadingCW() - pose.getHeading();
+        double phi = AngleHelper.normDelta(offsetPose.getHeading() + imu.getCurrentFrameHeadingCW() - pose.getHeading());
         double deltaMiddle = deltaLeftDistance + parallelPosition.getX() * phi;
         double deltaPerpendicular = deltaBackDistance + perpendicularPosition.getY() * phi;
 
@@ -110,7 +114,6 @@ public class TwoWheelLocalizer {
         double sin = Math.sin(pose.getHeading());
         double cos = Math.cos(pose.getHeading());
 
-        actualHeading += phi;
         double deltaX = twist.getX() * sin - twist.getY() * cos;
         double deltaY = twist.getX() * cos + twist.getY() * sin;
 
@@ -120,7 +123,7 @@ public class TwoWheelLocalizer {
 
         double newPositionX = pose.getX() + deltaX;
         double newPositionY = pose.getY() + deltaY;
-        double newHeading = pose.getHeading() + phi;
+        double newHeading = AngleHelper.normDelta(pose.getHeading() + phi);
 
         // Update robot pose
         pose = new Pose(newPositionX, newPositionY, newHeading);
@@ -154,7 +157,7 @@ public class TwoWheelLocalizer {
         // this.telemetry.addData("Perp: ", deltaPerpendicular);
         // this.telemetry.addData("Middle: ", deltaMiddle);
         // this.telemetry.addData("Back Distance: ", deltaBackDistance);
-        // this.telemetry.addData("phi: ", phi);
+        this.telemetry.addData("phi: ", phi);
 
 
         // this.telemetry.addData("deltaX: ", deltaX);
@@ -175,6 +178,7 @@ public class TwoWheelLocalizer {
 
         this.telemetry.addData("Velocity x: ", this.velocity.getX());
         this.telemetry.addData("Velocity y: ", this.velocity.getY());
+        this.telemetry.addData("Velocity Heading: ", this.velocity.getHeading());
 
 
         this.telemetry.addData("Update Time: ", updateTimer.milliseconds());
@@ -191,10 +195,15 @@ public class TwoWheelLocalizer {
     }
 
     public void setPose(Pose pose, boolean override) {
-        this.pose = pose;
         if (override) {
-            imu.setHeadingOffset(pose.getHeading());
+            imu.incrementHeadingOffset(this.pose.getHeading());
             imu.enableHeadingOffsetCorrection();
+            offsetPose.add(pose);
+
         }
+
+        this.pose = pose;
+
+
     }
 }

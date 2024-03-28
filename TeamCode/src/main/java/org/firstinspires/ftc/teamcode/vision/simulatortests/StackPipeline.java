@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -30,6 +34,10 @@ public class StackPipeline implements VisionProcessor {
     private Mat contourMat = new Mat();
 
     private double lastCaptureTime = 0;
+    private Pose correctionPose = new Pose(0, 0, 0);
+    private Rect stackRect;
+    private final Paint borderPaint = new Paint();
+
 
 
     private final ArrayList<MatOfPoint> listOfContours = new ArrayList<>();
@@ -40,23 +48,29 @@ public class StackPipeline implements VisionProcessor {
 
     public StackPipeline(Telemetry telemetry) {
         this.telemetry = telemetry;
+
+        borderPaint.setColor(Color.MAGENTA);
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setStrokeWidth(2);
     }
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
-
+        borderPaint.setColor(Color.MAGENTA);
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setStrokeWidth(2);
     }
 
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
         listOfContours.clear();
-        Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(frame, thresholdMat, Imgproc.COLOR_RGB2HSV);
 
-        Core.inRange(frame, lowerBound, upperBound, frame);
+        Core.inRange(thresholdMat, lowerBound, upperBound, thresholdMat);
 
-        Imgproc.morphologyEx(frame, frame, Imgproc.MORPH_ERODE, kernel1);
-        Imgproc.morphologyEx(frame, frame, Imgproc.MORPH_DILATE, kernel2);
+        Imgproc.morphologyEx(thresholdMat, thresholdMat, Imgproc.MORPH_ERODE, kernel1);
+        Imgproc.morphologyEx(thresholdMat, thresholdMat, Imgproc.MORPH_DILATE, kernel2);
 
-        Imgproc.findContours(frame, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+        Imgproc.findContours(thresholdMat, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
         MatOfPoint largestContour = new MatOfPoint();
         double largestContourArea = -1;
@@ -77,18 +91,18 @@ public class StackPipeline implements VisionProcessor {
                 }
 
                 Rect boundingBox = Imgproc.boundingRect(currentContour);
-                Imgproc.rectangle(frame, boundingBox, new Scalar(255, 255 , 255));
+                Imgproc.rectangle(contourMat, boundingBox, new Scalar(255, 255 , 255));
 
             }
 
 
             Rect boundingBox = Imgproc.boundingRect(largestContour);
-            Imgproc.rectangle(frame, boundingBox, new Scalar(0, 255 , 255));
+            Imgproc.rectangle(contourMat, boundingBox, new Scalar(0, 255 , 255));
 
             int centerXCoordinate = boundingBox.x + boundingBox.width / 2;
             int centerYCoordinate = boundingBox.y + boundingBox.height / 2;
 
-            Imgproc.circle(frame, new Point(centerXCoordinate, centerYCoordinate), 3, new Scalar(255, 0, 0));
+            Imgproc.circle(contourMat, new Point(centerXCoordinate, centerYCoordinate), 3, new Scalar(255, 0, 0));
 
             double conversionPixelsToDegrees = CameraConstants.FrontCamera.fovXDeg / frame.size().width;
 
@@ -112,7 +126,9 @@ public class StackPipeline implements VisionProcessor {
             // </ignore>
 
 
+            /*
             if (this.telemetry != null) {
+
                 telemetry.addData("X Degrees Error: ", curvedDegreesErrorX);
                 telemetry.addData("Y Degrees Error: ", curvedDegreesErrorY);
 
@@ -124,22 +140,33 @@ public class StackPipeline implements VisionProcessor {
                 telemetry.addData("Hypotenuse Y: ", hypotenuseY);
                 telemetry.addData("Hypotenuse X: ", hypotenuseX);
                 telemetry.addData("Delay: ", captureTimeNanos - lastCaptureTime);
+
+
+                telemetry.addLine("Contours: " + listOfContours.size());
             }
+
+             */
             // t.addData("Distance: ", distanceToCamera);
 
+            correctionPose = new Pose(hypotenuseX, hypotenuseY, 0);
 
         }
 
-
-        telemetry.addLine("Contours: " + listOfContours.size());
-        telemetry.update();
-
         lastCaptureTime = captureTimeNanos;
+
         return null;
     }
 
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+        if (stackRect != null) {
+            RectF stackRectF = new RectF(stackRect.x * scaleBmpPxToCanvasPx, stackRect.y * scaleBmpPxToCanvasPx, (stackRect.x + stackRect.width) * scaleBmpPxToCanvasPx, (stackRect.y + stackRect.height) * scaleBmpPxToCanvasPx);
+            borderPaint.setColor(Color.MAGENTA);
+            canvas.drawRect(stackRectF, borderPaint);
+        }
+    }
 
+    public Pose getCorrection() {
+        return correctionPose;
     }
 }
