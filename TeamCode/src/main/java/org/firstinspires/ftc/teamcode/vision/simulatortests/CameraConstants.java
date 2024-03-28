@@ -63,7 +63,7 @@ public class CameraConstants {
 
         public final static long MS_TO_PROCESS_FRAME = 2;
 
-        public final static long exposure = 75;
+        public final static long exposure = 10;
         public final static int gain = 100;
     }
 

@@ -29,7 +29,8 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetry.setMsTransmissionInterval(25);
+        telemetry.setMsTransmissionInterval(500);
+
         // Initialize the robot
         robot.init(this, telemetry);
 
@@ -242,16 +243,17 @@ public class MainTeleop extends LinearOpMode {
             }
 
             if (currentFrameGamepad1.right_stick_button && !previousFrameGamepad1.right_stick_button) {
-                robot.localizer.setPose(new Pose(0, 0, Math.PI / 2), true );
+                robot.localizer.setPose(new Pose(0, 0, 0), true );
             }
 
+
             for (AprilTagDetection detection : robot.camera.aprilTagProcessor.getDetections()) {
-                if (detection.id != 3) continue;
                 telemetry.addData("id: ", detection.id);
 
                 if (detection.ftcPose == null) {
                     continue;
                 }
+
                 double x = detection.ftcPose.x;
                 double y = detection.ftcPose.y;
 
@@ -267,16 +269,28 @@ public class MainTeleop extends LinearOpMode {
 
                 telemetry.addData("Global x: ", a.getX());
                 telemetry.addData("Global y: ", a.getY());
-                if (gamepad1.x && detection.id == 3) {
-                    robot.localizer.setPose(new Pose(a.getX(), a.getY(), robot.localizer.getPose().getHeading()), false);
-                    Pose target = AprilTagLocalization.getTagPosition(detection);
-                    target.add(new Pose(0, 10, 0));
-                    drive.gotoPoint(target);
-                }
+
+
+
 
 
 
             }
+
+
+
+            if (currentFrameGamepad1.y && !previousFrameGamepad1.y) {
+                Pose target = AprilTagLocalization.getTagPosition(3);
+                target.add(new Pose(0, 20, 0));
+                drive.gotoPoint(target);
+            }
+
+            if (currentFrameGamepad1.x && !previousFrameGamepad1.x) {
+                robot.localizer.setPose(
+                        robot.camera.getRobotPoseFromTags(), false
+                );
+            }
+
 
 
 

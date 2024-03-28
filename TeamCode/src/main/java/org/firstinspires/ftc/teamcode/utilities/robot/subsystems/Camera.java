@@ -10,7 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.StackPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.StackProcessor;
@@ -39,7 +42,10 @@ public class Camera implements Subsystem {
     Telemetry telemetry;
 
     ArrayList<AprilTagDetection> detections = new ArrayList<>();
+    int detectionAmount = 0;
     public Pose backCameraPose = new Pose(-8, 0, 0);
+
+    private TwoWheelLocalizer localizer;
 
     @Override
     public void onInit(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -83,6 +89,8 @@ public class Camera implements Subsystem {
     public void onOpmodeStarted() {
         setBackCameraProperties();
         setFrontCameraProperties();
+
+        localizer = RobotEx.getInstance().localizer;
     }
 
     @Override
@@ -103,6 +111,14 @@ public class Camera implements Subsystem {
         }
 
         detections = aprilTagProcessor.getDetections();
+
+        detectionAmount = detections.size();
+
+        for (AprilTagDetection detection : detections) {
+            if (detection.ftcPose == null) {
+                detections.remove(detection);
+            }
+        }
     }
 
     private void setFrontCameraProperties() {
@@ -155,11 +171,18 @@ public class Camera implements Subsystem {
 
     public Pose getRobotPoseFromTags() {
         Pose estimate = new Pose();
+        Pose currentPose = localizer.getPose();
+
+        if (detectionAmount == 0) return currentPose;
+
+        double heading = localizer.getPose().getHeading();
 
         for (AprilTagDetection detection : detections) {
-
+            estimate.add(AprilTagLocalization.getRobotPositionFromTag(detection, heading, backCameraPose));
         }
 
+        estimate.times( 1 / (double) detectionAmount);
+        estimate.setHeading(heading);
         return estimate;
     }
 }
