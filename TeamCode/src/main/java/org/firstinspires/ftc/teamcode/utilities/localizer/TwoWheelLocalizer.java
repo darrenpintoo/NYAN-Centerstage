@@ -157,12 +157,12 @@ public class TwoWheelLocalizer {
         // this.telemetry.addData("Perp: ", deltaPerpendicular);
         // this.telemetry.addData("Middle: ", deltaMiddle);
         // this.telemetry.addData("Back Distance: ", deltaBackDistance);
-        this.telemetry.addData("phi: ", phi);
+        // this.telemetry.addData("phi: ", phi);
 
 
-        // this.telemetry.addData("deltaX: ", deltaX);
-        // this.telemetry.addData("deltaY: ", deltaY);
-        // this.telemetry.addData("deltaTheta: ", phi);
+        this.telemetry.addData("deltaX: ", deltaX);
+        this.telemetry.addData("deltaY: ", deltaY);
+        this.telemetry.addData("deltaTheta: ", phi);
 
 
         /*

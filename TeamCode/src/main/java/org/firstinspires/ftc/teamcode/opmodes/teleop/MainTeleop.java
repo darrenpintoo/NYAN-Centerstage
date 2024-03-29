@@ -271,10 +271,6 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addData("Global y: ", a.getY());
 
 
-
-
-
-
             }
 
 

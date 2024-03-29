@@ -8,6 +8,8 @@ public class MotionProfile {
     private double vMax;
     private double aMax;
 
+    private double duration = 0;
+
     public MotionProfile(double x0, double x1, double vMax, double aMax) {
         this.x0 = x0;
         this.x1 = x1;
@@ -46,7 +48,7 @@ public class MotionProfile {
         }
 
         this.trajectoryPhases = trajectoryPhases;
-
+        duration = this._getDuration();
     }
 
     public double getPositionFromTime(double time) {
@@ -110,7 +112,7 @@ public class MotionProfile {
         return 0;
     }
 
-    public double getDuration() {
+    private double _getDuration() {
         double elapsedTime = 0;
 
         for (Phase currentPhase : this.trajectoryPhases) {
@@ -121,5 +123,9 @@ public class MotionProfile {
         }
 
         return elapsedTime;
+    }
+
+    public double getDuration() {
+        return duration;
     }
 }

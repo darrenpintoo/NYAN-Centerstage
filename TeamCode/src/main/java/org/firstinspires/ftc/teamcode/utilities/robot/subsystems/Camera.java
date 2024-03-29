@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PreloadDetectionPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.StackPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.StackProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -29,6 +30,8 @@ public class Camera implements Subsystem {
 
     public AprilTagProcessor aprilTagProcessor;
     public StackPipeline stackProcessor;
+    public PreloadDetectionPipeline preloadPipeline;
+
     public VisionPortal backVisionPortal;
     public VisionPortal frontVisionPortal;
 
@@ -61,6 +64,7 @@ public class Camera implements Subsystem {
 
 
         stackProcessor = new StackPipeline(telemetry);
+        preloadPipeline = new PreloadDetectionPipeline();
 
         frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(frontCameraObject)
@@ -74,7 +78,7 @@ public class Camera implements Subsystem {
         backVisionPortal = new VisionPortal.Builder()
                 .setCamera(backCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
-                .addProcessor(aprilTagProcessor)
+                .addProcessors(aprilTagProcessor, preloadPipeline)
                 .enableLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)

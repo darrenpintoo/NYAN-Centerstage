@@ -92,4 +92,17 @@ public class Pose {
         return (this.getX() < other.getX()) && (this.getY() < other.getY()) && (this.getHeading() < other.getHeading());
     }
 
+    public double magnitude() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public double distance(Pose other) {
+
+        return new Pose(
+                x - other.x,
+                y - other.y,
+                heading - other.heading
+        ).magnitude();
+
+    }
 }
