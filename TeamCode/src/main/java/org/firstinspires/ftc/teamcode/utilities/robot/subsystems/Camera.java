@@ -95,6 +95,7 @@ public class Camera implements Subsystem {
         setFrontCameraProperties();
 
         localizer = RobotEx.getInstance().localizer;
+
     }
 
     @Override
@@ -107,8 +108,11 @@ public class Camera implements Subsystem {
             setBackCameraProperties();
         }
 
-        telemetry.addData("Front Camera Active: ", isFrontCameraActive());
-        telemetry.addData("Back Camera Active: ", isBackCameraActive());
+        telemetry.addData("Front fps: ", isFrontCameraActive());
+        telemetry.addData("Back fps: ", isBackCameraActive());
+
+        telemetry.addData("Left: ", preloadPipeline.leftAverage);
+        telemetry.addData("Right: ", preloadPipeline.rightAverage);
 
         if (isFrontCameraActive()) {
             telemetry.addData("Strafe: ", stackProcessor.getCorrection().getX());

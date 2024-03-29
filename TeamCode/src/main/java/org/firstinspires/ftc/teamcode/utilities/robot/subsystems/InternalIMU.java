@@ -92,7 +92,7 @@ public class InternalIMU implements Subsystem {
             this.lastFrameVelocity = this.currentFrameVelocity;
             this.lastFrameRobotVelocity = new RobotAngularVelocity(this.lastFrameVelocity);
 
-            this.currentFrameVelocity = internalIMU.getAngularVelocity();
+            // this.currentFrameVelocity = internalIMU.getAngularVelocity();
             this.currentFrameRobotVelocity = new RobotAngularVelocity(this.currentFrameVelocity);
 
         }

@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -18,9 +22,22 @@ public class PreloadDetectionPipeline implements VisionProcessor {
 
 
     int targetAprilTagID = 1;
+
+    public double leftAverage;
+    public double rightAverage;
+    Rect leftInclusionZone;
+    Rect rightInclusionZone;
+
+    private final Paint borderPaint = new Paint();
+
+
+    public Scalar lower = new Scalar(27, 10, 10);
+    public Scalar upper = new Scalar(90, 255, 255);
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
-
+        borderPaint.setColor(Color.MAGENTA);
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setStrokeWidth(2);
     }
 
     @Override
@@ -55,22 +72,31 @@ public class PreloadDetectionPipeline implements VisionProcessor {
                         int exclusionZoneWidth = (int) (tagWidth * 0.28);
                         int exclusionZoneHeight = (int) (tagHeight * 0.28);
 
-                        Rect leftInclusionZone = new Rect(tagCenterX - inclusionZoneWidth, tagCenterY - 110, inclusionZoneWidth, inclusionZoneHeight);
-                        Rect rightInclusionZone = new Rect(tagCenterX, tagCenterY - 110, inclusionZoneWidth, inclusionZoneHeight);
-
-                        Rect leftExclusionZone = new Rect(tagCenterX - (int) (inclusionZoneWidth * 0.64), tagCenterY - 90, exclusionZoneWidth, exclusionZoneHeight);
-                        Rect rightExclusionZone = new Rect(tagCenterX + (int) (inclusionZoneWidth * 0.28), tagCenterY - 90, exclusionZoneWidth, exclusionZoneHeight);
+                        leftInclusionZone = new Rect(tagCenterX - inclusionZoneWidth, tagCenterY - 110, inclusionZoneWidth, inclusionZoneHeight);
+                        rightInclusionZone = new Rect(tagCenterX, tagCenterY - 110, inclusionZoneWidth, inclusionZoneHeight);
 
                         Imgproc.rectangle(frame, leftInclusionZone, new Scalar(0, 255, 0), 7);
                         Imgproc.rectangle(frame, rightInclusionZone, new Scalar(0, 255, 0), 7);
 
 
-                        int leftZoneAverage = meanColor(frame, leftInclusionZone, leftExclusionZone);
-                        int rightZoneAverage = meanColor(frame, rightInclusionZone, rightExclusionZone);
+                        Mat leftRect = frame.submat(leftInclusionZone);
+                        Mat rightRect = frame.submat(rightInclusionZone);
 
-                       System.out.println("LEFTAVG " + leftZoneAverage);
-                        System.out.println("RIGHTAVG " + rightZoneAverage);
+                        Imgproc.cvtColor(leftRect, leftRect, Imgproc.COLOR_RGB2HSV);
+                        Imgproc.cvtColor(rightRect, rightRect, Imgproc.COLOR_RGB2HSV);
 
+                        Core.inRange(leftRect, lower, upper, leftRect);
+                        Core.inRange(rightRect, lower, upper, rightRect);
+
+                        double leftZoneAverage = calculateYellowAmount(leftRect);
+                        double rightZoneAverage = calculateYellowAmount(rightRect);
+
+
+                        leftAverage = leftZoneAverage;
+                        rightAverage = rightZoneAverage;
+
+                        leftRect.release();
+                        rightRect.release();
                     }
                 }
             }
@@ -83,38 +109,30 @@ public class PreloadDetectionPipeline implements VisionProcessor {
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
+        if (leftInclusionZone != null) {
+            RectF stackRectL = new RectF(leftInclusionZone.x * scaleBmpPxToCanvasPx, leftInclusionZone.y * scaleBmpPxToCanvasPx, (leftInclusionZone.x + leftInclusionZone.width) * scaleBmpPxToCanvasPx, (leftInclusionZone.y + leftInclusionZone.height) * scaleBmpPxToCanvasPx);
+            RectF stackRectR = new RectF(rightInclusionZone.x * scaleBmpPxToCanvasPx, rightInclusionZone.y * scaleBmpPxToCanvasPx, (rightInclusionZone.x + rightInclusionZone.width) * scaleBmpPxToCanvasPx, (rightInclusionZone.y + rightInclusionZone.height) * scaleBmpPxToCanvasPx);
+
+            canvas.drawRect(stackRectL, borderPaint);
+            canvas.drawRect(stackRectR, borderPaint);
+
+
+        }
     }
 
-    public int meanColor(Mat frame, Rect inclusionRect, Rect exclusionRect) {
-        if (frame == null) {
-            System.out.println("frame is bad");
-            return 0;
-        }
+    private double calculateYellowAmount(Mat mat) {
+        Mat binary = new Mat();
 
-        int sum = 0;
-        int count = 0;
-        for (int y = inclusionRect.y; y < inclusionRect.y + inclusionRect.height; y++) {
-            for (int x = inclusionRect.x; x < inclusionRect.x + inclusionRect.width; x++) {
-                if (x < 0 || x >= frame.cols() || y < 0 || y >= frame.rows()) {
-                    continue;
-                }
+        Imgproc.threshold(binary, binary, 1, 255, Imgproc.THRESH_BINARY);
 
-                if (x >= exclusionRect.x && x < exclusionRect.x + exclusionRect.width && y >= exclusionRect.y && y < exclusionRect.y + exclusionRect.height) {
-                    continue;
-                }
+        int nonZeroCount = Core.countNonZero(binary);
+        binary.release();
 
-                double[] data = frame.get(y, x);
-                if (data != null && data.length > 0) {
-                    sum += data[0];
-                    count++;
-                }
-            }
-        }
-
-        return count > 0 ? sum / count : 0;
+        return nonZeroCount;
     }
-
     public void setTargetAprilTagID(int target) {
         targetAprilTagID = target;
     }
+
+
 }

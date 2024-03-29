@@ -160,9 +160,9 @@ public class TwoWheelLocalizer {
         // this.telemetry.addData("phi: ", phi);
 
 
-        this.telemetry.addData("deltaX: ", deltaX);
-        this.telemetry.addData("deltaY: ", deltaY);
-        this.telemetry.addData("deltaTheta: ", phi);
+        // this.telemetry.addData("deltaX: ", deltaX);
+        // this.telemetry.addData("deltaY: ", deltaY);
+        // this.telemetry.addData("deltaTheta: ", phi);
 
 
         /*
@@ -176,12 +176,12 @@ public class TwoWheelLocalizer {
         this.telemetry.addData("Robot Y (inches): ", this.pose.getY());
         this.telemetry.addData("Robot Heading: ", this.pose.getHeading());
 
-        this.telemetry.addData("Velocity x: ", this.velocity.getX());
-        this.telemetry.addData("Velocity y: ", this.velocity.getY());
-        this.telemetry.addData("Velocity Heading: ", this.velocity.getHeading());
+        // this.telemetry.addData("Velocity x: ", this.velocity.getX());
+        // this.telemetry.addData("Velocity y: ", this.velocity.getY());
+        // this.telemetry.addData("Velocity Heading: ", this.velocity.getHeading());
 
 
-        this.telemetry.addData("Update Time: ", updateTimer.milliseconds());
+        // this.telemetry.addData("Update Time: ", updateTimer.milliseconds());
 
 
     }

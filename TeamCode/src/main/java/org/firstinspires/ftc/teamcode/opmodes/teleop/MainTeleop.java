@@ -250,6 +250,7 @@ public class MainTeleop extends LinearOpMode {
             for (AprilTagDetection detection : robot.camera.aprilTagProcessor.getDetections()) {
                 telemetry.addData("id: ", detection.id);
 
+                /*
                 if (detection.ftcPose == null) {
                     continue;
                 }
@@ -270,6 +271,8 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addData("Global x: ", a.getX());
                 telemetry.addData("Global y: ", a.getY());
 
+
+                 */
 
             }
 
