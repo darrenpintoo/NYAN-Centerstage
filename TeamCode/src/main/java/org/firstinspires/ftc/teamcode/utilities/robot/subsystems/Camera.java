@@ -61,6 +61,7 @@ public class Camera implements Subsystem {
                 CameraConstants.BackCamera.cx,
                 CameraConstants.BackCamera.cy
         ).setDrawAxes(true).setDrawTagOutline(true).setDrawCubeProjection(true).build();
+        aprilTagProcessor.setDecimation(3);
 
 
         stackProcessor = new StackPipeline(telemetry);
@@ -84,16 +85,20 @@ public class Camera implements Subsystem {
                 .setShowStatsOverlay(true)
                 .build();
 
+        backVisionPortal.setProcessorEnabled(preloadPipeline, false);
+
         FtcDashboard.getInstance().startCameraStream(backVisionPortal, 0);
 
         this.telemetry = telemetry;
+
+        setFrontProperties = false;
+        setBackProperties = false;
     }
 
     @Override
     public void onOpmodeStarted() {
         setBackCameraProperties();
         setFrontCameraProperties();
-
         localizer = RobotEx.getInstance().localizer;
 
     }
@@ -108,11 +113,11 @@ public class Camera implements Subsystem {
             setBackCameraProperties();
         }
 
-        telemetry.addData("Front fps: ", isFrontCameraActive());
-        telemetry.addData("Back fps: ", isBackCameraActive());
+        telemetry.addData("Front fps: ", frontVisionPortal.getFps());
+        telemetry.addData("Back fps: ", backVisionPortal.getFps());
 
-        telemetry.addData("Left: ", preloadPipeline.leftAverage);
-        telemetry.addData("Right: ", preloadPipeline.rightAverage);
+        // telemetry.addData("Left: ", preloadPipeline.leftAverage);
+        // telemetry.addData("Right: ", preloadPipeline.rightAverage);
 
         if (isFrontCameraActive()) {
             telemetry.addData("Strafe: ", stackProcessor.getCorrection().getX());
@@ -160,6 +165,8 @@ public class Camera implements Subsystem {
         if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
             exposureControl.setMode(ExposureControl.Mode.Manual);
         }
+
+
 
         exposureControl.setExposure(exposure, TimeUnit.MILLISECONDS);
         gainControl.setGain(gain);

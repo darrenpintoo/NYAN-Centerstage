@@ -21,7 +21,7 @@ import java.util.List;
 public class PreloadDetectionPipeline implements VisionProcessor {
 
 
-    int targetAprilTagID = 1;
+    public int targetAprilTagID = 3;
 
     public double leftAverage;
     public double rightAverage;
@@ -78,25 +78,9 @@ public class PreloadDetectionPipeline implements VisionProcessor {
                         Imgproc.rectangle(frame, leftInclusionZone, new Scalar(0, 255, 0), 7);
                         Imgproc.rectangle(frame, rightInclusionZone, new Scalar(0, 255, 0), 7);
 
+                        leftAverage = meanColor(frame, leftInclusionZone);
+                        rightAverage = meanColor(frame, rightInclusionZone);
 
-                        Mat leftRect = frame.submat(leftInclusionZone);
-                        Mat rightRect = frame.submat(rightInclusionZone);
-
-                        Imgproc.cvtColor(leftRect, leftRect, Imgproc.COLOR_RGB2HSV);
-                        Imgproc.cvtColor(rightRect, rightRect, Imgproc.COLOR_RGB2HSV);
-
-                        Core.inRange(leftRect, lower, upper, leftRect);
-                        Core.inRange(rightRect, lower, upper, rightRect);
-
-                        double leftZoneAverage = calculateYellowAmount(leftRect);
-                        double rightZoneAverage = calculateYellowAmount(rightRect);
-
-
-                        leftAverage = leftZoneAverage;
-                        rightAverage = rightZoneAverage;
-
-                        leftRect.release();
-                        rightRect.release();
                     }
                 }
             }
@@ -120,19 +104,75 @@ public class PreloadDetectionPipeline implements VisionProcessor {
         }
     }
 
-    private double calculateYellowAmount(Mat mat) {
-        Mat binary = new Mat();
+    public double meanColor(Mat frame, Rect inclusionRect) {
+        if (frame == null) {
+            System.out.println("frame is bad");
+            return 0;
+        }
 
-        Imgproc.threshold(binary, binary, 1, 255, Imgproc.THRESH_BINARY);
+        int sum = 0;
+        int count = 0;
+        for (int y = inclusionRect.y + inclusionRect.height / 2 - 3; y < inclusionRect.y + inclusionRect.height / 2 + 3; y++) {
+            for (int x = inclusionRect.x; x < inclusionRect.x + inclusionRect.width; x++) {
+                if (x < 0 || x >= frame.cols() || y < 0 || y >= frame.rows()) {
+                    continue;
+                }
 
-        int nonZeroCount = Core.countNonZero(binary);
-        binary.release();
 
-        return nonZeroCount;
+                double[] data = frame.get(y, x);
+                if (data != null && data.length > 0) {
+                    sum += data[0];
+                    count++;
+                }
+            }
+        }
+
+        return count > 0 ? (double) sum / count: 0;
+    }
+
+    public double meanColorLinear(Mat frame, Rect inclusionRect) {
+        if (frame == null) {
+            System.out.println("frame is bad");
+            return 0;
+        }
+
+        int sum = 0;
+        int count = 0;
+
+        int y = (int) Math.floor(inclusionRect.y / 2.0);
+        int x = (int) Math.floor(inclusionRect.x / 2.0);
+
+        for (int i = inclusionRect.x; i < inclusionRect.x + inclusionRect.width; i++) {
+            if (i < 0 || i >= frame.cols() || y < 0 || y >= frame.rows()) {
+                continue;
+            }
+
+
+            double[] data = frame.get(y, i);
+            if (data != null && data.length > 0) {
+                sum += data[0];
+                count++;
+            }
+        }
+
+        for (int i = inclusionRect.y; i < inclusionRect.y + inclusionRect.height; i++) {
+            if (x < 0 || x >= frame.cols() || i < 0 || i >= frame.rows()) {
+                continue;
+            }
+
+
+            double[] data = frame.get(i, x);
+            if (data != null && data.length > 0) {
+                sum += data[0];
+                count++;
+            }
+        }
+
+        return count > 0 ? (double) sum / count: 0;
+
     }
     public void setTargetAprilTagID(int target) {
         targetAprilTagID = target;
     }
-
 
 }
