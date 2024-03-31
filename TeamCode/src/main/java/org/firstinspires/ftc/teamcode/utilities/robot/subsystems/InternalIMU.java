@@ -63,12 +63,15 @@ public class InternalIMU implements Subsystem {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
 
-        this.internalIMU = hardwareMap.get(BNO055IMU.class, "imu");
+        this.internalIMU = hardwareMap.get(BNO055IMU.class, "imuEX");
         this.internalIMU.initialize(parameters);
         this.telemetry = telemetry;
 
         telemetry.addData("Finished Initializing", this.internalIMU);
         telemetry.update();
+
+        this.headingOffset = 0;
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision.simulatortests;
+package org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation;
 
 
 import android.graphics.Canvas;
@@ -10,7 +10,8 @@ import android.graphics.Paint;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+// import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+import org.firstinspires.ftc.teamcode.vision.VisionUtilities;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -28,42 +29,47 @@ public class StackPipeline implements VisionProcessor {
 
 
     private double STACK_WIDTH = 3;
-    private double STACK_HEIGHT = 3;
+    private double STACK_HEIGHT = 2.5;
 
-    public Scalar lowerBound = new Scalar(0, 117.6, 128.9); // new Scalar(25.5, 80.8, 131.8);
-    public Scalar upperBound = new Scalar(17.0, 255, 255);// new Scalar(46.8, 255, 255);
+    public Scalar lowerBound = new Scalar(0, 0, 49.9); // new Scalar(25.5, 80.8, 131.8);
+    public Scalar upperBound = new Scalar(255, 255, 140);// new Scalar(46.8, 255, 255);
 
     private Mat hsvMat       = new Mat();
     private Mat thresholdMat       = new Mat();
     private Mat contourMat = new Mat();
 
     private double lastCaptureTime = 0;
-    private Pose correctionPose = new Pose(0, 0, 0);
-    private Rect stackRect;
-    private final Paint borderPaint = new Paint();
+    // private Pose correctionPose = new Pose(0, 0, 0);
+    private Rect boundingBox;
+    // private final Paint borderPaint = new Paint();
 
+    double strafeError;
 
 
     private final ArrayList<MatOfPoint> listOfContours = new ArrayList<>();
-    Mat kernel1 = Imgproc.getStructuringElement(Imgproc.MORPH_ERODE, new Size(3, 3));
-    Mat kernel2 = Imgproc.getStructuringElement(Imgproc.MORPH_DILATE, new Size(3, 3));
+    Mat kernel1 = Imgproc.getStructuringElement(Imgproc.MORPH_ERODE, new Size(10, 10));
+    Mat kernel2 = Imgproc.getStructuringElement(Imgproc.MORPH_DILATE, new Size(10, 10));
 
     Telemetry telemetry;
 
     public StackPipeline() {
 
-        borderPaint.setColor(Color.MAGENTA);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(2);
+        // borderPaint.setColor(Color.MAGENTA);
+        // borderPaint.setStyle(Paint.Style.STROKE);
+        // borderPaint.setStrokeWidth(2);
 
 
+    }
+
+    public StackPipeline(Telemetry telemetry) {
+        this.telemetry = telemetry;
     }
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
 
-        borderPaint.setColor(Color.MAGENTA);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(2);
+        // borderPaint.setColor(Color.MAGENTA);
+        // borderPaint.setStyle(Paint.Style.STROKE);
+        // borderPaint.setStrokeWidth(2);
 
     }
 
@@ -71,14 +77,15 @@ public class StackPipeline implements VisionProcessor {
     public Object processFrame(Mat frame, long captureTimeNanos) {
         listOfContours.clear();
 
-        Imgproc.cvtColor(frame, thresholdMat, Imgproc.COLOR_RGB2HSV);
+        thresholdMat = frame.submat(new Rect(0, 480 / 2, 640, 480 / 2));
+        Imgproc.cvtColor(thresholdMat, thresholdMat, Imgproc.COLOR_RGB2HSV);
 
         Core.inRange(thresholdMat, lowerBound, upperBound, thresholdMat);
 
         Imgproc.morphologyEx(thresholdMat, thresholdMat, Imgproc.MORPH_ERODE, kernel1);
         Imgproc.morphologyEx(thresholdMat, thresholdMat, Imgproc.MORPH_DILATE, kernel2);
 
-        Imgproc.findContours(thresholdMat, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(thresholdMat, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 
         MatOfPoint largestContour = new MatOfPoint();
         double largestContourArea = -1;
@@ -101,31 +108,32 @@ public class StackPipeline implements VisionProcessor {
             }
 
 
-            Rect boundingBox = Imgproc.boundingRect(largestContour);
-            Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 255 , 255));
+            boundingBox = Imgproc.boundingRect(largestContour);
+            Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 100 , 255), 1);
+            Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);
 
             int centerXCoordinate = boundingBox.x + boundingBox.width / 2;
             int centerYCoordinate = boundingBox.y + boundingBox.height / 2;
 
             Imgproc.circle(thresholdMat, new Point(centerXCoordinate, centerYCoordinate), 3, new Scalar(255, 0, 0));
 
-            double conversionPixelsToDegrees = org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.FrontCamera.fovXDeg / frame.size().width;
+            double conversionPixelsToDegrees = CameraConstants.FrontCamera.fovXDeg / frame.size().width;
 
             // double linearDegreesErrorX = -(centerXCoordinate - (frame.size().width / 2)) * conversionPixelsToDegrees;
-            double curvedDegreesErrorX = -Math.toDegrees(Math.atan2((centerXCoordinate - (frame.size().width / 2)), org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.FrontCamera.fx));
-            double curvedDegreesErrorY = -Math.toDegrees(Math.atan2((centerYCoordinate - (frame.size().height / 2)), org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.FrontCamera.fy));
+            double curvedDegreesErrorX = -Math.toDegrees(Math.atan2((centerXCoordinate - (CameraConstants.FrontCamera.cx)), CameraConstants.FrontCamera.fx));
+            double curvedDegreesErrorY = -Math.toDegrees(Math.atan2((centerYCoordinate - (CameraConstants.FrontCamera.cy)), CameraConstants.FrontCamera.fy));
 
             double ratioX = STACK_WIDTH / boundingBox.width;
             double ratioY = STACK_HEIGHT / boundingBox.height;
 
-            double depthX = ratioX * org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.fx;
-            double depthY = ratioY * CameraConstants.fy;
+            double depthX = ratioX * CameraConstants.FrontCamera.fx;
+            double depthY = ratioY * CameraConstants.FrontCamera.fy;
 
             double rayDistance = Math.hypot(depthX, depthY); // true distance
 
             // <ignore>
             double hypotenuseY = rayDistance / Math.cos(Math.toRadians(curvedDegreesErrorY)); // have angle and adj, need hyp
-            double hypotenuseX = Math.abs(rayDistance * Math.tan(Math.toRadians(curvedDegreesErrorX))); // have angle and adj, need opp
+            double hypotenuseX = rayDistance * Math.tan(Math.toRadians(curvedDegreesErrorX)); // have angle and adj, need opp
 
             double distanceToCamera = Math.cbrt(Math.pow(hypotenuseX, 3)  + Math.pow(hypotenuseY, 3) + Math.pow(rayDistance, 3)); // inaccurate
             // </ignore>
@@ -148,7 +156,10 @@ public class StackPipeline implements VisionProcessor {
 
 
                 telemetry.addLine("Contours: " + listOfContours.size());
+                telemetry.update();
             }
+
+            strafeError = hypotenuseX;
 
 
             // t.addData("Distance: ", distanceToCamera);
@@ -159,6 +170,7 @@ public class StackPipeline implements VisionProcessor {
 
         lastCaptureTime = captureTimeNanos;
 
+        // thresholdMat.copyTo(frame);
         return thresholdMat;
     }
 
@@ -166,22 +178,24 @@ public class StackPipeline implements VisionProcessor {
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
 
-        /*
-        if (stackRect != null) {
-            RectF stackRectF = new RectF(stackRect.x * scaleBmpPxToCanvasPx, stackRect.y * scaleBmpPxToCanvasPx, (stackRect.x + stackRect.width) * scaleBmpPxToCanvasPx, (stackRect.y + stackRect.height) * scaleBmpPxToCanvasPx);
-            borderPaint.setColor(Color.MAGENTA);
-            canvas.drawRect(stackRectF, borderPaint);
+
+        if (boundingBox != null) {
+            VisionUtilities.drawRectangle(canvas, boundingBox, scaleBmpPxToCanvasPx);
         }
 
-         */
+
 
 
 
 
     }
 
-    public Pose getCorrection() {
+    /*public Pose getCorrection() {
         return correctionPose;
+    }*/
+
+    public double getStrafeError() {
+        return strafeError;
     }
 
 }

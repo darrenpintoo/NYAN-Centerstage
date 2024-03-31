@@ -140,6 +140,7 @@ public class DepositLift implements Subsystem{
         this.setTargetState(LiftStates.LEVEL0);
 
         this.magneticLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
+        this.setBoxState(BoxStates.CLOSED);
 
     }
 
@@ -248,7 +249,7 @@ public class DepositLift implements Subsystem{
                 pos = 430;
                 break;
             case LEVEL1_AUTO:
-                pos = 500;
+                pos = 550;
                 break;
             case LEVEL2:
                 pos = 700;

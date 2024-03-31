@@ -12,15 +12,11 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
-import org.firstinspires.ftc.teamcode.utilities.robot.Alliance;
-import org.firstinspires.ftc.teamcode.utilities.robot.Globals;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
-import org.firstinspires.ftc.teamcode.utilities.robot.Side;
 import org.firstinspires.ftc.teamcode.vision.PropPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PreloadDetectionPipeline;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.StackPipeline;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.StackPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -92,7 +88,7 @@ public class Camera implements Subsystem {
         backVisionPortal.setProcessorEnabled(preloadPipeline, false);
         backVisionPortal.setProcessorEnabled(aprilTagProcessor, false);
         backVisionPortal.setProcessorEnabled(propPipeline, true);
-        FtcDashboard.getInstance().startCameraStream(backVisionPortal, 0);
+        FtcDashboard.getInstance().startCameraStream(frontVisionPortal, 0);
 
         this.telemetry = telemetry;
 
@@ -129,7 +125,7 @@ public class Camera implements Subsystem {
         // telemetry.addData("Right: ", preloadPipeline.rightAverage);
 
         if (isFrontCameraActive()) {
-            telemetry.addData("Strafe: ", stackProcessor.getCorrection().getX());
+            telemetry.addData("Strafe: ", stackProcessor.getStrafeError());
         }
 
         detections = aprilTagProcessor.getDetections();
@@ -208,5 +204,13 @@ public class Camera implements Subsystem {
         estimate.times( 1 / (double) detectionAmount);
         estimate.setHeading(heading);
         return estimate;
+    }
+
+    public void waitForBackCameraFrame() {
+        double fps = backVisionPortal.getFps();
+
+        if (fps == 0) return;
+
+        RobotEx.getInstance().pause( 2 / fps);
     }
 }

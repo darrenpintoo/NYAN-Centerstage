@@ -239,7 +239,7 @@ public class MainTeleop extends LinearOpMode {
 
 
             if (gamepad1.left_stick_button) {
-                drive.gotoPoint(new Pose(0, 0, 0));
+                drive.gotoPoint(new Pose(robot.localizer.getPose().getX(), robot.localizer.getPose().getY() + robot.camera.stackProcessor.getStrafeError(), robot.localizer.getPose().getHeading()));
             }
 
             if (currentFrameGamepad1.right_stick_button && !previousFrameGamepad1.right_stick_button) {
