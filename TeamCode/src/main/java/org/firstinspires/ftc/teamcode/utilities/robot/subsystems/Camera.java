@@ -5,7 +5,6 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -13,16 +12,19 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+import org.firstinspires.ftc.teamcode.utilities.robot.Alliance;
+import org.firstinspires.ftc.teamcode.utilities.robot.Globals;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.Side;
+import org.firstinspires.ftc.teamcode.vision.PropPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PreloadDetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.StackPipeline;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.StackProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +33,8 @@ public class Camera implements Subsystem {
     public AprilTagProcessor aprilTagProcessor;
     public StackPipeline stackProcessor;
     public PreloadDetectionPipeline preloadPipeline;
+    public PropPipeline propPipeline;
+
 
     public VisionPortal backVisionPortal;
     public VisionPortal frontVisionPortal;
@@ -61,11 +65,11 @@ public class Camera implements Subsystem {
                 CameraConstants.BackCamera.cx,
                 CameraConstants.BackCamera.cy
         ).setDrawAxes(true).setDrawTagOutline(true).setDrawCubeProjection(true).build();
-        aprilTagProcessor.setDecimation(3);
 
 
-        stackProcessor = new StackPipeline(telemetry);
+        stackProcessor = new StackPipeline();
         preloadPipeline = new PreloadDetectionPipeline();
+        propPipeline = new PropPipeline();
 
         frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(frontCameraObject)
@@ -79,14 +83,15 @@ public class Camera implements Subsystem {
         backVisionPortal = new VisionPortal.Builder()
                 .setCamera(backCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
-                .addProcessors(aprilTagProcessor, preloadPipeline)
+                .addProcessors(aprilTagProcessor, preloadPipeline, propPipeline)
                 .enableLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
                 .build();
 
         backVisionPortal.setProcessorEnabled(preloadPipeline, false);
-
+        backVisionPortal.setProcessorEnabled(aprilTagProcessor, false);
+        backVisionPortal.setProcessorEnabled(propPipeline, true);
         FtcDashboard.getInstance().startCameraStream(backVisionPortal, 0);
 
         this.telemetry = telemetry;
@@ -100,6 +105,10 @@ public class Camera implements Subsystem {
         setBackCameraProperties();
         setFrontCameraProperties();
         localizer = RobotEx.getInstance().localizer;
+
+        backVisionPortal.setProcessorEnabled(preloadPipeline, true);
+        backVisionPortal.setProcessorEnabled(aprilTagProcessor, true);
+        backVisionPortal.setProcessorEnabled(propPipeline, false);
 
     }
 

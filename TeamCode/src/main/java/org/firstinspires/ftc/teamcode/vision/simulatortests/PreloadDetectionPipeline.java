@@ -28,16 +28,11 @@ public class PreloadDetectionPipeline implements VisionProcessor {
     Rect leftInclusionZone;
     Rect rightInclusionZone;
 
-    private final Paint borderPaint = new Paint();
-
-
     public Scalar lower = new Scalar(27, 10, 10);
     public Scalar upper = new Scalar(90, 255, 255);
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
-        borderPaint.setColor(Color.MAGENTA);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(2);
+
     }
 
     @Override
@@ -93,15 +88,6 @@ public class PreloadDetectionPipeline implements VisionProcessor {
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
-        if (leftInclusionZone != null) {
-            RectF stackRectL = new RectF(leftInclusionZone.x * scaleBmpPxToCanvasPx, leftInclusionZone.y * scaleBmpPxToCanvasPx, (leftInclusionZone.x + leftInclusionZone.width) * scaleBmpPxToCanvasPx, (leftInclusionZone.y + leftInclusionZone.height) * scaleBmpPxToCanvasPx);
-            RectF stackRectR = new RectF(rightInclusionZone.x * scaleBmpPxToCanvasPx, rightInclusionZone.y * scaleBmpPxToCanvasPx, (rightInclusionZone.x + rightInclusionZone.width) * scaleBmpPxToCanvasPx, (rightInclusionZone.y + rightInclusionZone.height) * scaleBmpPxToCanvasPx);
-
-            canvas.drawRect(stackRectL, borderPaint);
-            canvas.drawRect(stackRectR, borderPaint);
-
-
-        }
     }
 
     public double meanColor(Mat frame, Rect inclusionRect) {

@@ -65,7 +65,7 @@ public class MainTeleop extends LinearOpMode {
 
         // robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
 
-        robot.localizer.setPose(new Pose(0, 0, 0), true);
+        robot.localizer.setPose(new Pose(-61, -13, -Math.PI/2), true);
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
 

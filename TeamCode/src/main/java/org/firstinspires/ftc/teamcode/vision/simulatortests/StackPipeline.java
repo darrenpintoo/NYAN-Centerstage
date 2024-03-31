@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
+// import android.graphics.RectF;
+
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -23,8 +27,8 @@ import java.util.ArrayList;
 public class StackPipeline implements VisionProcessor {
 
 
-    private double STACK_WIDTH = 2;
-    private double STACK_HEIGHT = 2;
+    private double STACK_WIDTH = 3;
+    private double STACK_HEIGHT = 3;
 
     public Scalar lowerBound = new Scalar(0, 117.6, 128.9); // new Scalar(25.5, 80.8, 131.8);
     public Scalar upperBound = new Scalar(17.0, 255, 255);// new Scalar(46.8, 255, 255);
@@ -46,23 +50,27 @@ public class StackPipeline implements VisionProcessor {
 
     Telemetry telemetry;
 
-    public StackPipeline(Telemetry telemetry) {
-        this.telemetry = telemetry;
+    public StackPipeline() {
 
         borderPaint.setColor(Color.MAGENTA);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(2);
+
+
     }
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
+
         borderPaint.setColor(Color.MAGENTA);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(2);
+
     }
 
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
         listOfContours.clear();
+
         Imgproc.cvtColor(frame, thresholdMat, Imgproc.COLOR_RGB2HSV);
 
         Core.inRange(thresholdMat, lowerBound, upperBound, thresholdMat);
@@ -81,9 +89,6 @@ public class StackPipeline implements VisionProcessor {
 
                 MatOfPoint currentContour = listOfContours.get(i);
                 double currentContourArea = Imgproc.contourArea(currentContour);
-                if (currentContourArea < 50) {
-                    continue;
-                }
 
                 if (currentContourArea > largestContourArea) {
                     largestContour = currentContour;
@@ -91,29 +96,29 @@ public class StackPipeline implements VisionProcessor {
                 }
 
                 Rect boundingBox = Imgproc.boundingRect(currentContour);
-                Imgproc.rectangle(contourMat, boundingBox, new Scalar(255, 255 , 255));
+                Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(255, 255 , 255));
 
             }
 
 
             Rect boundingBox = Imgproc.boundingRect(largestContour);
-            Imgproc.rectangle(contourMat, boundingBox, new Scalar(0, 255 , 255));
+            Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 255 , 255));
 
             int centerXCoordinate = boundingBox.x + boundingBox.width / 2;
             int centerYCoordinate = boundingBox.y + boundingBox.height / 2;
 
-            Imgproc.circle(contourMat, new Point(centerXCoordinate, centerYCoordinate), 3, new Scalar(255, 0, 0));
+            Imgproc.circle(thresholdMat, new Point(centerXCoordinate, centerYCoordinate), 3, new Scalar(255, 0, 0));
 
-            double conversionPixelsToDegrees = CameraConstants.FrontCamera.fovXDeg / frame.size().width;
+            double conversionPixelsToDegrees = org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.FrontCamera.fovXDeg / frame.size().width;
 
             // double linearDegreesErrorX = -(centerXCoordinate - (frame.size().width / 2)) * conversionPixelsToDegrees;
-            double curvedDegreesErrorX = -Math.toDegrees(Math.atan2((centerXCoordinate - (frame.size().width / 2)), CameraConstants.FrontCamera.fx));
-            double curvedDegreesErrorY = -Math.toDegrees(Math.atan2((centerYCoordinate - (frame.size().height / 2)), CameraConstants.FrontCamera.fy));
+            double curvedDegreesErrorX = -Math.toDegrees(Math.atan2((centerXCoordinate - (frame.size().width / 2)), org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.FrontCamera.fx));
+            double curvedDegreesErrorY = -Math.toDegrees(Math.atan2((centerYCoordinate - (frame.size().height / 2)), org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.FrontCamera.fy));
 
             double ratioX = STACK_WIDTH / boundingBox.width;
             double ratioY = STACK_HEIGHT / boundingBox.height;
 
-            double depthX = ratioX * CameraConstants.fx;
+            double depthX = ratioX * org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants.fx;
             double depthY = ratioY * CameraConstants.fy;
 
             double rayDistance = Math.hypot(depthX, depthY); // true distance
@@ -126,7 +131,7 @@ public class StackPipeline implements VisionProcessor {
             // </ignore>
 
 
-            /*
+
             if (this.telemetry != null) {
 
                 telemetry.addData("X Degrees Error: ", curvedDegreesErrorX);
@@ -145,28 +150,38 @@ public class StackPipeline implements VisionProcessor {
                 telemetry.addLine("Contours: " + listOfContours.size());
             }
 
-             */
+
             // t.addData("Distance: ", distanceToCamera);
 
-            correctionPose = new Pose(hypotenuseX, hypotenuseY, 0);
+            // correctionPose = new Pose(hypotenuseX, hypotenuseY, 0);
 
         }
 
         lastCaptureTime = captureTimeNanos;
 
-        return null;
+        return thresholdMat;
     }
 
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+
+
+        /*
         if (stackRect != null) {
             RectF stackRectF = new RectF(stackRect.x * scaleBmpPxToCanvasPx, stackRect.y * scaleBmpPxToCanvasPx, (stackRect.x + stackRect.width) * scaleBmpPxToCanvasPx, (stackRect.y + stackRect.height) * scaleBmpPxToCanvasPx);
             borderPaint.setColor(Color.MAGENTA);
             canvas.drawRect(stackRectF, borderPaint);
         }
+
+         */
+
+
+
+
     }
 
     public Pose getCorrection() {
         return correctionPose;
     }
+
 }

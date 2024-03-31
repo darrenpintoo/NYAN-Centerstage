@@ -136,6 +136,11 @@ public class Drivetrain implements Subsystem {
                 this.rightBackMotor
         );
 
+        this.rightBackPower = 0;
+        this.leftBackPower = 0;
+        this.leftFrontPower = 0;
+        this.rightFrontPower = 0;
+
         this.telemetry = telemetry;
         // this.headingPID.setTelemetry(telemetry);
     }
