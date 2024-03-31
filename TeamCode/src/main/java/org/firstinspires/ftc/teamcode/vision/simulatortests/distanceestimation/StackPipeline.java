@@ -11,7 +11,7 @@ import android.graphics.Paint;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 // import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
-import org.firstinspires.ftc.teamcode.vision.VisionUtilities;
+// import org.firstinspires.ftc.teamcode.vision.VisionUtilities;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -31,8 +31,8 @@ public class StackPipeline implements VisionProcessor {
     private double STACK_WIDTH = 3;
     private double STACK_HEIGHT = 2.5;
 
-    public Scalar lowerBound = new Scalar(0, 0, 49.9); // new Scalar(25.5, 80.8, 131.8);
-    public Scalar upperBound = new Scalar(255, 255, 140);// new Scalar(46.8, 255, 255);
+    public Scalar lowerBound = new Scalar(0, 160, 0); // new Scalar(25.5, 80.8, 131.8);
+    public Scalar upperBound = new Scalar(255, 255, 255);// new Scalar(46.8, 255, 255);
 
     private Mat hsvMat       = new Mat();
     private Mat thresholdMat       = new Mat();
@@ -78,14 +78,14 @@ public class StackPipeline implements VisionProcessor {
         listOfContours.clear();
 
         thresholdMat = frame.submat(new Rect(0, 480 / 2, 640, 480 / 2));
-        Imgproc.cvtColor(thresholdMat, thresholdMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(thresholdMat, thresholdMat, Imgproc.COLOR_RGB2HLS);
 
         Core.inRange(thresholdMat, lowerBound, upperBound, thresholdMat);
 
         Imgproc.morphologyEx(thresholdMat, thresholdMat, Imgproc.MORPH_ERODE, kernel1);
         Imgproc.morphologyEx(thresholdMat, thresholdMat, Imgproc.MORPH_DILATE, kernel2);
 
-        Imgproc.findContours(thresholdMat, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+        Imgproc.findContours(thresholdMat, listOfContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
         MatOfPoint largestContour = new MatOfPoint();
         double largestContourArea = -1;
@@ -180,7 +180,7 @@ public class StackPipeline implements VisionProcessor {
 
 
         if (boundingBox != null) {
-            VisionUtilities.drawRectangle(canvas, boundingBox, scaleBmpPxToCanvasPx);
+            // VisionUtilities.drawRectangle(canvas, boundingBox, scaleBmpPxToCanvasPx);
         }
 
 
