@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 // import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 // import org.firstinspires.ftc.teamcode.vision.VisionUtilities;
+import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -190,9 +191,9 @@ public class StackPipeline implements VisionProcessor {
 
     }
 
-    /*public Pose getCorrection() {
-        return correctionPose;
-    }*/
+    public Pose getCorrection() {
+        return new Pose(-strafeError / 2, 0, 0);
+    }
 
     public double getStrafeError() {
         return strafeError;

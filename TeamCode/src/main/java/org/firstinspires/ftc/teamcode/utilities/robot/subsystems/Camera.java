@@ -190,6 +190,8 @@ public class Camera implements Subsystem {
     }
 
     public Pose getRobotPoseFromTags() {
+        this.waitForBackCameraFrame();
+
         Pose estimate = new Pose();
         Pose currentPose = localizer.getPose();
 
@@ -206,11 +208,30 @@ public class Camera implements Subsystem {
         return estimate;
     }
 
+    public Pose getRobotPoseFromStack() {
+        this.waitForFrontCameraFrame();
+        Pose correction = stackProcessor.getCorrection();
+        correction.add(localizer.getPose());
+
+        return correction;
+    }
+
     public void waitForBackCameraFrame() {
         double fps = backVisionPortal.getFps();
+        double exposure = CameraConstants.BackCamera.exposure;
 
         if (fps == 0) return;
 
-        RobotEx.getInstance().pause( 2 / fps);
+        RobotEx.getInstance().pause( 2 / fps + exposure / 1000);
+    }
+
+    public void waitForFrontCameraFrame() {
+        double fps = frontVisionPortal.getFps();
+        double exposure = CameraConstants.FrontCamera.exposure;
+
+
+        if (fps == 0) return;
+
+        RobotEx.getInstance().pause(2 / fps + exposure / 1000);
     }
 }

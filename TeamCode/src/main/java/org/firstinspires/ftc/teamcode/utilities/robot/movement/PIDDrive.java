@@ -50,6 +50,19 @@ public class PIDDrive {
     public static Pose threshold = new Pose(1, 1, Math.toRadians(2));
     public static double thresholdTime = 0.25;
     public void gotoPoint(Pose point) {
+        this.gotoPoint(
+                point,
+                new MovementConstants(vMax, aMax, DriveConstants.MAX_CORRECTION_TIME)
+        );
+    }
+
+    public void gotoPoint(Pose point, double correctionTime) {
+        this.gotoPoint(
+                point,
+                new MovementConstants(vMax, aMax, correctionTime)
+        );
+    }
+    public void gotoPoint(Pose point, MovementConstants constants) {
         Pose error = new Pose(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
         Pose currentPose = robot.localizer.getPose();
@@ -65,7 +78,7 @@ public class PIDDrive {
         double displacement = Math.sqrt(error.getX() * error.getX() + error.getY() * error.getY());
 
         MotionProfile motion = new MotionProfile(
-                0, displacement, vMax, aMax
+                0, displacement, constants.velocityMax, constants.accelerationMax
         );
 
         double angle = Math.atan2(error.getY(), error.getX());
@@ -109,7 +122,7 @@ public class PIDDrive {
                     feedbackX + feedforwardX,
                     feedbackY + feedforwardY,
                     -MathUtils.clamp(headingController.getOutputFromError(
-                             error.getHeading()
+                            error.getHeading()
                     ), -0.5, 0.5)
             );
 
@@ -126,15 +139,15 @@ public class PIDDrive {
 
             if (error.lessThan(threshold) && currentProfileTime > duration) {
                 if (inPosition) {
-                    if (inPositionTime.seconds() > thresholdTime || currentVelocity.lessThan(threshold)) {
+                    if (inPositionTime.seconds() >= thresholdTime || currentVelocity.lessThan(threshold)) {
                         break;
                     }
                 } else {
                     inPosition = true;
                     inPositionTime.reset();
                 }
-            } else if (currentProfileTime > duration + DriveConstants.MAX_CORRECTION_TIME) {
-               break;
+            } else if (currentProfileTime > duration + constants.maxCorrectionTime) {
+                break;
             } else {
                 inPosition = false;
             }
@@ -148,7 +161,6 @@ public class PIDDrive {
         );
 
         robot.update();
-
     }
 
 
