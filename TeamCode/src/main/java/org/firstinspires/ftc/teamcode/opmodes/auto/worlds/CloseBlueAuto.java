@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
@@ -97,10 +98,10 @@ public class CloseBlueAuto extends LinearOpMode {
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.gotoPoint(new Pose(-25, -32, 0), 0);
+                drive.gotoPoint(new Pose(-26, -30, 0), 0);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(-12, -34, 0), -0.25);
+                drive.gotoPoint(new Pose(-12, -32, 0), -0.25);
                 break;
             case CENTER:
                 break;
@@ -110,9 +111,9 @@ public class CloseBlueAuto extends LinearOpMode {
 
 
         robot.intake.setOffset(2);
-        drive.gotoPoint(new Pose(-14, 55, 0), 0);
+        drive.gotoPoint(new Pose(-14, 55, 0), -0.25);
         robot.localizer.setPose(robot.camera.getRobotPoseFromStack(), false);
-        drive.gotoPoint(new Pose(-14, 62, 0), 0);
+        drive.gotoPoint(new Pose(-14, 64, 0), new MovementConstants(10, 50, 0));
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.1);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
@@ -130,9 +131,9 @@ public class CloseBlueAuto extends LinearOpMode {
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
         drive.gotoPoint(new Pose(-12, -34, 0), 0);
         robot.intake.setOffset(1);
-        drive.gotoPoint(new Pose(-13, 55, 0), 0);
+        drive.gotoPoint(new Pose(-13, 55, 0), -0.25);
         robot.localizer.setPose(robot.camera.getRobotPoseFromStack(), false);
-        drive.gotoPoint(new Pose(-13, 62, 0), 0);
+        drive.gotoPoint(new Pose(-13, 64, 0), new MovementConstants(10, 50, 0));
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.1);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);

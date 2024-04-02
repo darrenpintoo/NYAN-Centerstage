@@ -192,7 +192,7 @@ public class StackPipeline implements VisionProcessor {
     }
 
     public Pose getCorrection() {
-        return new Pose(-strafeError / 2, 0, 0);
+        return new Pose(- 2 * strafeError / 3, 0, 0);
     }
 
     public double getStrafeError() {
