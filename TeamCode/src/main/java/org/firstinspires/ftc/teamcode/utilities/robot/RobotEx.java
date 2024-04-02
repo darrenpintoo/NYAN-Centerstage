@@ -186,10 +186,13 @@ public class RobotEx {
         }
 
 
+        /*
         telemetry.addData("Parallel Encoder 1 Ticks: ", drivetrain.rightBackMotor.getCurrentPosition());
         telemetry.addData("Parallel Encoder 2 Ticks: ", drivetrain.leftBackMotor.getCurrentPosition());
         telemetry.addData("Perpendicular Encoder 1 Ticks: ", drivetrain.leftFrontMotor.getCurrentPosition());
 
+
+         */
         /*
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();

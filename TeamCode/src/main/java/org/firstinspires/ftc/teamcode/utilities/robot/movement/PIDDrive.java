@@ -129,9 +129,6 @@ public class PIDDrive {
 
             telemetry.addData("Profile time: ", currentProfileTime);
             telemetry.addData("Motion time: ", duration);
-            telemetry.addData("Start Heading: ", startPosition.getHeading());
-            telemetry.addData("End Heading: ", point.getHeading());
-
 
             robot.update();
             error.map(Math::abs);

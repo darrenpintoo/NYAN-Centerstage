@@ -119,6 +119,7 @@ public class DepositLift implements Subsystem{
         this.magneticLimitSwitch = hardwareMap.get(DigitalChannel.class, "liftSwitch");
 
         this.onTimer = new ElapsedTime();
+
         t = telemetry;
     }
 
@@ -233,8 +234,8 @@ public class DepositLift implements Subsystem{
 
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
 
-        t.addData("IsDown?: ", currentSwitchState);
-        t.addData("Slides Position: ", currentSlidesPosition);
+        // t.addData("IsDown?: ", currentSwitchState);
+        // t.addData("Slides Position: ", currentSlidesPosition);
         power = 0;
     }
 
