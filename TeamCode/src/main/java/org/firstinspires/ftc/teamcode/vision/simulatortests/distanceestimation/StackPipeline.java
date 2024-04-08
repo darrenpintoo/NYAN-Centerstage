@@ -7,6 +7,7 @@ import android.graphics.Paint;
 // import android.graphics.RectF;
 
 
+import androidx.core.math.MathUtils;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
@@ -128,7 +129,7 @@ public class StackPipeline implements VisionProcessor {
             double ratioY = STACK_HEIGHT / boundingBox.height;
 
             double depthX = ratioX * CameraConstants.FrontCamera.fx;
-            double depthY = ratioY * CameraConstants.FrontCamera.fy;
+            double depthY = ratioX * CameraConstants.FrontCamera.fx;
 
             double rayDistance = Math.hypot(depthX, depthY); // true distance
 
@@ -192,11 +193,11 @@ public class StackPipeline implements VisionProcessor {
     }
 
     public Pose getCorrection() {
-        return new Pose(- 2 * strafeError / 3, 0, 0);
+        return new Pose(- this.getStrafeError(), 0, 0);
     }
 
     public double getStrafeError() {
-        return strafeError;
+        return MathUtils.clamp(strafeError, -3, 3);
     }
 
 }

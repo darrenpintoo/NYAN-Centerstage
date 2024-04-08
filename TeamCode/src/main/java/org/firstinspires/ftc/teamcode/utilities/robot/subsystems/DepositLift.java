@@ -74,6 +74,7 @@ public class DepositLift implements Subsystem{
     public static double leftServoDefaultPosition = 0.54;
     public static double rightServoDefaultPosition = 0.46;
     public static double tiltAmount = 0.26;
+    public static double normalAmount = -0.025;
     //
     public static double boxOpenPosition = 0.6;
     public static double boxClosedPosition = 1;
@@ -219,8 +220,8 @@ public class DepositLift implements Subsystem{
                 this.leftServo.setPosition(leftServoDefaultPosition+tiltAmount);
                 this.rightServo.setPosition(rightServoDefaultPosition-tiltAmount);
             } else {
-                this.leftServo.setPosition(leftServoDefaultPosition);
-                this.rightServo.setPosition(rightServoDefaultPosition);
+                this.leftServo.setPosition(leftServoDefaultPosition+normalAmount);
+                this.rightServo.setPosition(rightServoDefaultPosition-normalAmount);
             }
         }
 

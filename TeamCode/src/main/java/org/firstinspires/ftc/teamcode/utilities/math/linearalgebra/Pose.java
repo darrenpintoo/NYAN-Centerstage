@@ -54,6 +54,13 @@ public class Pose {
         this.setY(this.getY() + other.getY());
         this.setHeading(this.getHeading() + other.getHeading());
     }
+
+    public Pose addGet(Pose other) {
+        Pose newPose = new Pose();
+        newPose.add(other);
+
+        return newPose;
+    }
     public Pose rotated(double angle) {
         double x = this.getX();
         double y = this.getY();

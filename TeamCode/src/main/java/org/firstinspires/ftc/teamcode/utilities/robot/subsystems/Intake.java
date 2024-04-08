@@ -49,7 +49,7 @@ public class Intake implements Subsystem {
     // public static double num = 0;
 
     private double offset = 0;
-    public static double offsetLength = 0.026;
+    public static double offsetLength = 0.028;
 
     public RotationStates currentRotationState = RotationStates.DEFAULT;
     public GripperStates currentGripperState = GripperStates.OPEN;

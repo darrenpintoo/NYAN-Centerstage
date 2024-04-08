@@ -82,7 +82,7 @@ public class AprilTagLocalization {
             case 10:
                 return new Pose(40.625, 70.25, 0);
             default:
-                return null;
+                return new Pose();
         }
     }
 

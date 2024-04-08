@@ -7,6 +7,7 @@ import android.graphics.RectF;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementUtils;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.opencv.core.Core;
@@ -30,6 +31,8 @@ public class PreloadDetectionPipeline implements VisionProcessor {
 
     public Scalar lower = new Scalar(27, 10, 10);
     public Scalar upper = new Scalar(90, 255, 255);
+
+    public MovementUtils.BackdropPosition backdropPosition = MovementUtils.BackdropPosition.LEFT;
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
 
@@ -76,6 +79,11 @@ public class PreloadDetectionPipeline implements VisionProcessor {
                         leftAverage = meanColor(frame, leftInclusionZone);
                         rightAverage = meanColor(frame, rightInclusionZone);
 
+                        if (leftAverage > rightAverage) {
+                            backdropPosition = MovementUtils.BackdropPosition.RIGHT;
+                        } else {
+                            backdropPosition = MovementUtils.BackdropPosition.LEFT;
+                        }
                     }
                 }
             }

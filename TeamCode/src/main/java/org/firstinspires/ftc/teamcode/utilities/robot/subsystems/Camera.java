@@ -13,10 +13,13 @@ import org.firstinspires.ftc.teamcode.utilities.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementUtils;
 import org.firstinspires.ftc.teamcode.vision.PropPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PreloadDetectionPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.StackPipeline;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedCloseN;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -30,6 +33,9 @@ public class Camera implements Subsystem {
     public StackPipeline stackProcessor;
     public PreloadDetectionPipeline preloadPipeline;
     public PropPipeline propPipeline;
+    public PropDetectionPipelineBlueCloseN blue;
+    public PropDetectionPipelineRedCloseN red;
+
 
 
     public VisionPortal backVisionPortal;
@@ -45,6 +51,7 @@ public class Camera implements Subsystem {
     Telemetry telemetry;
 
     ArrayList<AprilTagDetection> detections = new ArrayList<>();
+    public MovementUtils.BackdropPosition backdropPosition = MovementUtils.BackdropPosition.LEFT;
     int detectionAmount = 0;
     public Pose backCameraPose = new Pose(-8, 0, 0);
 
@@ -67,6 +74,12 @@ public class Camera implements Subsystem {
         preloadPipeline = new PreloadDetectionPipeline();
         propPipeline = new PropPipeline();
 
+        red = new PropDetectionPipelineRedCloseN();
+        blue = new PropDetectionPipelineBlueCloseN();
+
+
+
+
         frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(frontCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
@@ -79,7 +92,7 @@ public class Camera implements Subsystem {
         backVisionPortal = new VisionPortal.Builder()
                 .setCamera(backCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
-                .addProcessors(aprilTagProcessor, preloadPipeline, propPipeline)
+                .addProcessors(aprilTagProcessor, preloadPipeline, propPipeline, blue, red)
                 .enableLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
@@ -87,7 +100,11 @@ public class Camera implements Subsystem {
 
         backVisionPortal.setProcessorEnabled(preloadPipeline, false);
         backVisionPortal.setProcessorEnabled(aprilTagProcessor, false);
-        backVisionPortal.setProcessorEnabled(propPipeline, true);
+        backVisionPortal.setProcessorEnabled(propPipeline, false);
+        backVisionPortal.setProcessorEnabled(red, true);
+        // backVisionPortal.setProcessorEnabled(blue, true);
+
+
         FtcDashboard.getInstance().startCameraStream(frontVisionPortal, 0);
 
         this.telemetry = telemetry;
@@ -105,6 +122,9 @@ public class Camera implements Subsystem {
         backVisionPortal.setProcessorEnabled(preloadPipeline, true);
         backVisionPortal.setProcessorEnabled(aprilTagProcessor, true);
         backVisionPortal.setProcessorEnabled(propPipeline, false);
+        // backVisionPortal.setProcessorEnabled(red, false);
+        backVisionPortal.setProcessorEnabled(blue, false);
+
 
     }
 
@@ -121,8 +141,11 @@ public class Camera implements Subsystem {
         telemetry.addData("Front fps: ", frontVisionPortal.getFps());
         telemetry.addData("Back fps: ", backVisionPortal.getFps());
 
-        // telemetry.addData("Left: ", preloadPipeline.leftAverage);
-        // telemetry.addData("Right: ", preloadPipeline.rightAverage);
+        telemetry.addData("Left: ", preloadPipeline.leftAverage);
+        telemetry.addData("Right: ", preloadPipeline.rightAverage);
+
+        telemetry.addData("Right: ", preloadPipeline.targetAprilTagID);
+
 
         if (isFrontCameraActive()) {
             telemetry.addData("Strafe: ", stackProcessor.getStrafeError());
@@ -205,6 +228,9 @@ public class Camera implements Subsystem {
 
         estimate.times( 1 / (double) detectionAmount);
         estimate.setHeading(heading);
+
+        backdropPosition = preloadPipeline.backdropPosition;
+
         return estimate;
     }
 

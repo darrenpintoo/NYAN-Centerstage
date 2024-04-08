@@ -30,9 +30,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Close Blue Auto 2+4", preselectTeleOp = "Main Teleop")
-public class CloseBlueAuto extends LinearOpMode {
-
+@Autonomous(name = "Close Blue Truss 2+2", preselectTeleOp = "Main Teleop")
+public class CloseBlueTrussAuto extends LinearOpMode {
 
 
     RobotEx robot = RobotEx.getInstance();
@@ -77,7 +76,6 @@ public class CloseBlueAuto extends LinearOpMode {
         PlacementPosition placementPosition = propPipeline.getPlacementPosition();
 
 
-
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
@@ -102,10 +100,9 @@ public class CloseBlueAuto extends LinearOpMode {
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.gotoPoint(new Pose(-26, -30, 0), -0.1);
+                drive.gotoPoint(new Pose(-32, -30, 0), -0.1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(-12, -34, 0), -0.25);
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(-32, -35, 0), 0);
@@ -120,7 +117,6 @@ public class CloseBlueAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
-                drive.gotoPoint(new Pose(-13, -30, 0), -0.25);
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-26, -35, 0), 0.5);
@@ -131,84 +127,19 @@ public class CloseBlueAuto extends LinearOpMode {
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.gotoPoint(new Pose(-30, -10, 0), -0.1);
+                drive.gotoPoint(new Pose(-32, -10, 0), -0.1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
-                drive.gotoPoint(new Pose(-13, -25, 0), -0.25);
                 break;
         }
 
-
+        drive.gotoPoint(new Pose(-60, -25, 0));
+        drive.gotoPoint(new Pose(-60, 57, 0));
         robot.intake.setOffset(2);
-        drive.gotoPoint(new Pose(-12, 53, 0), 0);
-        robot.localizer.setPose(robot.camera.getRobotPoseFromStack(), false);
-        drive.gotoPoint(new Pose(-12, 53, 0), -0.1);
-        drive.gotoPoint(new Pose(-12, 64, 0), new MovementConstants(10, 50, -0.1));
-        robot.pause(0.1);
-        robot.intake.setGripperState(Intake.GripperStates.CLOSED);
-        robot.pause(0.1);
-        robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(-12, -38, 0), -0.5);
-        robot.intake.setGripperState(Intake.GripperStates.OPEN);
-        drive.gotoPoint(new Pose(-30, -38, 0), -0.25);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-        robot.camera.waitForBackCameraFrame();
-        robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
-        drive.gotoPoint(new Pose(-29.41, -48, 0), 0);
-        drive.gotoPoint(new Pose(-29.41, -50, 0), 0);
-        robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-        robot.pause(0.5);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
-        drive.gotoPoint(new Pose(-12, -34, 0), -0.25);
-        robot.intake.setOffset(1.42);
-        drive.gotoPoint(new Pose(-12, 53, 0), 0);
-        robot.localizer.setPose(robot.camera.getRobotPoseFromStack(), false);
-        drive.gotoPoint(new Pose(-12, 53, 0), -0.1);
-        drive.gotoPoint(new Pose(-12, 64, 0), new MovementConstants(10, 50, -0.1));
-        robot.pause(0.1);
-        robot.intake.setGripperState(Intake.GripperStates.CLOSED);
-        robot.pause(0.1);
-        robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(-12, -38, 0), -0.5);
-        robot.intake.setGripperState(Intake.GripperStates.OPEN);
-        drive.gotoPoint(new Pose(-29.41, -46, 0), -0.5);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-        robot.pause(0.25);
-        drive.gotoPoint(new Pose(-33, -50, 0), new MovementConstants(10, 50, 0));
-        robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-        robot.pause(0.75);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+        drive.gotoPoint(new Pose(-33, 57, 0));
 
 
-
-
-
-
-
-
-
-        while (!isStopRequested()) {
-            robot.update();
-            telemetry.update();
-        }
-
-
-
-
-    }
-
-    public void scorePreload(RobotEx robot, PIDDrive drive) {
-        drive.gotoPoint(new Pose(-38, -35, 0), 0);
-        robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-        drive.gotoPoint(new Pose(-41.41,-48, 0), 0);
-        drive.gotoPoint(new Pose(-41.41,-50, 0), 0);
-        robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
-        robot.pause(0.25);
-        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
 
     }
 }
