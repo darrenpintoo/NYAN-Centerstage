@@ -140,6 +140,5 @@ public class CloseBlueTrussAuto extends LinearOpMode {
         drive.gotoPoint(new Pose(-33, 57, 0));
 
 
-
     }
 }

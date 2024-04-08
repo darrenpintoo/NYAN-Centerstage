@@ -225,6 +225,12 @@ public class MainTeleop extends LinearOpMode {
                     currentFrameGamepad1.right_stick_x
             );
 
+            robot.drivetrain.robotCentricDriveFromGamepad(
+                    0,
+                    currentFrameGamepad2.left_stick_x / 5,
+                    0
+            );
+
             if (currentFrameGamepad2.x && !previousFrameGamepad2.x) {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
             } else if (currentFrameGamepad2.dpad_down && !previousFrameGamepad2.dpad_down) {
@@ -278,11 +284,13 @@ public class MainTeleop extends LinearOpMode {
 
 
 
+
             if (currentFrameGamepad1.y && !previousFrameGamepad1.y) {
                 Pose target = AprilTagLocalization.getTagPosition(3);
                 target.add(new Pose(0, 20, 0));
                 drive.gotoPoint(target);
             }
+
 
             if (currentFrameGamepad1.x && !previousFrameGamepad1.x) {
                 robot.localizer.setPose(

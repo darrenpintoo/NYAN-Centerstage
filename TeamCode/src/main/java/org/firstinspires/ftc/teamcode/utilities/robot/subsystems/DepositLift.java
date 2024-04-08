@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utilities.robot.subsystems;
 
+import android.graphics.Paint;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -42,6 +44,20 @@ public class DepositLift implements Subsystem{
         TILTED
     }
 
+    public enum PaintbrushStates {
+        ACTIVATED(0.8),
+        DEFAULT(1);
+
+        final double position;
+        PaintbrushStates(double position) {
+            this.position = position;
+        }
+
+        public double getPosition() {
+            return position;
+        }
+    }
+
     double power;
 
     public DcMotorEx backLiftMotor;
@@ -52,6 +68,8 @@ public class DepositLift implements Subsystem{
 
     public Servo boxServo;
 
+    public Servo paintbrushServo;
+
     private MotorGroup<DcMotorEx> liftMotors;
 
     private LiftStates currentTargetState = LiftStates.LEVEL0;
@@ -59,6 +77,7 @@ public class DepositLift implements Subsystem{
     public BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
 
+    private PaintbrushStates paintbrushState = PaintbrushStates.DEFAULT;
     private DigitalChannel magneticLimitSwitch;
 
     public static double kP = 0.005;
@@ -73,7 +92,7 @@ public class DepositLift implements Subsystem{
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.54;
     public static double rightServoDefaultPosition = 0.46;
-    public static double tiltAmount = 0.26;
+    public static double tiltAmount = -0.23;
     public static double normalAmount = -0.025;
     //
     public static double boxOpenPosition = 0.6;
@@ -88,6 +107,7 @@ public class DepositLift implements Subsystem{
 
     public static int position = 900;
     public static double flutterTime = 0.2;
+    public static double paintbrushPosition = 0;
 
     private ElapsedTime boxCloseTimer = new ElapsedTime();
     private ElapsedTime frameTime = new ElapsedTime();
@@ -114,6 +134,7 @@ public class DepositLift implements Subsystem{
         this.rightServo = new CachingServo(hardwareMap.get(Servo.class, "rightBox"), 1e-3);
         this.outtakeServo = new CachingServo(hardwareMap.get(Servo.class, "boxOpenServo"), 1e-3);
 
+        this.paintbrushServo = new CachingServo(hardwareMap.get(Servo.class, "paintbrush"), 1e-3);
         this.liftMotors = new MotorGroup<>(backLiftMotor, frontLiftMotor);
 
         this.boxServo = new CachingServo(hardwareMap.get(Servo.class, "boxOpenServo"), 1e-3);
@@ -234,7 +255,7 @@ public class DepositLift implements Subsystem{
         }
 
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
-
+        this.paintbrushServo.setPosition(paintbrushState.getPosition());
         // t.addData("IsDown?: ", currentSwitchState);
         // t.addData("Slides Position: ", currentSlidesPosition);
         power = 0;
@@ -331,5 +352,9 @@ public class DepositLift implements Subsystem{
     public void reset() {
         this.liftMotors.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.liftMotors.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void setPaintbrushState(PaintbrushStates newState) {
+        this.paintbrushState = newState;
     }
 }
