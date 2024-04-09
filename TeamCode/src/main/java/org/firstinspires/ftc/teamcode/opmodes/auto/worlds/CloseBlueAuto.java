@@ -1,34 +1,20 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.worlds;
 
-import android.util.Size;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementUtils;
-import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.vision.PropPipeline;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
 
 @Autonomous(name = "Close Blue Auto 2+4", preselectTeleOp = "Main Teleop")
 public class CloseBlueAuto extends LinearOpMode {
@@ -95,7 +81,7 @@ public class CloseBlueAuto extends LinearOpMode {
         switch (placementPosition) {
             case LEFT:
                 drive.gotoPoint(new Pose(-38, -35, 0), 0);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
                 drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
@@ -109,7 +95,7 @@ public class CloseBlueAuto extends LinearOpMode {
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(-32, -35, 0), 0);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
                 drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
@@ -124,18 +110,18 @@ public class CloseBlueAuto extends LinearOpMode {
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-26, -35, 0), 0.5);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
                 drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.gotoPoint(new Pose(-30, -10, 0), -0.1);
+                drive.gotoPoint(new Pose(-30, -7, 0), -0.1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
-                drive.gotoPoint(new Pose(-13, -25, 0), -0.25);
+                drive.gotoPoint(new Pose(-13, -20, 0), -0.25);
                 break;
         }
 
@@ -154,15 +140,15 @@ public class CloseBlueAuto extends LinearOpMode {
         drive.gotoPoint(new Pose(-30, -38, 0), -0.25);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
         robot.camera.waitForBackCameraFrame();
-        robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
-        drive.gotoPoint(new Pose(-29.41, -48, 0), 0);
+        robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
+        drive.gotoPoint(new Pose(-29.41, -48, 0), -0.2);
         drive.gotoPoint(new Pose(-29.41, -50, 0), 0);
         robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
         robot.pause(0.5);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
         drive.gotoPoint(new Pose(-12, -34, 0), -0.25);
-        robot.intake.setOffset(1.42);
+        robot.intake.setOffset(1.3);
         drive.gotoPoint(new Pose(-12, 53, 0), 0);
         robot.localizer.setPose(robot.camera.getRobotPoseFromStack(), false);
         drive.gotoPoint(new Pose(-12, 53, 0), -0.1);
@@ -202,7 +188,7 @@ public class CloseBlueAuto extends LinearOpMode {
 
     public void scorePreload(RobotEx robot, PIDDrive drive) {
         drive.gotoPoint(new Pose(-38, -35, 0), 0);
-        robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+        robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
         drive.gotoPoint(new Pose(-41.41,-48, 0), 0);
         drive.gotoPoint(new Pose(-41.41,-50, 0), 0);

@@ -1,34 +1,20 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.worlds;
 
-import android.util.Size;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementConstants;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementUtils;
-import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.vision.PropPipeline;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
 
 @Autonomous(name = "Close Blue Truss 2+2", preselectTeleOp = "Main Teleop")
 public class CloseBlueTrussAuto extends LinearOpMode {
@@ -93,7 +79,7 @@ public class CloseBlueTrussAuto extends LinearOpMode {
         switch (placementPosition) {
             case LEFT:
                 drive.gotoPoint(new Pose(-38, -35, 0), 0);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
                 drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
@@ -103,10 +89,12 @@ public class CloseBlueTrussAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(-32, -30, 0), -0.1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
+                drive.gotoPoint(new Pose(-60, -40, 0));
+
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(-32, -35, 0), 0);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
                 drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
@@ -120,24 +108,54 @@ public class CloseBlueTrussAuto extends LinearOpMode {
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-26, -35, 0), 0.5);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
                 drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.gotoPoint(new Pose(-32, -10, 0), -0.1);
+                drive.gotoPoint(new Pose(-32, -7, 0), -0.1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
                 break;
         }
 
-        drive.gotoPoint(new Pose(-60, -25, 0));
         drive.gotoPoint(new Pose(-60, 57, 0));
-        robot.intake.setOffset(2);
+        robot.intake.setOffset(3);
+        robot.intake.setGripperState(Intake.GripperStates.OPEN);
         drive.gotoPoint(new Pose(-33, 57, 0));
+        robot.pause(0.25);
+        robot.camera.waitForFrontCameraFrame();
+        Pose correction = robot.camera.stackProcessor.getCorrection();
+        drive.gotoPoint(new Pose(-33 - correction.getX(), 57, 0));
+        robot.intake.setOffset(2);
+        drive.gotoPoint(new Pose(-33 - correction.getX(), 62, 0), new MovementConstants(10, 10, 0));
+        robot.intake.setGripperState(Intake.GripperStates.CLOSED);
+        robot.pause(0.1);
+        robot.intake.setRotationState(Intake.RotationStates.ROTATED);
+        drive.gotoPoint(new Pose(-41, 57, 0));
+        drive.gotoPoint(new Pose(-60, 57, 0));
+        drive.gotoPoint(new Pose(-60, -35, 0));
+        robot.intake.setGripperState(Intake.GripperStates.OPEN);
+        drive.gotoPoint(new Pose(-42, -35, 0), 0);
+        robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
+        drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+        drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
+        robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
+        robot.pause(0.25);
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+        robot.pause(1);
+        robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+        robot.intake.reset();
+        drive.gotoPoint(new Pose(-60, -35, 0));
+        drive.gotoPoint(new Pose(-60, -55, 0));
+
+
+
+
 
 
     }

@@ -1,33 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.worlds;
 
-import android.util.Size;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
-import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementConstants;
-import org.firstinspires.ftc.teamcode.utilities.robot.movement.OneWheelOdometryDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.vision.PropPipeline;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionBlueFar;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.PropDetectionPipelineBlueClose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedCloseN;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
 
 @Autonomous(name = "Close Red Auto Preload", preselectTeleOp = "Main Teleop")
 public class CloseRedPreload extends LinearOpMode {
@@ -95,7 +80,7 @@ public class CloseRedPreload extends LinearOpMode {
         switch (placementPosition) {
             case RIGHT:
                 drive.gotoPoint(new Pose(40, -35, 0), 0.5);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(41.41,-48, 0), 0);
                 drive.gotoPoint(new Pose(41.41,-50, 0), 0);
@@ -108,7 +93,7 @@ public class CloseRedPreload extends LinearOpMode {
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(36, -35, 0), 0.5);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(35.41,-48, 0), 0);
                 drive.gotoPoint(new Pose(35.41,-50, 0), 0);
@@ -122,7 +107,7 @@ public class CloseRedPreload extends LinearOpMode {
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(29, -35, 0), 0.5);
-                robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+                robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(29.41,-48, 0), 0);
                 drive.gotoPoint(new Pose(29.41,-50, 0), 0);

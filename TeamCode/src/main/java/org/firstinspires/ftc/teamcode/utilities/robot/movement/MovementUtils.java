@@ -23,7 +23,7 @@ public class MovementUtils {
         Pose placementPose = AprilTagLocalization.getTagPosition(position.getPosition());
 
         drive.gotoPoint(placementPose.addGet(new Pose(3, 0, 0)), 0);
-        robot.localizer.setPose(robot.camera.getRobotPoseFromTags(), false);
+        robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
         drive.gotoPoint(placementPose.addGet(new Pose(0, 12, 0)), -0.25);
         drive.gotoPoint(placementPose.addGet(new Pose(0, 10, 0)), 0);

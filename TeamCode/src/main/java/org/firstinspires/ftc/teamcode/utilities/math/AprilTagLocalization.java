@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.utilities.math;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
@@ -47,13 +43,13 @@ public class AprilTagLocalization {
             case 6:
                 return new Pose(41.41, -60, 0);
             case 7:
-                return new Pose(-40.625, 70.25, 0);
-            case 8:
-                return new Pose(-35.125, 70.25, 0);
-            case 9:
-                return new Pose(35.125, 70.25, 0);
-            case 10:
                 return new Pose(40.625, 70.25, 0);
+            case 8:
+                return new Pose(35.125, 70.25, 0);
+            case 9:
+                return new Pose(-35.125, 70.25, 0);
+            case 10:
+                return new Pose(-40.625, 70.25, 0);
             default:
                 return null;
         }
@@ -74,19 +70,19 @@ public class AprilTagLocalization {
             case 6:
                 return new Pose(41.41, -60, 0);
             case 7:
-                return new Pose(-40.625, 70.25, 0);
-            case 8:
-                return new Pose(-35.125, 70.25, 0);
-            case 9:
-                return new Pose(35.125, 70.25, 0);
-            case 10:
                 return new Pose(40.625, 70.25, 0);
+            case 8:
+                return new Pose(35.125, 70.25, 0);
+            case 9:
+                return new Pose(-35.125, -70.25, 0);
+            case 10:
+                return new Pose(-40.625, -70.25, 0);
             default:
                 return new Pose();
         }
     }
 
-    public static Pose getRobotPositionFromTag(AprilTagDetection detection, double robotHeading, Pose offset) {
+    public static Pose getRobotPositionFromBackTag(AprilTagDetection detection, double robotHeading, Pose offset) {
         double x = detection.ftcPose.x;
         double y = detection.ftcPose.y;
 
@@ -108,7 +104,29 @@ public class AprilTagLocalization {
         return tagpose;
     }
 
-    public static Pose getRobotPositionFromTag(AprilTagDetection detection, double robotHeading, double offsetX, double offsetY) {
+    public static Pose getRobotPositionFromFrontTag(AprilTagDetection detection, double robotHeading, Pose offset) {
+        double x = -detection.ftcPose.x;
+        double y = detection.ftcPose.y;
+
+        double rotatedHeading = -robotHeading;
+
+        double x2 = x * Math.cos(rotatedHeading) + y * Math.sin(rotatedHeading);
+        double y2 = x * -Math.sin(rotatedHeading) + y * Math.cos(rotatedHeading);
+
+        double x3 = offset.getX() * Math.cos(rotatedHeading) + offset.getY() * Math.sin(rotatedHeading);
+        double y3 = offset.getX() * -Math.sin(rotatedHeading) + offset.getY() * Math.cos(rotatedHeading);
+
+        double absX;
+        double absY;
+
+        Pose tagpose = getTagPosition(detection);
+        tagpose.add(new Pose(-x2, -y2, 0));
+        tagpose.add(new Pose(-y3, -x3, 0));
+
+        return tagpose;
+    }
+
+    public static Pose getRobotPositionFromBackTag(AprilTagDetection detection, double robotHeading, double offsetX, double offsetY) {
         double x = detection.ftcPose.x + offsetX;
         double y = detection.ftcPose.y + offsetY;
 

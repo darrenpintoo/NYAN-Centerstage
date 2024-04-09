@@ -54,6 +54,7 @@ public class MainTeleop extends LinearOpMode {
         boolean airplaneLaunchState = false;
         boolean airplaneLiftState = false;
         boolean dropState = false;
+        boolean paintbrushState = false;
         // robot.drivetrain.enableAntiTip();
 
         robot.planeLauncher.setLiftState(PlaneLauncher.AirplaneLiftStates.DOWN);
@@ -65,7 +66,7 @@ public class MainTeleop extends LinearOpMode {
 
         // robot.localizer.setPose(new Pose(-59, 15, Math.PI/2), true);
 
-        robot.localizer.setPose(new Pose(-61, -13, -Math.PI/2), true);
+        robot.localizer.setPose(new Pose(-61, -13, 0), true);
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
@@ -231,6 +232,16 @@ public class MainTeleop extends LinearOpMode {
                     0
             );
 
+            /*
+            if (Math.abs(currentFrameGamepad2.left_stick_y) > 0.1) {
+                robot.depositLift.driveLiftFromGamepad(-currentFrameGamepad2.left_stick_y / 10);
+            } else if (Math.abs(previousFrameGamepad2.left_stick_y) > 0.1) {
+                robot.depositLift.setTargetState(DepositLift.LiftStates.CUSTOM);
+                robot.depositLift.setCustomPosition(robot.depositLift.getPosition());
+            }
+
+             */
+
             if (currentFrameGamepad2.x && !previousFrameGamepad2.x) {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
             } else if (currentFrameGamepad2.dpad_down && !previousFrameGamepad2.dpad_down) {
@@ -241,22 +252,25 @@ public class MainTeleop extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL3);
             }
 
-
-
-
-            if (gamepad1.left_stick_button) {
-                drive.gotoPoint(new Pose(robot.localizer.getPose().getX(), robot.localizer.getPose().getY() + robot.camera.stackProcessor.getStrafeError(), robot.localizer.getPose().getHeading()));
+            if (currentFrameGamepad2.right_stick_y > 0.1) {
+                paintbrushState = true;
+            } else if (currentFrameGamepad2.right_stick_y < -0.1) {
+                paintbrushState = false;
             }
 
-            if (currentFrameGamepad1.right_stick_button && !previousFrameGamepad1.right_stick_button) {
-                robot.localizer.setPose(new Pose(0, 0, 0), true );
+            if (paintbrushState) {
+                robot.depositLift.setPaintbrushState(DepositLift.PaintbrushStates.ACTIVATED);
+                robot.depositLift.setBoxState(DepositLift.BoxStates.CLOSED);
+                robot.depositLift.setTiltState(DepositLift.TiltStates.DEFAULT);
+            } else {
+                robot.depositLift.setPaintbrushState(DepositLift.PaintbrushStates.DEFAULT);
             }
 
 
-            for (AprilTagDetection detection : robot.camera.aprilTagProcessor.getDetections()) {
-                telemetry.addData("id: ", detection.id);
+            for (AprilTagDetection detection : robot.camera.backAprilTagProcessor.getDetections()) {
+                telemetry.addData("Back id: ", detection.id);
 
-                /*
+
                 if (detection.ftcPose == null) {
                     continue;
                 }
@@ -272,38 +286,50 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addData("x trig: ", x2);
                 telemetry.addData("y trig: ", y2);
 
-                Pose a = AprilTagLocalization.getRobotPositionFromTag(detection, robot.localizer.getPose().getHeading(), robot.camera.backCameraPose);
+
+
+                Pose a = AprilTagLocalization.getRobotPositionFromBackTag(detection, robot.localizer.getPose().getHeading(), robot.camera.backCameraPose);
 
                 telemetry.addData("Global x: ", a.getX());
                 telemetry.addData("Global y: ", a.getY());
 
 
-                 */
+
 
             }
 
+            for (AprilTagDetection detection : robot.camera.frontAprilTagProcessor.getDetections()) {
+                telemetry.addData("Front id: ", detection.id);
+
+
+                if (detection.ftcPose == null) {
+                    continue;
+                }
+
+
+                double x = detection.ftcPose.x;
+                double y = detection.ftcPose.y;
+
+                double rotatedHeading = -robot.localizer.getPose().getHeading();
+
+                double x2 = x * Math.cos(rotatedHeading) + y * Math.sin(rotatedHeading);
+                double y2 = x * -Math.sin(rotatedHeading) + y * Math.cos(rotatedHeading);
+
+                telemetry.addData("x trig: ", x2);
+                telemetry.addData("y trig: ", y2);
 
 
 
-            if (currentFrameGamepad1.y && !previousFrameGamepad1.y) {
-                Pose target = AprilTagLocalization.getTagPosition(3);
-                target.add(new Pose(0, 20, 0));
-                drive.gotoPoint(target);
+
+                Pose a = AprilTagLocalization.getRobotPositionFromFrontTag(detection, robot.localizer.getPose().getHeading(), robot.camera.frontCameraPose);
+
+                telemetry.addData("Global x: ", a.getX());
+                telemetry.addData("Global y: ", a.getY());
+
+
+
+
             }
-
-
-            if (currentFrameGamepad1.x && !previousFrameGamepad1.x) {
-                robot.localizer.setPose(
-                        robot.camera.getRobotPoseFromTags(), false
-                );
-            }
-
-
-
-
-
-
-
 
             lastGripperState = robot.intake.currentGripperState;
 

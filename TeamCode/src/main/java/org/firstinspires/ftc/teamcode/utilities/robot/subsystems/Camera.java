@@ -29,7 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Camera implements Subsystem {
 
-    public AprilTagProcessor aprilTagProcessor;
+    public AprilTagProcessor backAprilTagProcessor;
+    public AprilTagProcessor frontAprilTagProcessor;
     public StackPipeline stackProcessor;
     public PreloadDetectionPipeline preloadPipeline;
     public PropPipeline propPipeline;
@@ -54,6 +55,7 @@ public class Camera implements Subsystem {
     public MovementUtils.BackdropPosition backdropPosition = MovementUtils.BackdropPosition.LEFT;
     int detectionAmount = 0;
     public Pose backCameraPose = new Pose(-8, 0, 0);
+    public Pose frontCameraPose = new Pose(0.5, 0, 0);
 
     private TwoWheelLocalizer localizer;
 
@@ -62,13 +64,20 @@ public class Camera implements Subsystem {
         backCameraObject = hardwareMap.get(WebcamName.class, "Webcam 1");
         frontCameraObject = hardwareMap.get(WebcamName.class, "Webcam 2");
 
-        aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(
+        backAprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(
                 CameraConstants.BackCamera.fx,
                 CameraConstants.BackCamera.fy,
                 CameraConstants.BackCamera.cx,
                 CameraConstants.BackCamera.cy
         ).setDrawAxes(true).setDrawTagOutline(true).setDrawCubeProjection(true).build();
 
+
+        frontAprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(
+                CameraConstants.FrontCamera.fx,
+                CameraConstants.FrontCamera.fy,
+                CameraConstants.FrontCamera.cx,
+                CameraConstants.FrontCamera.cy
+        ).setDrawAxes(true).setDrawTagOutline(true).setDrawCubeProjection(true).build();
 
         stackProcessor = new StackPipeline();
         preloadPipeline = new PreloadDetectionPipeline();
@@ -83,7 +92,7 @@ public class Camera implements Subsystem {
         frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(frontCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
-                .addProcessor(stackProcessor)
+                .addProcessors(stackProcessor, frontAprilTagProcessor)
                 .enableLiveView(true)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
@@ -92,17 +101,18 @@ public class Camera implements Subsystem {
         backVisionPortal = new VisionPortal.Builder()
                 .setCamera(backCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
-                .addProcessors(aprilTagProcessor, preloadPipeline, propPipeline, blue, red)
+                .addProcessors(backAprilTagProcessor, preloadPipeline, propPipeline, blue, red)
                 .enableLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
                 .build();
 
         backVisionPortal.setProcessorEnabled(preloadPipeline, false);
-        backVisionPortal.setProcessorEnabled(aprilTagProcessor, false);
+        backVisionPortal.setProcessorEnabled(backAprilTagProcessor, false);
         backVisionPortal.setProcessorEnabled(propPipeline, false);
-        backVisionPortal.setProcessorEnabled(red, true);
-        // backVisionPortal.setProcessorEnabled(blue, true);
+
+        frontVisionPortal.setProcessorEnabled(frontAprilTagProcessor, false);
+        frontVisionPortal.setProcessorEnabled(stackProcessor, false);
 
 
         FtcDashboard.getInstance().startCameraStream(frontVisionPortal, 0);
@@ -120,10 +130,14 @@ public class Camera implements Subsystem {
         localizer = RobotEx.getInstance().localizer;
 
         backVisionPortal.setProcessorEnabled(preloadPipeline, true);
-        backVisionPortal.setProcessorEnabled(aprilTagProcessor, true);
+        backVisionPortal.setProcessorEnabled(backAprilTagProcessor, true);
         backVisionPortal.setProcessorEnabled(propPipeline, false);
-        // backVisionPortal.setProcessorEnabled(red, false);
+        backVisionPortal.setProcessorEnabled(red, false);
         backVisionPortal.setProcessorEnabled(blue, false);
+
+        frontVisionPortal.setProcessorEnabled(frontAprilTagProcessor, true);
+        frontVisionPortal.setProcessorEnabled(stackProcessor, true);
+
 
 
     }
@@ -151,7 +165,7 @@ public class Camera implements Subsystem {
             telemetry.addData("Strafe: ", stackProcessor.getStrafeError());
         }
 
-        detections = aprilTagProcessor.getDetections();
+        detections = backAprilTagProcessor.getDetections();
 
         detectionAmount = detections.size();
 
@@ -212,7 +226,7 @@ public class Camera implements Subsystem {
         return detections;
     }
 
-    public Pose getRobotPoseFromTags() {
+    public Pose getRobotPoseFromBackTags() {
         this.waitForBackCameraFrame();
 
         Pose estimate = new Pose();
@@ -223,7 +237,7 @@ public class Camera implements Subsystem {
         double heading = localizer.getPose().getHeading();
 
         for (AprilTagDetection detection : detections) {
-            estimate.add(AprilTagLocalization.getRobotPositionFromTag(detection, heading, backCameraPose));
+            estimate.add(AprilTagLocalization.getRobotPositionFromBackTag(detection, heading, backCameraPose));
         }
 
         estimate.times( 1 / (double) detectionAmount);
@@ -234,6 +248,27 @@ public class Camera implements Subsystem {
         return estimate;
     }
 
+    public Pose getRobotPoseFromFrontTags() {
+        this.waitForFrontCameraFrame();
+
+        Pose estimate = new Pose();
+        Pose currentPose = localizer.getPose();
+
+        if (detectionAmount == 0) return currentPose;
+
+        double heading = localizer.getPose().getHeading();
+
+        for (AprilTagDetection detection : detections) {
+            estimate.add(AprilTagLocalization.getRobotPositionFromFrontTag(detection, heading, frontCameraPose));
+        }
+
+        estimate.times( 1 / (double) detectionAmount);
+        estimate.setHeading(heading);
+
+        backdropPosition = preloadPipeline.backdropPosition;
+
+        return estimate;
+    }
     public Pose getRobotPoseFromStack() {
         this.waitForFrontCameraFrame();
         Pose correction = stackProcessor.getCorrection();
@@ -258,6 +293,6 @@ public class Camera implements Subsystem {
 
         if (fps == 0) return;
 
-        RobotEx.getInstance().pause(3 / fps + exposure / 1000 + 0.25);
+        RobotEx.getInstance().pause(2 / fps + exposure / 1000 + 0.25);
     }
 }

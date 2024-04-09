@@ -31,7 +31,8 @@ public class DepositLift implements Subsystem{
         LEVEL1,
         LEVEL1_AUTO,
         LEVEL2,
-        LEVEL3
+        LEVEL3,
+        CUSTOM
     }
 
     public enum BoxStates {
@@ -92,8 +93,8 @@ public class DepositLift implements Subsystem{
     private GeneralPIDController controller = new GeneralPIDController(0, 0, 0, 0);
     public static double leftServoDefaultPosition = 0.54;
     public static double rightServoDefaultPosition = 0.46;
-    public static double tiltAmount = -0.23;
-    public static double normalAmount = -0.025;
+    public static double tiltAmount = -0.28;
+    public static double normalAmount = -0.07;
     //
     public static double boxOpenPosition = 0.6;
     public static double boxClosedPosition = 1;
@@ -102,10 +103,11 @@ public class DepositLift implements Subsystem{
     private boolean override = false;
     private boolean flutter = false;
     private ElapsedTime flutterTimer = new ElapsedTime();
-    public int offset = 0;
+    public double offset = 0;
     public static int offsetLength = 100;
 
     public static int position = 900;
+    public int customPosition = 0;
     public static double flutterTime = 0.2;
     public static double paintbrushPosition = 0;
 
@@ -179,7 +181,7 @@ public class DepositLift implements Subsystem{
         profile.setProfileCoefficients(kV, kA, vMax, aMax);
 
 
-        currentSlidesPosition = frontLiftMotor.getCurrentPosition();
+        currentSlidesPosition = getPosition();
         currentSwitchState = magneticLimitSwitch.getState();
 
         // t.addData("Deposit -1: ", frameTime.milliseconds());
@@ -257,11 +259,13 @@ public class DepositLift implements Subsystem{
         this.boxServo.setPosition(getBoxPositionFromState(this.boxState));
         this.paintbrushServo.setPosition(paintbrushState.getPosition());
         // t.addData("IsDown?: ", currentSwitchState);
-        // t.addData("Slides Position: ", currentSlidesPosition);
+        t.addData("Slides Position: ", currentSlidesPosition);
+        t.addData("Custom Position: ", customPosition);
+        t.addData("State: ", currentTargetState);
         power = 0;
     }
 
-    public int getTargetPositionFromState(LiftStates state) {
+    public double getTargetPositionFromState(LiftStates state) {
         int pos;
 
         switch (state) {
@@ -279,6 +283,10 @@ public class DepositLift implements Subsystem{
                 break;
             case LEVEL3:
                 pos = position;
+                break;
+            case CUSTOM:
+                pos = customPosition;
+                break;
             default:
                 pos = 1000;
         }
@@ -333,7 +341,7 @@ public class DepositLift implements Subsystem{
 
         this.regenerateProfile();
     }
-    public void incrementOffset(int sign) {
+    public void incrementOffset(double sign) {
         this.offset += sign;
 
         this.regenerateProfile();
@@ -356,5 +364,13 @@ public class DepositLift implements Subsystem{
 
     public void setPaintbrushState(PaintbrushStates newState) {
         this.paintbrushState = newState;
+    }
+
+    public void setCustomPosition(int newPosition) {
+        this.customPosition = newPosition;
+    }
+
+    public int getPosition() {
+        return this.frontLiftMotor.getCurrentPosition();
     }
 }
