@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.vision.simulatortests;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementUtils;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -40,7 +36,7 @@ public class PreloadDetectionPipeline implements VisionProcessor {
 
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
-        List<AprilTagDetection> currentDetections = RobotEx.getInstance().camera.getDetections();
+        List<AprilTagDetection> currentDetections = RobotEx.getInstance().camera.getBackDetections();
         if (currentDetections != null) {
             for (AprilTagDetection detection : currentDetections) {
                 if (detection.metadata != null) {

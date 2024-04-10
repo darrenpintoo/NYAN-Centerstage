@@ -105,7 +105,7 @@ public class AprilTagLocalization {
     }
 
     public static Pose getRobotPositionFromFrontTag(AprilTagDetection detection, double robotHeading, Pose offset) {
-        double x = -detection.ftcPose.x;
+        double x = detection.ftcPose.x;
         double y = detection.ftcPose.y;
 
         double rotatedHeading = -robotHeading;
@@ -120,8 +120,8 @@ public class AprilTagLocalization {
         double absY;
 
         Pose tagpose = getTagPosition(detection);
-        tagpose.add(new Pose(-x2, -y2, 0));
-        tagpose.add(new Pose(-y3, -x3, 0));
+        tagpose.add(new Pose(x2, -y2, 0));
+        // tagpose.add(new Pose(-y3, -x3, 0));
 
         return tagpose;
     }

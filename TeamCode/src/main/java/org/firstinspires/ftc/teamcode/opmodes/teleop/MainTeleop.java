@@ -252,9 +252,9 @@ public class MainTeleop extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL3);
             }
 
-            if (currentFrameGamepad2.right_stick_y > 0.1) {
+            if (currentFrameGamepad2.right_stick_y < -0.1) {
                 paintbrushState = true;
-            } else if (currentFrameGamepad2.right_stick_y < -0.1) {
+            } else if (currentFrameGamepad2.right_stick_y > 0.1) {
                 paintbrushState = false;
             }
 

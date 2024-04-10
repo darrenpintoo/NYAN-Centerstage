@@ -51,9 +51,11 @@ public class Camera implements Subsystem {
 
     Telemetry telemetry;
 
-    ArrayList<AprilTagDetection> detections = new ArrayList<>();
+    ArrayList<AprilTagDetection> backDetections = new ArrayList<>();
+    ArrayList<AprilTagDetection> frontDetections = new ArrayList<>();
     public MovementUtils.BackdropPosition backdropPosition = MovementUtils.BackdropPosition.LEFT;
-    int detectionAmount = 0;
+    int backDetectionAmount = 0;
+    int frontDetectionAmount = 0;
     public Pose backCameraPose = new Pose(-8, 0, 0);
     public Pose frontCameraPose = new Pose(0.5, 0, 0);
 
@@ -165,13 +167,21 @@ public class Camera implements Subsystem {
             telemetry.addData("Strafe: ", stackProcessor.getStrafeError());
         }
 
-        detections = backAprilTagProcessor.getDetections();
+        backDetections = backAprilTagProcessor.getDetections();
+        frontDetections = frontAprilTagProcessor.getDetections();
 
-        detectionAmount = detections.size();
+        backDetectionAmount = backDetections.size();
+        frontDetectionAmount = frontDetections.size();
 
-        for (AprilTagDetection detection : detections) {
+        for (AprilTagDetection detection : backDetections) {
             if (detection.ftcPose == null) {
-                detections.remove(detection);
+                backDetections.remove(detection);
+            }
+        }
+
+        for (AprilTagDetection detection : frontDetections) {
+            if (detection.ftcPose == null) {
+                frontDetections.remove(detection);
             }
         }
     }
@@ -222,8 +232,8 @@ public class Camera implements Subsystem {
         return backVisionPortal.getCameraState() == VisionPortal.CameraState.STREAMING;
     }
 
-    public ArrayList<AprilTagDetection> getDetections() {
-        return detections;
+    public ArrayList<AprilTagDetection> getBackDetections() {
+        return backDetections;
     }
 
     public Pose getRobotPoseFromBackTags() {
@@ -232,15 +242,15 @@ public class Camera implements Subsystem {
         Pose estimate = new Pose();
         Pose currentPose = localizer.getPose();
 
-        if (detectionAmount == 0) return currentPose;
+        if (backDetectionAmount == 0) return currentPose;
 
         double heading = localizer.getPose().getHeading();
 
-        for (AprilTagDetection detection : detections) {
+        for (AprilTagDetection detection : backDetections) {
             estimate.add(AprilTagLocalization.getRobotPositionFromBackTag(detection, heading, backCameraPose));
         }
 
-        estimate.times( 1 / (double) detectionAmount);
+        estimate.times( 1 / (double) backDetectionAmount);
         estimate.setHeading(heading);
 
         backdropPosition = preloadPipeline.backdropPosition;
@@ -254,15 +264,15 @@ public class Camera implements Subsystem {
         Pose estimate = new Pose();
         Pose currentPose = localizer.getPose();
 
-        if (detectionAmount == 0) return currentPose;
+        if (frontDetectionAmount == 0) return currentPose;
 
         double heading = localizer.getPose().getHeading();
 
-        for (AprilTagDetection detection : detections) {
+        for (AprilTagDetection detection : frontDetections) {
             estimate.add(AprilTagLocalization.getRobotPositionFromFrontTag(detection, heading, frontCameraPose));
         }
 
-        estimate.times( 1 / (double) detectionAmount);
+        estimate.times( 1 / (double) frontDetectionAmount);
         estimate.setHeading(heading);
 
         backdropPosition = preloadPipeline.backdropPosition;

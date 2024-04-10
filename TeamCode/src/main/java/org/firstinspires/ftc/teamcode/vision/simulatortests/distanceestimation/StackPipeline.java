@@ -112,7 +112,7 @@ public class StackPipeline implements VisionProcessor {
 
             boundingBox = Imgproc.boundingRect(largestContour);
             Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 100 , 255), 1);
-            Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);
+            //  Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);
 
             int centerXCoordinate = boundingBox.x + boundingBox.width / 2;
             int centerYCoordinate = boundingBox.y + boundingBox.height / 2;

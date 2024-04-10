@@ -46,7 +46,7 @@ public class DepositLift implements Subsystem{
     }
 
     public enum PaintbrushStates {
-        ACTIVATED(0.8),
+        ACTIVATED(0),
         DEFAULT(1);
 
         final double position;
