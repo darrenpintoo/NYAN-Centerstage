@@ -40,9 +40,9 @@ public class MovementUtils {
     public static double getOffsetFromBackdropPlacement(RobotEx robot) {
         switch (robot.camera.backdropPosition) {
             case LEFT:
-                return -2;
+                return -1.75;
             case RIGHT:
-                return 2;
+                return 1.75;
         }
         return 0;
     }
