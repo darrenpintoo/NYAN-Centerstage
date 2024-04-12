@@ -335,7 +335,7 @@ public class MainTeleop extends LinearOpMode {
 
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
-            telemetry.addData("Turn: ", robot.internalIMU.getCurrentFrameHeadingCW());
+            telemetry.addData("Turn: ", Math.toDegrees(robot.internalIMU.getCurrentFrameHeadingCW()));
             // telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
             // telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
         }

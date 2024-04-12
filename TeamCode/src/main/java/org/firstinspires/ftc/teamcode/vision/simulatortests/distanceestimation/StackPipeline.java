@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibra
 // import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 // import org.firstinspires.ftc.teamcode.vision.VisionUtilities;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
+import org.firstinspires.ftc.teamcode.vision.VisionUtilities;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.CameraConstants;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -112,7 +113,7 @@ public class StackPipeline implements VisionProcessor {
 
             boundingBox = Imgproc.boundingRect(largestContour);
             Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 100 , 255), 1);
-            //  Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);
+            // Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);
 
             int centerXCoordinate = boundingBox.x + boundingBox.width / 2;
             int centerYCoordinate = boundingBox.y + boundingBox.height / 2;
@@ -182,7 +183,7 @@ public class StackPipeline implements VisionProcessor {
 
 
         if (boundingBox != null) {
-            // VisionUtilities.drawRectangle(canvas, boundingBox, scaleBmpPxToCanvasPx);
+            VisionUtilities.drawRectangle(canvas, boundingBox, scaleBmpPxToCanvasPx);
         }
 
 

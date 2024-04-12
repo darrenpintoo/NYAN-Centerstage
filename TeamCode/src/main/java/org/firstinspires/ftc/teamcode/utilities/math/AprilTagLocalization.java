@@ -120,7 +120,7 @@ public class AprilTagLocalization {
         double absY;
 
         Pose tagpose = getTagPosition(detection);
-        tagpose.add(new Pose(x2, -y2, 0));
+        tagpose.add(new Pose(x2 * 1.25, -y2, 0));
         // tagpose.add(new Pose(-y3, -x3, 0));
 
         return tagpose;

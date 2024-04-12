@@ -157,6 +157,8 @@ public class Camera implements Subsystem {
         telemetry.addData("Front fps: ", frontVisionPortal.getFps());
         telemetry.addData("Back fps: ", backVisionPortal.getFps());
 
+        telemetry.addData("front detections: ", frontDetectionAmount);
+
         telemetry.addData("Left: ", preloadPipeline.leftAverage);
         telemetry.addData("Right: ", preloadPipeline.rightAverage);
 
