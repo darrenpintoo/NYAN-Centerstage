@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.CameraConstants;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PreloadDetectionPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.distanceestimation.StackPipeline;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueFarN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedCloseN;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -34,8 +35,9 @@ public class Camera implements Subsystem {
     public StackPipeline stackProcessor;
     public PreloadDetectionPipeline preloadPipeline;
     public PropPipeline propPipeline;
-    public PropDetectionPipelineBlueCloseN blue;
-    public PropDetectionPipelineRedCloseN red;
+    public PropDetectionPipelineBlueCloseN blueClose;
+    public PropDetectionPipelineRedCloseN redClose;
+    public PropDetectionPipelineBlueFarN blueFar;
 
 
 
@@ -85,8 +87,9 @@ public class Camera implements Subsystem {
         preloadPipeline = new PreloadDetectionPipeline();
         propPipeline = new PropPipeline();
 
-        red = new PropDetectionPipelineRedCloseN();
-        blue = new PropDetectionPipelineBlueCloseN();
+        redClose = new PropDetectionPipelineRedCloseN();
+        blueClose = new PropDetectionPipelineBlueCloseN();
+        blueFar = new PropDetectionPipelineBlueFarN();
 
 
 
@@ -103,7 +106,7 @@ public class Camera implements Subsystem {
         backVisionPortal = new VisionPortal.Builder()
                 .setCamera(backCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
-                .addProcessors(backAprilTagProcessor, preloadPipeline, propPipeline, blue, red)
+                .addProcessors(backAprilTagProcessor, preloadPipeline, propPipeline, blueClose, redClose, blueFar)
                 .enableLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
@@ -112,6 +115,10 @@ public class Camera implements Subsystem {
         backVisionPortal.setProcessorEnabled(preloadPipeline, false);
         backVisionPortal.setProcessorEnabled(backAprilTagProcessor, false);
         backVisionPortal.setProcessorEnabled(propPipeline, false);
+        backVisionPortal.setProcessorEnabled(redClose, false);
+        backVisionPortal.setProcessorEnabled(blueClose, false);
+        backVisionPortal.setProcessorEnabled(blueFar, false);
+
 
         frontVisionPortal.setProcessorEnabled(frontAprilTagProcessor, false);
         frontVisionPortal.setProcessorEnabled(stackProcessor, false);
@@ -134,8 +141,9 @@ public class Camera implements Subsystem {
         backVisionPortal.setProcessorEnabled(preloadPipeline, true);
         backVisionPortal.setProcessorEnabled(backAprilTagProcessor, true);
         backVisionPortal.setProcessorEnabled(propPipeline, false);
-        backVisionPortal.setProcessorEnabled(red, false);
-        backVisionPortal.setProcessorEnabled(blue, false);
+        backVisionPortal.setProcessorEnabled(redClose, false);
+        backVisionPortal.setProcessorEnabled(blueClose, false);
+        backVisionPortal.setProcessorEnabled(blueFar, false);
 
         frontVisionPortal.setProcessorEnabled(frontAprilTagProcessor, true);
         frontVisionPortal.setProcessorEnabled(stackProcessor, true);

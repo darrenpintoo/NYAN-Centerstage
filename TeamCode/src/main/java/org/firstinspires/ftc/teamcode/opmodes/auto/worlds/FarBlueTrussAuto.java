@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueFarN;
 
 @Autonomous(name = "Far Blue Truss 2+1")
 public class FarBlueTrussAuto extends LinearOpMode {
@@ -28,7 +29,7 @@ public class FarBlueTrussAuto extends LinearOpMode {
         boolean backstage = false;
         boolean preload = false;
 
-        PropDetectionPipelineBlueCloseN propPipeline = robot.camera.blue;
+        PropDetectionPipelineBlueFarN propPipeline = robot.camera.blueFar;
         robot.camera.backVisionPortal.setProcessorEnabled(propPipeline, true);
 
         while (opModeInInit()) {
@@ -56,7 +57,7 @@ public class FarBlueTrussAuto extends LinearOpMode {
 
         robot.intake.disableTeleop();
 
-        PlacementPosition placementPosition = PlacementPosition.RIGHT;// propPipeline.getPlacementPosition();
+        PlacementPosition placementPosition = propPipeline.getPlacementPosition();
 
 
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

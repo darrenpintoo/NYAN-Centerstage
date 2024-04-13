@@ -63,8 +63,8 @@ public class PropDetectionPipelineRedCloseN implements VisionProcessor {
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
         drawRectangle(maskedInputMat, rect2, new Scalar(0, 255, 0)); // Green
 
-        drawRectangle(frame, rect1, new Scalar(255, 0, 0)); // Blue
-        drawRectangle(frame, rect2, new Scalar(0, 255, 0)); // Green
+        //drawRectangle(frame, rect1, new Scalar(255, 0, 0)); // Blue
+        //drawRectangle(frame, rect2, new Scalar(0, 255, 0)); // Green
 
 
 

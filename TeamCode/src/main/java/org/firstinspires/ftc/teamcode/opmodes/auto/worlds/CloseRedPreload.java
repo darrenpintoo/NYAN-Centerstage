@@ -30,7 +30,7 @@ public class CloseRedPreload extends LinearOpMode {
         boolean backstage = false;
         boolean preload = false;
 
-        PropDetectionPipelineRedCloseN propPipeline = robot.camera.red;
+        PropDetectionPipelineRedCloseN propPipeline = robot.camera.redClose;
 
         robot.camera.backVisionPortal.setProcessorEnabled(propPipeline, true);
 

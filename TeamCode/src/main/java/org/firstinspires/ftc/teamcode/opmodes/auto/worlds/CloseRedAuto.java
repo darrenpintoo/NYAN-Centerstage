@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
-import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedCloseN;
 
 @Autonomous(name = "Close Red Auto 2+4", preselectTeleOp = "Main Teleop")
@@ -33,7 +32,7 @@ public class CloseRedAuto extends LinearOpMode {
         boolean backstage = false;
         boolean preload = false;
 
-        PropDetectionPipelineRedCloseN propPipeline = robot.camera.red;
+        PropDetectionPipelineRedCloseN propPipeline = robot.camera.redClose;
         robot.camera.backVisionPortal.setProcessorEnabled(propPipeline, true);
 
         while (opModeInInit()) {

@@ -14,7 +14,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-public class PropDetectionPipelineBlueCloseN implements VisionProcessor {
+public class PropDetectionPipelineBlueFarN implements VisionProcessor {
 
     public Scalar lower = new Scalar(0, 0, 0);
     public Scalar upper = new Scalar(255, 117.6, 255);
@@ -32,11 +32,11 @@ public class PropDetectionPipelineBlueCloseN implements VisionProcessor {
     private volatile PlacementPosition placementPosition = PlacementPosition.CENTER;
 
     Telemetry telemetry;
-    public PropDetectionPipelineBlueCloseN(Telemetry telemetry) {
+    public PropDetectionPipelineBlueFarN(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 
-    public PropDetectionPipelineBlueCloseN() {
+    public PropDetectionPipelineBlueFarN() {
 
     }
 
@@ -57,15 +57,15 @@ public class PropDetectionPipelineBlueCloseN implements VisionProcessor {
 
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
-        Rect rect1 = new Rect(40, 200, 100, 100);
-        Rect rect2 = new Rect(330, 180, 100, 100);
+        Rect rect1 = new Rect(500, 180, 100, 100);
+        Rect rect2 = new Rect(250, 180, 100, 100);
 
         // Draw rectangles on the output
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue
         drawRectangle(maskedInputMat, rect2, new Scalar(0, 255, 0)); // Green
 
-        //drawRectangle(frame, rect1, new Scalar(255, 0, 0)); // Blue
-        //drawRectangle(frame, rect2, new Scalar(0, 255, 0)); // Green
+        drawRectangle(frame, rect1, new Scalar(255, 0, 0)); // Blue
+        drawRectangle(frame, rect2, new Scalar(0, 255, 0)); // Green
 
 
 
@@ -80,11 +80,11 @@ public class PropDetectionPipelineBlueCloseN implements VisionProcessor {
 
 
         if (redAmount1 > redThreshold) {
-            this.placementPosition = PlacementPosition.LEFT;
+            this.placementPosition = PlacementPosition.RIGHT;
         } else if (redAmount2 > redThreshold) {
             this.placementPosition = PlacementPosition.CENTER;
         } else {
-            this.placementPosition = PlacementPosition.RIGHT;
+            this.placementPosition = PlacementPosition.LEFT;
         }
 
 
@@ -108,8 +108,8 @@ public class PropDetectionPipelineBlueCloseN implements VisionProcessor {
         myPaint.setColor(Color.rgb(0, 0, 0));
         myPaint.setStrokeWidth(1);
 
-         //canvas.drawRect(100, 200, 200, 300, myPaint);
-         //canvas.drawRect(350, 190, 450, 300, myPaint);
+        //canvas.drawRect(100, 200, 200, 300, myPaint);
+        //canvas.drawRect(350, 190, 450, 300, myPaint);
         //canvas.drawRect((int) (100.0/640 * 1000), (int) (230.0/480 * 1000), (int) (200.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
         //canvas.drawRect((int) (350.0/640 * 1000), (int) (230.0/480 * 1000), (int) (450.0/640 * 1000), (int) (330.0/480 * 1000), myPaint);
 
