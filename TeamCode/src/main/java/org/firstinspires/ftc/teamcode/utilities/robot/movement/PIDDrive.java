@@ -236,7 +236,7 @@ public class PIDDrive {
     }
 
 
-    public void turnToAngle(double angle) {
+    public void turnToAngle(double angle, MovementConstants constants) {
         angle = AngleHelper.normDelta(angle);
 
         double currentIMUPosition = robot.localizer.getPose().getHeading();
@@ -250,7 +250,7 @@ public class PIDDrive {
         boolean atTarget = false;
         double atTargetStartTime = -1;
 
-        while (!atTarget && elapsedTurnTime.seconds() < turnProfile.getDuration()+DriveConstants.MAX_CORRECTION_TIME) {
+        while (!atTarget && elapsedTurnTime.seconds() < turnProfile.getDuration()+constants.maxCorrectionTime) {
 
             double currentTargetAngle = turnProfile.getPositionFromTime(elapsedTurnTime.seconds());
             turnError = currentTargetAngle  - currentIMUPosition;
@@ -302,5 +302,9 @@ public class PIDDrive {
 
 
 
+    }
+
+    public void turnToAngle(double angle) {
+        turnToAngle(angle, new MovementConstants(0, 0, DriveConstants.MAX_CORRECTION_TIME));
     }
 }

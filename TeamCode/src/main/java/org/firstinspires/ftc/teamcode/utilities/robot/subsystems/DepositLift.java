@@ -162,7 +162,11 @@ public class DepositLift implements Subsystem{
         this.frontLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
+        this.previousTargetState = LiftStates.LEVEL0;
+        this.currentTargetState = LiftStates.LEVEL0;
         this.setTargetState(LiftStates.LEVEL0);
+
+
 
         this.magneticLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
         this.setBoxState(BoxStates.CLOSED);

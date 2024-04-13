@@ -151,7 +151,7 @@ public class CloseBlueTrussAuto extends LinearOpMode {
         drive.gotoPoint(new Pose(-41.4,-50, 0), 0);
         robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-        robot.pause(0.75);
+        robot.pause(1.25);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
         robot.intake.reset();
         drive.gotoPoint(new Pose(-60, -40, 0),0);
