@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedCloseN;
 
-@Autonomous(name = "Close Red Auto 2+4", preselectTeleOp = "Main Teleop")
+@Autonomous(name = "Close Red Auto 2+4", preselectTeleOp = "Main Teleop", group = "Red Close")
 public class CloseRedAuto extends LinearOpMode {
 
 

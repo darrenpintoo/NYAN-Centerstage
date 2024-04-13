@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueFarN;
 
-@Autonomous(name = "Far Blue Gate 2+3")
+@Autonomous(name = "Far Blue Gate 2+3", group = "Blue Far", preselectTeleOp = "Main Teleop")
 public class FarBlueGateAuto extends LinearOpMode {
     RobotEx robot = RobotEx.getInstance();
     @Override

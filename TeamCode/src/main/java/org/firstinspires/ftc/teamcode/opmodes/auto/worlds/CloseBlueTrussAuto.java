@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
 
-@Autonomous(name = "Close Blue Truss 2+2", preselectTeleOp = "Main Teleop")
+@Autonomous(name = "Close Blue Truss 2+2", preselectTeleOp = "Main Teleop", group = "Blue Close")
 public class CloseBlueTrussAuto extends LinearOpMode {
 
 

@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPi
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueFarN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedFarN;
 
-@Autonomous(name = "Far Red Truss 2+1")
+@Autonomous(name = "Far Red Truss 2+1", group = "Red Far", preselectTeleOp = "Main Teleop")
 public class FarRedTrussAuto extends LinearOpMode {
     RobotEx robot = RobotEx.getInstance();
     @Override
