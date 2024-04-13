@@ -94,7 +94,7 @@ public class DepositLift implements Subsystem{
     public static double leftServoDefaultPosition = 0.54;
     public static double rightServoDefaultPosition = 0.46;
     public static double tiltAmount = -0.28;
-    public static double normalAmount = -0.07;
+    public static double normalAmount = -0.03;
     //
     public static double boxOpenPosition = 0.6;
     public static double boxClosedPosition = 1;

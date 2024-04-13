@@ -110,7 +110,7 @@ public class FarRedGateAuto extends LinearOpMode {
         }
 
         robot.localizer.setPose(robot.camera.getRobotPoseFromStack(), false);
-        robot.intake.setOffset(2.3);
+        robot.intake.setOffset(2.5);
         drive.gotoPoint(new Pose(11, 30, 0), -0.1);
         drive.gotoPoint(new Pose(11, 36, 0), new MovementConstants(10, 10, 0));
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
@@ -124,7 +124,7 @@ public class FarRedGateAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
 
         switch (placementPosition) {
-            case LEFT:
+            case RIGHT:
                 drive.gotoPoint(new Pose(36, -65, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
@@ -138,7 +138,7 @@ public class FarRedGateAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
                 drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
-            case RIGHT:
+            case LEFT:
                 drive.gotoPoint(new Pose(29.41, -65, 0), 0.5);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
@@ -165,7 +165,7 @@ public class FarRedGateAuto extends LinearOpMode {
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
         drive.gotoPoint(new Pose(12, -38, 0), -0.5);
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
-        drive.gotoPoint(new Pose(-29.41, -46, 0), -0.5);
+        drive.gotoPoint(new Pose(29.41, -46, 0), -0.5);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
         robot.pause(0.25);
         drive.gotoPoint(new Pose(33, -50, 0), new MovementConstants(10, 50, 0));

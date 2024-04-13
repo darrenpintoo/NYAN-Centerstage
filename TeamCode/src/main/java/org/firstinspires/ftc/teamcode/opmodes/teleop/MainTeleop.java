@@ -70,7 +70,6 @@ public class MainTeleop extends LinearOpMode {
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
-        robot.camera.preloadPipeline.setTargetAprilTagID(6);
         ElapsedTime t = new ElapsedTime();
         while (!robot.stopRequested) {
 
@@ -233,7 +232,7 @@ public class MainTeleop extends LinearOpMode {
                     0
             );
 
-            /*
+
             if (Math.abs(currentFrameGamepad2.left_stick_y) > 0.1) {
                 robot.depositLift.driveLiftFromGamepad(-currentFrameGamepad2.left_stick_y / 10);
             } else if (Math.abs(previousFrameGamepad2.left_stick_y) > 0.1) {
@@ -241,7 +240,7 @@ public class MainTeleop extends LinearOpMode {
                 robot.depositLift.setCustomPosition(robot.depositLift.getPosition());
             }
 
-             */
+
 
             if (currentFrameGamepad2.x && !previousFrameGamepad2.x) {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
