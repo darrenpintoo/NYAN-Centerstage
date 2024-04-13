@@ -8,10 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
+import org.firstinspires.ftc.teamcode.utilities.robot.movement.MovementUtils;
 import org.firstinspires.ftc.teamcode.utilities.robot.movement.PIDDrive;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.DepositLift;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedCloseN;
 
 @Autonomous(name = "Close Red Auto Preload", preselectTeleOp = "Main Teleop")
@@ -33,7 +35,6 @@ public class CloseRedPreload extends LinearOpMode {
         PropDetectionPipelineRedCloseN propPipeline = robot.camera.redClose;
 
         robot.camera.backVisionPortal.setProcessorEnabled(propPipeline, true);
-
 
         while (opModeInInit()) {
 
@@ -75,15 +76,17 @@ public class CloseRedPreload extends LinearOpMode {
 
         robot.update();
 
+        robot.camera.preloadPipeline.setTargetAprilTagID(placementPosition.getPosition()+3);
+
         robot.localizer.setPose(new Pose(61, -13, Math.PI/2), true);
         robot.pause(0.1);
         switch (placementPosition) {
             case RIGHT:
-                drive.gotoPoint(new Pose(40, -35, 0), 0.5);
+                drive.gotoPoint(new Pose(38, -35, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(41.41,-48, 0), 0);
-                drive.gotoPoint(new Pose(41.41,-50, 0), 0);
+                drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
+                drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
@@ -92,25 +95,25 @@ public class CloseRedPreload extends LinearOpMode {
                 robot.intake.reset();
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(36, -35, 0), 0.5);
+                drive.gotoPoint(new Pose(32, -35, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(35.41,-48, 0), 0);
-                drive.gotoPoint(new Pose(35.41,-50, 0), 0);
+                drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
+                drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-                drive.gotoPoint(new Pose(23, -24, 0), 0);
+                drive.gotoPoint(new Pose(25, -24, 0), 0);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
                 break;
             case LEFT:
-                drive.gotoPoint(new Pose(29, -35, 0), 0.5);
+                drive.gotoPoint(new Pose(26, -35, 0), 0.5);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(29.41,-48, 0), 0);
-                drive.gotoPoint(new Pose(29.41,-50, 0), 0);
+                drive.gotoPoint(new Pose(29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
+                drive.gotoPoint(new Pose(29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
                 robot.pause(0.25);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
@@ -118,13 +121,12 @@ public class CloseRedPreload extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
-
                 break;
         }
 
-        drive.gotoPoint(new Pose(60, -40, 0), 0.25);
+        drive.gotoPoint(new Pose(58, -40, 0), 0.25);
 
-        drive.gotoPoint(new Pose(60, -56, 0), 0.25);
+        drive.gotoPoint(new Pose(58, -45, 0), 0.25);
 
 
 

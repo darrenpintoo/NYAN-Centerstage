@@ -30,7 +30,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "Far Gate Red Auto", preselectTeleOp = "Main Teleop")
+@Disabled
 public class FarGateRedAuto extends LinearOpMode {
 
 

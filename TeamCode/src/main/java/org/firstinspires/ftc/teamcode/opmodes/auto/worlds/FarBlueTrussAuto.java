@@ -151,7 +151,7 @@ public class FarBlueTrussAuto extends LinearOpMode {
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
         robot.intake.reset();
         drive.gotoPoint(new Pose(-58, -40, 0),0);
-        drive.gotoPoint(new Pose(-58, -55, 0));
+        drive.gotoPoint(new Pose(-58, -45, 0));
 
     }
 }

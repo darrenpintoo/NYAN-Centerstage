@@ -144,6 +144,14 @@ public class DepositLift implements Subsystem{
 
         this.onTimer = new ElapsedTime();
 
+        this.previousTargetState = LiftStates.LEVEL0;
+        this.currentTargetState = LiftStates.LEVEL0;
+        this.setTargetState(LiftStates.LEVEL0);
+
+        this.previousTargetState = LiftStates.LEVEL0;
+        this.currentTargetState = LiftStates.LEVEL0;
+        this.regenerateProfile();
+
         t = telemetry;
     }
 
@@ -166,6 +174,11 @@ public class DepositLift implements Subsystem{
         this.currentTargetState = LiftStates.LEVEL0;
         this.setTargetState(LiftStates.LEVEL0);
 
+        this.previousTargetState = LiftStates.LEVEL0;
+        this.currentTargetState = LiftStates.LEVEL0;
+        this.regenerateProfile();
+
+        this.setTiltState(TiltStates.DEFAULT);
 
 
         this.magneticLimitSwitch.setMode(DigitalChannel.Mode.INPUT);

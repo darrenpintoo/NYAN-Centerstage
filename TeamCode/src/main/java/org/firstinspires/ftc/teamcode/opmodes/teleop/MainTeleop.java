@@ -70,6 +70,7 @@ public class MainTeleop extends LinearOpMode {
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
 
+        robot.camera.preloadPipeline.setTargetAprilTagID(6);
         ElapsedTime t = new ElapsedTime();
         while (!robot.stopRequested) {
 

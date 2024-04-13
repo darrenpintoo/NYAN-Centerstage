@@ -41,7 +41,6 @@ public class PreloadDetectionPipeline implements VisionProcessor {
             for (AprilTagDetection detection : currentDetections) {
                 if (detection.metadata != null) {
                     if (detection.id == targetAprilTagID) {
-                        System.out.println("Tag FOUND");
                         int leftX = Integer.MAX_VALUE;
                         int rightX = Integer.MIN_VALUE;
                         int topY = Integer.MIN_VALUE;
@@ -66,8 +65,8 @@ public class PreloadDetectionPipeline implements VisionProcessor {
                         int exclusionZoneWidth = (int) (tagWidth * 0.28);
                         int exclusionZoneHeight = (int) (tagHeight * 0.28);
 
-                        leftInclusionZone = new Rect(tagCenterX - inclusionZoneWidth, tagCenterY - 110, inclusionZoneWidth, inclusionZoneHeight);
-                        rightInclusionZone = new Rect(tagCenterX, tagCenterY - 110, inclusionZoneWidth, inclusionZoneHeight);
+                        leftInclusionZone = new Rect(tagCenterX - inclusionZoneWidth, tagCenterY - 150, inclusionZoneWidth, inclusionZoneHeight);
+                        rightInclusionZone = new Rect(tagCenterX, tagCenterY - 150, inclusionZoneWidth, inclusionZoneHeight);
 
                         Imgproc.rectangle(frame, leftInclusionZone, new Scalar(0, 255, 0), 7);
                         Imgproc.rectangle(frame, rightInclusionZone, new Scalar(0, 255, 0), 7);
