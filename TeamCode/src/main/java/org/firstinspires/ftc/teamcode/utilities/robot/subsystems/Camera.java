@@ -130,7 +130,7 @@ public class Camera implements Subsystem {
         frontVisionPortal.setProcessorEnabled(stackProcessor, false);
 
 
-        FtcDashboard.getInstance().startCameraStream(backVisionPortal, 0);
+        FtcDashboard.getInstance().startCameraStream(frontVisionPortal, 0);
 
         this.telemetry = telemetry;
 
@@ -184,6 +184,10 @@ public class Camera implements Subsystem {
 
         if (isFrontCameraActive()) {
             telemetry.addData("Strafe: ", stackProcessor.getStrafeError());
+            telemetry.addData("Area: ", stackProcessor.boxArea);
+            telemetry.addData("Y: ", stackProcessor.yArea);
+            telemetry.addData("X: ", stackProcessor.xArea);
+            telemetry.addData("Ratio: ", stackProcessor.xArea / stackProcessor.yArea);
         }
 
         backDetections = backAprilTagProcessor.getDetections();

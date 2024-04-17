@@ -23,7 +23,7 @@ public class PlaneLauncher implements Subsystem {
     Servo droneLaunchServo;
 
     public static double angleHome = 0.8;
-    public static double angleActivated = 0.64;
+    public static double angleActivated = 0.62;
     public static double launchClosed = 0.8;
     public static double launchOpen = 0.65;
 
@@ -53,4 +53,6 @@ public class PlaneLauncher implements Subsystem {
         droneLaunchServo.setPosition(currentShootState == AirplaneShootStates.OPENED ? launchOpen : launchClosed);
         droneAngleServo.setPosition(currentLiftState == AirplaneLiftStates.UP ? angleActivated : angleHome);
     }
+
+
 }

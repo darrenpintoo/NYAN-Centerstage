@@ -34,7 +34,7 @@ public class StackPipeline implements VisionProcessor {
     private double STACK_WIDTH = 3;
     private double STACK_HEIGHT = 2.5;
 
-    public Scalar lowerBound = new Scalar(0, 160, 0); // new Scalar(25.5, 80.8, 131.8);
+    public Scalar lowerBound = new Scalar(0, 140, 0); // new Scalar(25.5, 80.8, 131.8);
     public Scalar upperBound = new Scalar(255, 255, 255);// new Scalar(46.8, 255, 255);
 
     private Mat hsvMat       = new Mat();
@@ -44,6 +44,10 @@ public class StackPipeline implements VisionProcessor {
     private double lastCaptureTime = 0;
     // private Pose correctionPose = new Pose(0, 0, 0);
     private Rect boundingBox;
+
+    public double boxArea = 0;
+    public double xArea = 0;
+    public double yArea = 0;
     // private final Paint borderPaint = new Paint();
 
     double strafeError;
@@ -100,6 +104,10 @@ public class StackPipeline implements VisionProcessor {
                 MatOfPoint currentContour = listOfContours.get(i);
                 double currentContourArea = Imgproc.contourArea(currentContour);
 
+                if (currentContourArea < 1000 || currentContourArea > 9000) {
+                    continue;
+                }
+
                 if (currentContourArea > largestContourArea) {
                     largestContour = currentContour;
                     largestContourArea = currentContourArea;
@@ -112,6 +120,10 @@ public class StackPipeline implements VisionProcessor {
 
 
             boundingBox = Imgproc.boundingRect(largestContour);
+            boxArea = largestContourArea;
+            xArea = boundingBox.x;
+            yArea = boundingBox.y;
+
             Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 100 , 255), 1);
             // Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);
 
