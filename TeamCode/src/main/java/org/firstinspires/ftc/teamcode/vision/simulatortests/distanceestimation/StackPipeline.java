@@ -103,8 +103,16 @@ public class StackPipeline implements VisionProcessor {
 
                 MatOfPoint currentContour = listOfContours.get(i);
                 double currentContourArea = Imgproc.contourArea(currentContour);
+                Rect boundingBox = Imgproc.boundingRect(currentContour);
+
+                double ratio = (double) boundingBox.width / boundingBox.height;
+
 
                 if (currentContourArea < 1000 || currentContourArea > 9000) {
+                    continue;
+                }
+
+                if (ratio < 0.5 || ratio > 4) {
                     continue;
                 }
 
@@ -113,7 +121,6 @@ public class StackPipeline implements VisionProcessor {
                     largestContourArea = currentContourArea;
                 }
 
-                Rect boundingBox = Imgproc.boundingRect(currentContour);
                 Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(255, 255 , 255));
 
             }
@@ -121,8 +128,8 @@ public class StackPipeline implements VisionProcessor {
 
             boundingBox = Imgproc.boundingRect(largestContour);
             boxArea = largestContourArea;
-            xArea = boundingBox.x;
-            yArea = boundingBox.y;
+            xArea = boundingBox.width;
+            yArea = boundingBox.height;
 
             Imgproc.rectangle(thresholdMat, boundingBox, new Scalar(0, 100 , 255), 1);
             // Imgproc.rectangle(frame, boundingBox, new Scalar(0, 100 , 255), 5);

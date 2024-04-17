@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.utilities.robot.subsystems;
 import android.graphics.Path;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -28,6 +30,8 @@ public class Intake implements Subsystem {
     DigitalChannel centerProximity;
     DigitalChannel leftProximity;
     DigitalChannel rightProximity;
+
+    AnalogInput intakeAnaglog;
 
 
     public enum RotationStates {
@@ -84,6 +88,8 @@ public class Intake implements Subsystem {
         centerProximity = hardwareMap.get(DigitalChannel.class, "intakeCenterProximity");
         leftProximity = hardwareMap.get(DigitalChannel.class, "intakeLeftProximity");
         rightProximity = hardwareMap.get(DigitalChannel.class, "intakeRightProximity");
+
+        intakeAnaglog = hardwareMap.get(AnalogInput.class, "intakeAnalog");
 
 
         this.t = telemetry;
@@ -166,6 +172,10 @@ public class Intake implements Subsystem {
                 this.setGripperState(GripperStates.OPEN);
             }
         }
+
+        t.addData("Analog: ", intakeAnaglog.getVoltage());
+        t.addData("Analog: ", intakeAnaglog.getVoltage());
+
     }
 
     public void reset() {
