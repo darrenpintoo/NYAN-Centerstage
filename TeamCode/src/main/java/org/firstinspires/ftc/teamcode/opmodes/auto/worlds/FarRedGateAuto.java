@@ -96,7 +96,7 @@ public class FarRedGateAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(11, 23, 0), 0.25);
                 break;
             case RIGHT:
-                drive.gotoPoint(new Pose(26, 12, Math.PI / 2), -0.3);
+                drive.gotoPoint(new Pose(26, 13, Math.PI / 2), -0.3);
                 drive.turnToAngle(3, new MovementConstants(0, 0, -0.5));
                 drive.gotoPoint(new Pose(26, 9, 3), -0.25);
                 robot.pause(0.25);
@@ -116,7 +116,7 @@ public class FarRedGateAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.25);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(11, -65, 0), -0.25);
+        drive.gotoPoint(new Pose(11, -60, 0), -0.25);
 
 
 
@@ -125,21 +125,21 @@ public class FarRedGateAuto extends LinearOpMode {
 
         switch (placementPosition) {
             case RIGHT:
-                drive.gotoPoint(new Pose(36, -65, 0), 0);
+                drive.gotoPoint(new Pose(41, -60, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
                 drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
             case CENTER:
-                drive.gotoPoint(new Pose(35.41, -65, 0), 0);
+                drive.gotoPoint(new Pose(35.41, -60, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
                 drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
             case LEFT:
-                drive.gotoPoint(new Pose(29.41, -65, 0), 0.5);
+                drive.gotoPoint(new Pose(29.41, -60, 0), 0.5);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
                 drive.gotoPoint(new Pose(29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);

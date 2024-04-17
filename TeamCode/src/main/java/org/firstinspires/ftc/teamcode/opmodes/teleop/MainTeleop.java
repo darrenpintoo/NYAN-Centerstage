@@ -29,7 +29,7 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetry.setMsTransmissionInterval(500);
+        telemetry.setMsTransmissionInterval(20);
 
         // Initialize the robot
         robot.init(this, telemetry);
@@ -226,18 +226,11 @@ public class MainTeleop extends LinearOpMode {
                     currentFrameGamepad1.right_stick_x
             );
 
-            robot.drivetrain.robotCentricDriveFromGamepad(
-                    0,
-                    currentFrameGamepad2.left_stick_x / 5,
-                    0
-            );
 
 
             if (Math.abs(currentFrameGamepad2.left_stick_y) > 0.1) {
-                robot.depositLift.driveLiftFromGamepad(-currentFrameGamepad2.left_stick_y / 10);
-            } else if (Math.abs(previousFrameGamepad2.left_stick_y) > 0.1) {
-                robot.depositLift.setTargetState(DepositLift.LiftStates.CUSTOM);
-                robot.depositLift.setCustomPosition(robot.depositLift.getPosition());
+                robot.depositLift.driveLiftFromGamepad(-currentFrameGamepad2.left_stick_y / 3);
+                robot.depositLift.holdState = DepositLift.HoldPosition.ON;
             }
 
 
@@ -266,73 +259,15 @@ public class MainTeleop extends LinearOpMode {
                 robot.depositLift.setPaintbrushState(DepositLift.PaintbrushStates.DEFAULT);
             }
 
-
-            for (AprilTagDetection detection : robot.camera.backAprilTagProcessor.getDetections()) {
-                telemetry.addData("Back id: ", detection.id);
-
-
-                if (detection.ftcPose == null) {
-                    continue;
-                }
-
-                double x = detection.ftcPose.x;
-                double y = detection.ftcPose.y;
-
-                double rotatedHeading = -robot.localizer.getPose().getHeading();
-
-                double x2 = x * Math.cos(rotatedHeading) + y * Math.sin(rotatedHeading);
-                double y2 = x * -Math.sin(rotatedHeading) + y * Math.cos(rotatedHeading);
-
-                telemetry.addData("x trig: ", x2);
-                telemetry.addData("y trig: ", y2);
-
-
-
-                Pose a = AprilTagLocalization.getRobotPositionFromBackTag(detection, robot.localizer.getPose().getHeading(), robot.camera.backCameraPose);
-
-                telemetry.addData("Global x: ", a.getX());
-                telemetry.addData("Global y: ", a.getY());
-
-
-
-
-            }
-
-            for (AprilTagDetection detection : robot.camera.frontAprilTagProcessor.getDetections()) {
-                telemetry.addData("Front id: ", detection.id);
-
-
-                if (detection.ftcPose == null) {
-                    continue;
-                }
-
-
-                double x = detection.ftcPose.x;
-                double y = detection.ftcPose.y;
-
-                double rotatedHeading = -robot.localizer.getPose().getHeading();
-
-                double x2 = x * Math.cos(rotatedHeading) + y * Math.sin(rotatedHeading);
-                double y2 = x * -Math.sin(rotatedHeading) + y * Math.cos(rotatedHeading);
-
-                telemetry.addData("x trig: ", x2);
-                telemetry.addData("y trig: ", y2);
-
-
-
-
-                Pose a = AprilTagLocalization.getRobotPositionFromFrontTag(detection, robot.localizer.getPose().getHeading(), robot.camera.frontCameraPose);
-
-                telemetry.addData("Global x: ", a.getX());
-                telemetry.addData("Global y: ", a.getY());
-
-
-
-
-            }
-
             lastGripperState = robot.intake.currentGripperState;
 
+            /*
+            if (robot.depositLift.currentTargetState != robot.depositLift.previousTargetState) {
+                paintbrushState = false;
+            }
+
+
+             */
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
             telemetry.addData("Turn: ", Math.toDegrees(robot.internalIMU.getCurrentFrameHeadingCW()));

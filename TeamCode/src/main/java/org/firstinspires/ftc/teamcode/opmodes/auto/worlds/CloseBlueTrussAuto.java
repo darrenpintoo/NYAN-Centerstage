@@ -124,7 +124,7 @@ public class CloseBlueTrussAuto extends LinearOpMode {
                 break;
         }
 
-        drive.gotoPoint(new Pose(-60, 57, 0));
+        drive.gotoPoint(new Pose(-58, 57, 0));
         robot.intake.setOffset(4);
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
         drive.gotoPoint(new Pose(-35.125, 57, 0), 0);

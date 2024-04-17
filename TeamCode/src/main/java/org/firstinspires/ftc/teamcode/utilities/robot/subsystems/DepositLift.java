@@ -45,6 +45,20 @@ public class DepositLift implements Subsystem{
         TILTED
     }
 
+    public enum HoldPosition {
+        ON(kF),
+        OFF(0);
+
+        double power;
+        HoldPosition(double p) {
+            this.power = p;
+        }
+
+        double getPower() {
+            return power;
+        }
+    }
+
     public enum PaintbrushStates {
         ACTIVATED(0),
         DEFAULT(1);
@@ -73,12 +87,14 @@ public class DepositLift implements Subsystem{
 
     private MotorGroup<DcMotorEx> liftMotors;
 
-    private LiftStates currentTargetState = LiftStates.LEVEL0;
-    private LiftStates previousTargetState = LiftStates.LEVEL0;
+    public LiftStates currentTargetState = LiftStates.LEVEL0;
+    public LiftStates previousTargetState = LiftStates.LEVEL0;
     public BoxStates boxState = BoxStates.CLOSED;
     private TiltStates tiltState = TiltStates.DEFAULT;
 
     private PaintbrushStates paintbrushState = PaintbrushStates.DEFAULT;
+
+    public HoldPosition holdState = HoldPosition.OFF;
     private DigitalChannel magneticLimitSwitch;
 
     public static double kP = 0.005;
@@ -94,7 +110,7 @@ public class DepositLift implements Subsystem{
     public static double leftServoDefaultPosition = 0.54;
     public static double rightServoDefaultPosition = 0.46;
     public static double tiltAmount = -0.28;
-    public static double normalAmount = -0.03;
+    public static double normalAmount = -0.07;
     //
     public static double boxOpenPosition = 0.6;
     public static double boxClosedPosition = 1;
@@ -184,6 +200,8 @@ public class DepositLift implements Subsystem{
         this.magneticLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
         this.setBoxState(BoxStates.CLOSED);
 
+        holdState = HoldPosition.OFF;
+
     }
 
     public void driveLiftFromGamepad(double power) {
@@ -202,6 +220,8 @@ public class DepositLift implements Subsystem{
         currentSwitchState = magneticLimitSwitch.getState();
 
         // t.addData("Deposit -1: ", frameTime.milliseconds());
+
+        power += holdState.getPower();
 
         if (atTargetPosition() && this.currentTargetState == LiftStates.LEVEL0 && this.offset == 0) {
 
@@ -277,6 +297,7 @@ public class DepositLift implements Subsystem{
         this.paintbrushServo.setPosition(paintbrushState.getPosition());
         // t.addData("IsDown?: ", currentSwitchState);
         t.addData("Slides Position: ", currentSlidesPosition);
+        t.addData("Target Position: ", profile.feedforwardProfile.getPositionFromTime(profile.timer.seconds()));
         t.addData("Custom Position: ", customPosition);
         t.addData("State: ", currentTargetState);
         power = 0;
@@ -306,6 +327,7 @@ public class DepositLift implements Subsystem{
                 break;
             default:
                 pos = 1000;
+                break;
         }
 
         return pos + offset * offsetLength;
@@ -346,6 +368,7 @@ public class DepositLift implements Subsystem{
             this.setTiltState(TiltStates.DEFAULT);
         }
         this.previousTargetState = this.currentTargetState;
+        this.holdState = HoldPosition.OFF;
         this.currentTargetState = state;
         this.offset = 0;
         this.regenerateProfile();

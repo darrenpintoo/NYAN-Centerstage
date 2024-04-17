@@ -312,7 +312,7 @@ public class Camera implements Subsystem {
 
         if (fps == 0) return;
 
-        RobotEx.getInstance().pause( 3 / fps + exposure / 1000 + 0.1);
+        RobotEx.getInstance().pause( 2 / fps + exposure / 1000 + 0.1);
     }
 
     public void waitForFrontCameraFrame() {
@@ -322,6 +322,6 @@ public class Camera implements Subsystem {
 
         if (fps == 0) return;
 
-        RobotEx.getInstance().pause(2 / fps + exposure / 1000 + 0.25);
+        RobotEx.getInstance().pause(2 / fps + exposure / 1000 + 0.2);
     }
 }
