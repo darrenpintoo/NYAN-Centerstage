@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes.exampletesting;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -16,12 +16,14 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.PlaneLauncher;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+import java.util.Locale;
+
 /**
  * Example teleop code for a basic mecanum drive
  */
 
-@TeleOp(name = "Main Teleop")
-public class MainTeleop extends LinearOpMode {
+@TeleOp(name = "Exposure Testing")
+public class ExposureTesting extends LinearOpMode {
 
     // Create new Instance of the robot
     RobotEx robot = RobotEx.getInstance();
@@ -29,11 +31,17 @@ public class MainTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetry.setMsTransmissionInterval(500);
+        telemetry.setMsTransmissionInterval(20);
 
         // Initialize the robot
         robot.init(this, telemetry);
 
+
+        robot.camera.onOpmodeStarted();
+
+        while (opModeInInit() && !isStopRequested()) {
+            robot.camera.onCyclePassed();
+        }
 
         waitForStart();
 
@@ -55,6 +63,16 @@ public class MainTeleop extends LinearOpMode {
         boolean airplaneLiftState = false;
         boolean dropState = false;
         boolean paintbrushState = false;
+        boolean lastX = false;
+
+        final int RESOLUTION_WIDTH = 640;
+        final int RESOLUTION_HEIGHT = 480;
+
+        // Internal state
+        int frameCount = 0;
+        long capReqTime = 0;
+
+
         // robot.drivetrain.enableAntiTip();
 
         robot.planeLauncher.setLiftState(PlaneLauncher.AirplaneLiftStates.DOWN);
@@ -69,7 +87,6 @@ public class MainTeleop extends LinearOpMode {
         robot.localizer.setPose(new Pose(-61, -13, 0), true);
 
         PIDDrive drive = new PIDDrive(robot, this, telemetry);
-        robot.camera.preloadPipeline.setTargetAprilTagID(4);
 
         ElapsedTime t = new ElapsedTime();
         while (!robot.stopRequested) {
@@ -269,10 +286,35 @@ public class MainTeleop extends LinearOpMode {
 
 
              */
+
+            boolean x = gamepad1.x;
+
+            if (x && !lastX)
+            {
+                robot.camera.frontVisionPortal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d", frameCount++));
+                capReqTime = System.currentTimeMillis();
+            }
+
+            lastX = x;
+
+            telemetry.addLine("######## Camera Capture Utility ########");
+            telemetry.addLine(String.format(Locale.US, " > Resolution: %dx%d", RESOLUTION_WIDTH, RESOLUTION_HEIGHT));
+            telemetry.addLine(" > Press X (or Square) to capture a frame");
+            telemetry.addData(" > Camera Status", robot.camera.frontVisionPortal.getCameraState());
+
+            if (capReqTime != 0)
+            {
+                telemetry.addLine("\nCaptured Frame!");
+            }
+
+            if (capReqTime != 0 && System.currentTimeMillis() - capReqTime > 1000)
+            {
+                capReqTime = 0;
+            }
+
             double frameTime = robot.update();
             // telemetry.addData("Frame Time: ", MathHelper.truncate(frameTime, 3));
             telemetry.addData("Turn: ", Math.toDegrees(robot.internalIMU.getCurrentFrameHeadingCW()));
-
             // telemetry.addData("Ratio: ", robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading());
             // telemetry.addData("Effective Track Width: ", ThreeWheelLocalizer.trackWidth / (robot.internalIMU.getCurrentFrameHeadingCW()/robot.localizer.getPose().getHeading()));
         }

@@ -27,7 +27,7 @@ public class CameraConstants {
         public final static double fovYDeg = Math.toDegrees(2 * Math.atan2(HEIGHT, 2 * fy));
 
         public final static long MS_TO_PROCESS_FRAME = 2;
-        public final static long exposure = 100;// 25;
+        public final static long exposure = 100;// 10;
         public final static int gain = 100;
     }
 

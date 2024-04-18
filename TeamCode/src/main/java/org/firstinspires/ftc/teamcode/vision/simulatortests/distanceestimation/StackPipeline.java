@@ -34,8 +34,8 @@ public class StackPipeline implements VisionProcessor {
     private double STACK_WIDTH = 3;
     private double STACK_HEIGHT = 2.5;
 
-    public Scalar lowerBound = new Scalar(0, 140, 0); // new Scalar(25.5, 80.8, 131.8);
-    public Scalar upperBound = new Scalar(255, 255, 255);// new Scalar(46.8, 255, 255);
+    public Scalar lowerBound = new Scalar(0, 60, 10.5); // new Scalar(25.5, 80.8, 131.8);
+    public Scalar upperBound = new Scalar(255, 255, 130);// new Scalar(46.8, 255, 255);
 
     private Mat hsvMat       = new Mat();
     private Mat thresholdMat       = new Mat();
@@ -96,6 +96,7 @@ public class StackPipeline implements VisionProcessor {
 
         MatOfPoint largestContour = new MatOfPoint();
         double largestContourArea = -1;
+        double hypotenuseX = 0;
 
         if (listOfContours.size() > 0) {
 
@@ -155,7 +156,7 @@ public class StackPipeline implements VisionProcessor {
 
             // <ignore>
             double hypotenuseY = rayDistance / Math.cos(Math.toRadians(curvedDegreesErrorY)); // have angle and adj, need hyp
-            double hypotenuseX = rayDistance * Math.tan(Math.toRadians(curvedDegreesErrorX)); // have angle and adj, need opp
+            hypotenuseX = rayDistance * Math.tan(Math.toRadians(curvedDegreesErrorX)); // have angle and adj, need opp
 
             double distanceToCamera = Math.cbrt(Math.pow(hypotenuseX, 3)  + Math.pow(hypotenuseY, 3) + Math.pow(rayDistance, 3)); // inaccurate
             // </ignore>
@@ -189,6 +190,9 @@ public class StackPipeline implements VisionProcessor {
             // correctionPose = new Pose(hypotenuseX, hypotenuseY, 0);
 
         }
+
+        strafeError = hypotenuseX;
+
 
         lastCaptureTime = captureTimeNanos;
 

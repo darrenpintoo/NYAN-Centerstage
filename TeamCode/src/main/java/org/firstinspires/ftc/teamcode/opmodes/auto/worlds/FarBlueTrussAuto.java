@@ -119,27 +119,28 @@ public class FarBlueTrussAuto extends LinearOpMode {
         drive.gotoPoint(new Pose(-57, 57, 0), new MovementConstants(50, 25, 0));
         drive.gotoPoint(new Pose(-56, -35,   0), new MovementConstants(50, 10, -0.25));
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
+        MovementUtils.waitForRightClearArea(robot, 4);
 
         switch (placementPosition) {
             case LEFT:
                 drive.gotoPoint(new Pose(-41.41, -35, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+                drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-46, 0), 0);
                 drive.gotoPoint(new Pose(-41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(-35.41, -35, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+                drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-46, 0), 0);
                 drive.gotoPoint(new Pose(-35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
             case RIGHT:
                 drive.gotoPoint(new Pose(-29.41, -35, 0), 0.5);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+                drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-46, 0), 0);
                 drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
         }

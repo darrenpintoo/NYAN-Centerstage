@@ -98,6 +98,7 @@ public class Camera implements Subsystem {
 
 
 
+
         frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(frontCameraObject)
                 .setCameraResolution(new Size(CameraConstants.BackCamera.WIDTH, CameraConstants.BackCamera.HEIGHT))
@@ -115,6 +116,8 @@ public class Camera implements Subsystem {
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .setShowStatsOverlay(true)
                 .build();
+
+
 
         backVisionPortal.setProcessorEnabled(preloadPipeline, false);
         backVisionPortal.setProcessorEnabled(backAprilTagProcessor, false);
@@ -172,22 +175,22 @@ public class Camera implements Subsystem {
         telemetry.addData("Front fps: ", frontVisionPortal.getFps());
         telemetry.addData("Back fps: ", backVisionPortal.getFps());
 
-        telemetry.addData("front detections: ", frontDetectionAmount);
+        // telemetry.addData("front detections: ", frontDetectionAmount);
 
-        telemetry.addData("Left: ", preloadPipeline.leftAverage);
-        telemetry.addData("Right: ", preloadPipeline.rightAverage);
+        // telemetry.addData("Left: ", preloadPipeline.leftAverage);
+        // telemetry.addData("Right: ", preloadPipeline.rightAverage);
 
-        telemetry.addData("Right: ", preloadPipeline.targetAprilTagID);
+        // telemetry.addData("Right: ", preloadPipeline.targetAprilTagID);
 
-        telemetry.addData("Vision processor active: ", backVisionPortal.getProcessorEnabled(preloadPipeline));
+        // telemetry.addData("Vision processor active: ", backVisionPortal.getProcessorEnabled(preloadPipeline));
 
 
         if (isFrontCameraActive()) {
             telemetry.addData("Strafe: ", stackProcessor.getStrafeError());
-            telemetry.addData("Area: ", stackProcessor.boxArea);
-            telemetry.addData("Y: ", stackProcessor.yArea);
-            telemetry.addData("X: ", stackProcessor.xArea);
-            telemetry.addData("Ratio: ", stackProcessor.xArea / stackProcessor.yArea);
+            // telemetry.addData("Area: ", stackProcessor.boxArea);
+            // telemetry.addData("Y: ", stackProcessor.yArea);
+            // telemetry.addData("X: ", stackProcessor.xArea);
+            // telemetry.addData("Ratio: ", stackProcessor.xArea / stackProcessor.yArea);
         }
 
         backDetections = backAprilTagProcessor.getDetections();

@@ -52,7 +52,7 @@ public class PropDetectionPipelineRedClose implements VisionProcessor {
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
         Rect rect1 = new Rect(0, 270, 100, 100);
-        Rect rect2 = new Rect(210, 240, 100, 100);
+        Rect rect2 = new Rect(120, 240, 100, 100);
         Rect rect3 = new Rect(410, 290, 100, 100);
 
         // Draw rectangles on the output

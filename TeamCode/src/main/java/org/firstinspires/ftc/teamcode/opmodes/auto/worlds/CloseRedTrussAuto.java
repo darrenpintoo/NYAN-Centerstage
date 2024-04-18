@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -77,6 +78,7 @@ public class CloseRedTrussAuto extends LinearOpMode {
         robot.camera.preloadPipeline.setTargetAprilTagID(placementPosition.getPosition() + 3);
         robot.localizer.setPose(new Pose(61, -13, Math.PI/2), true);
         robot.pause(0.1);
+
         switch (placementPosition) {
             case RIGHT:
                 drive.gotoPoint(new Pose(38, -35, 0), 0);
@@ -90,7 +92,7 @@ public class CloseRedTrussAuto extends LinearOpMode {
                 drive.gotoPoint(new Pose(30, -30, 0), -0.1);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(58, -40, 0));
+                drive.gotoPoint(new Pose(58, -40, 0),-0.25);
 
                 break;
             case CENTER:
@@ -106,7 +108,7 @@ public class CloseRedTrussAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
-                drive.gotoPoint(new Pose(58, -30, 0));
+                drive.gotoPoint(new Pose(58, -30, 0), -0.25);
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(26, -35, 0), 0.5);
@@ -121,41 +123,73 @@ public class CloseRedTrussAuto extends LinearOpMode {
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
                 robot.intake.reset();
                 robot.pause(0.1);
-                drive.gotoPoint(new Pose(58, -20, 0));
+                drive.gotoPoint(new Pose(58, -20, 0), -0.25);
                 break;
         }
 
-        drive.gotoPoint(new Pose(57, 57, 0));
+        ElapsedTime timer = new ElapsedTime();
+
+        while (timer.seconds() < 1 && !robot.stopRequested) {
+            robot.drivetrain.robotCentricDriveFromGamepad(0, -0.25, 0);
+            robot.update();
+        }
+
+        timer.reset();
+        while (timer.seconds() < 0.2 && !robot.stopRequested) {
+            robot.drivetrain.robotCentricDriveFromGamepad(0, 0.25, 0);
+            robot.update();
+        }
+
+        timer.reset();
+        while (timer.seconds() < 0.5 && !robot.stopRequested) {
+            robot.drivetrain.robotCentricDriveFromGamepad(0, -0.25, 0);
+            robot.update();
+        }
+
+        robot.localizer.setPose(new Pose(61, -20, 0), true);
+        drive.gotoPoint(new Pose(57, -20, 0), 0);
+
+        drive.gotoPoint(new Pose(57, 57, 0), 0);
         robot.intake.setOffset(4);
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
         drive.gotoPoint(new Pose(33.125, 57, 0), 0);
         drive.gotoPoint(new Pose(33.125, 53, 0));
 
-        robot.pause(0.25);
+        robot.pause(0.15);
         robot.camera.waitForFrontCameraFrame();
         robot.localizer.setPose(robot.camera.getRobotPoseFromFrontTags(), false);
-        drive.gotoPoint(new Pose(35.125, 57, 0));
+        drive.gotoPoint(new Pose(35.125, 57, 0), 0);
         robot.intake.setOffset(2);
-        drive.gotoPoint(new Pose(35.125, 61, 0), new MovementConstants(10, 10, 0));
-        robot.pause(1);
+        drive.gotoPoint(new Pose(35.125, 63, 0), new MovementConstants(10, 10, 0));
+        robot.pause(0.2);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
-        robot.pause(1);
+        robot.pause(0.1);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(41, 57, 0));
-        drive.gotoPoint(new Pose(59, 57, 0));
+        drive.gotoPoint(new Pose(59, 50, 0), -0.25);
+        ElapsedTime timer2 = new ElapsedTime();
+
+        while (timer2.seconds() < 1 && !robot.stopRequested) {
+            robot.drivetrain.robotCentricDriveFromGamepad(0, -0.25, 0);
+            robot.update();
+        }
+
+
+        robot.localizer.setPose(new Pose(62.5, 50, 0), true);
+
+        drive.gotoPoint(new Pose(59, 50, 0));
+
         drive.gotoPoint(new Pose(59, -35,   0), -0.25);
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
         drive.gotoPoint(new Pose(42, -35, 0), -0.25);
         robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1_AUTO);
-        drive.gotoPoint(new Pose(41.4,-48, 0), -0.25);
+        drive.gotoPoint(new Pose(41.4,-46, 0), 0);
         drive.gotoPoint(new Pose(41.4,-50, 0), 0);
         robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
-        robot.pause(1.25);
+        robot.pause(1);
         robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
         robot.intake.reset();
-        drive.gotoPoint(new Pose(58, -40, 0),0);
         drive.gotoPoint(new Pose(58, -45, 0));
 
 

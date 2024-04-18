@@ -58,7 +58,7 @@ public class PropDetectionPipelineBlueFarN implements VisionProcessor {
         // Define the coordinates of three rectangles
         // You need to adjust these coordinates based on your screen resolution
         Rect rect1 = new Rect(500, 180, 100, 100);
-        Rect rect2 = new Rect(250, 180, 100, 100);
+        Rect rect2 = new Rect(220, 180, 100, 100);
 
         // Draw rectangles on the output
         drawRectangle(maskedInputMat, rect1, new Scalar(255, 0, 0)); // Blue

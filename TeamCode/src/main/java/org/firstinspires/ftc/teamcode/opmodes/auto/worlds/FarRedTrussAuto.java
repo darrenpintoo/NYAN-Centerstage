@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -101,9 +102,9 @@ public class FarRedTrussAuto extends LinearOpMode {
             case RIGHT:
                 drive.gotoPoint(new Pose(30, 20, Math.PI / 2));
                 drive.turnToAngle(3);
-                drive.gotoPoint(new Pose(30, 9, 3));
+                drive.gotoPoint(new Pose(30, 9, 3), 0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(30, 25, 3));
+                drive.gotoPoint(new Pose(30, 25, 3), 0);
                 drive.turnToAngle(0);
                 robot.intake.setOffset(4);
                 drive.gotoPoint(new Pose(36, 24, 0));
@@ -117,30 +118,42 @@ public class FarRedTrussAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.5);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(59, 57, 0), new MovementConstants(50, 25, 0));
+        drive.gotoPoint(new Pose(59, 57, 0), 0);
+        ElapsedTime timer = new ElapsedTime();
+
+        while (timer.seconds() < 1 && !robot.stopRequested) {
+            robot.drivetrain.robotCentricDriveFromGamepad(0, -0.3, 0);
+            robot.update();
+        }
+
+
+        robot.localizer.setPose(new Pose(61, 57, 0), true);
+
+        drive.gotoPoint(new Pose(58, 57, 0), 0);
+
         drive.gotoPoint(new Pose(58, -35,   0), new MovementConstants(50, 10, -0.25));
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
-
+        MovementUtils.waitForRightClearArea(robot, 4);
         switch (placementPosition) {
             case RIGHT:
                 drive.gotoPoint(new Pose(41.41, -35, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+                drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-46, 0), 0);
                 drive.gotoPoint(new Pose(41.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
             case CENTER:
                 drive.gotoPoint(new Pose(35.41, -35, 0), 0);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+                drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-46, 0), 0);
                 drive.gotoPoint(new Pose(35.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(29.41, -35, 0), 0.5);
                 robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
                 robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
-                drive.gotoPoint(new Pose(29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), -0.25);
+                drive.gotoPoint(new Pose(29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-46, 0), 0);
                 drive.gotoPoint(new Pose(29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
                 break;
         }

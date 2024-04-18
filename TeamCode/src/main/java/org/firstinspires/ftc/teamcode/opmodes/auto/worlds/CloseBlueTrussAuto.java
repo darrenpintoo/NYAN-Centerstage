@@ -73,9 +73,29 @@ public class CloseBlueTrussAuto extends LinearOpMode {
 
         robot.update();
 
+        if (placementPosition == PlacementPosition.RIGHT) {
+            preload = true;
+        }
+
+        if (preload == true){
+            drive.gotoPoint(new Pose(-26, -35, 0), 0.5);
+            robot.localizer.setPose(robot.camera.getRobotPoseFromBackTags(), false);
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL1);
+            drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-48, 0), 0);
+            drive.gotoPoint(new Pose(-29.41 + MovementUtils.getOffsetFromBackdropPlacement(robot),-50, 0), 0);
+            robot.depositLift.setBoxState(DepositLift.BoxStates.OPEN);
+            robot.pause(0.25);
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL2);
+            drive.gotoPoint(new Pose(-30, -7, 0), 0);
+            robot.depositLift.setTargetState(DepositLift.LiftStates.LEVEL0);
+            robot.intake.reset();
+            robot.pause(0.1);
+
+        }
+
         robot.camera.preloadPipeline.setTargetAprilTagID(placementPosition.getPosition());
         robot.localizer.setPose(new Pose(-61, -13, -Math.PI/2), true);
-        robot.pause(0.1);
+        robot.pause(3);
         switch (placementPosition) {
             case LEFT:
                 drive.gotoPoint(new Pose(-38, -35, 0), 0);
@@ -134,14 +154,13 @@ public class CloseBlueTrussAuto extends LinearOpMode {
         robot.camera.waitForFrontCameraFrame();
         robot.localizer.setPose(robot.camera.getRobotPoseFromFrontTags(), false);
         drive.gotoPoint(new Pose(-35.125, 57, 0));
-        robot.intake.setOffset(2);
+        robot.intake.setOffset(1.8);
         drive.gotoPoint(new Pose(-35.125, 61, 0), new MovementConstants(10, 10, 0));
         robot.pause(1);
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(1);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
         drive.gotoPoint(new Pose(-41, 57, 0));
-        drive.gotoPoint(new Pose(-59, 57, 0));
         drive.gotoPoint(new Pose(-59, -35,   0), -0.25);
         robot.intake.setGripperState(Intake.GripperStates.OPEN);
         drive.gotoPoint(new Pose(-42, -35, 0), -0.25);

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utilities.robot.movement;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.utilities.math.AprilTagLocalization;
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -45,5 +47,25 @@ public class MovementUtils {
                 return 1.5;
         }
         return 0;
+    }
+
+    public static void waitForLeftClearArea(RobotEx robot, double timeout) {
+        ElapsedTime timer = new ElapsedTime();
+
+        while (timer.seconds() < timeout) {
+            if (robot.intake.leftClear()) {
+                break;
+            }
+        }
+    }
+
+    public static void waitForRightClearArea(RobotEx robot, double timeout) {
+        ElapsedTime timer = new ElapsedTime();
+
+        while (timer.seconds() < timeout) {
+            if (robot.intake.rightClear()) {
+                break;
+            }
+        }
     }
 }

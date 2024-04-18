@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.utilities.robot.subsystems;
 import android.graphics.Path;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
@@ -14,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.checkerframework.checker.index.qual.LTEqLengthOf;
 import org.firstinspires.ftc.ftccommon.internal.manualcontrol.commands.DigitalCommands;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.utilities.controltheory.motionprofiler.MotionProfile;
 import org.firstinspires.ftc.teamcode.utilities.math.MathHelper;
 import org.mercurialftc.mercurialftc.util.hardware.cachinghardwaredevice.CachingServo;
@@ -32,6 +35,9 @@ public class Intake implements Subsystem {
     DigitalChannel rightProximity;
 
     AnalogInput intakeAnaglog;
+
+    Rev2mDistanceSensor left;
+    Rev2mDistanceSensor right;
 
 
     public enum RotationStates {
@@ -90,6 +96,9 @@ public class Intake implements Subsystem {
         rightProximity = hardwareMap.get(DigitalChannel.class, "intakeRightProximity");
 
         intakeAnaglog = hardwareMap.get(AnalogInput.class, "intakeAnalog");
+
+        left = (Rev2mDistanceSensor) hardwareMap.get(DistanceSensor.class, "leftDistance");
+        right = (Rev2mDistanceSensor) hardwareMap.get(DistanceSensor.class, "rightDistance");
 
 
         this.t = telemetry;
@@ -289,6 +298,14 @@ public class Intake implements Subsystem {
 
     public void disableTeleop()  {
         this.inTeleop = false;
+    }
+
+    public boolean rightClear() {
+        return right.getDistance(DistanceUnit.INCH) > 25;
+    }
+
+    public boolean leftClear() {
+        return left.getDistance(DistanceUnit.INCH) > 25;
     }
 
 
