@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.utilities.math.linearalgebra.Pose;
 import org.firstinspires.ftc.teamcode.utilities.robot.RobotEx;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.utilities.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.PlacementPosition;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueCloseN;
 import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineBlueFarN;
+import org.firstinspires.ftc.teamcode.vision.simulatortests.prop.PropDetectionPipelineRedFarN;
 
 @Autonomous(name = "Far Blue Truss 2+1", group = "Blue Far", preselectTeleOp = "Main Teleop")
 public class FarBlueTrussAuto extends LinearOpMode {
@@ -99,10 +101,10 @@ public class FarBlueTrussAuto extends LinearOpMode {
                 break;
             case LEFT:
                 drive.gotoPoint(new Pose(-30, 20, -Math.PI / 2));
-                drive.turnToAngle(-3);
-                drive.gotoPoint(new Pose(-30, 9, -3));
+                drive.turnToAngle(3);
+                drive.gotoPoint(new Pose(-30, 9, 3), 0);
                 robot.intake.reset();
-                drive.gotoPoint(new Pose(-30, 25, -3));
+                drive.gotoPoint(new Pose(-30, 25, 3), 0);
                 drive.turnToAngle(0);
                 robot.intake.setOffset(4);
                 drive.gotoPoint(new Pose(-36, 24, 0));
@@ -116,11 +118,22 @@ public class FarBlueTrussAuto extends LinearOpMode {
         robot.intake.setGripperState(Intake.GripperStates.CLOSED);
         robot.pause(0.5);
         robot.intake.setRotationState(Intake.RotationStates.ROTATED);
-        drive.gotoPoint(new Pose(-57, 57, 0), new MovementConstants(50, 25, 0));
-        drive.gotoPoint(new Pose(-56, -35,   0), new MovementConstants(50, 10, -0.25));
-        robot.intake.setGripperState(Intake.GripperStates.OPEN);
-        MovementUtils.waitForRightClearArea(robot, 4);
+        drive.gotoPoint(new Pose(-59, 57, 0), 0);
+        ElapsedTime timer = new ElapsedTime();
 
+        while (timer.seconds() < 1 && !robot.stopRequested) {
+            robot.drivetrain.robotCentricDriveFromGamepad(0, 0.3, 0);
+            robot.update();
+        }
+
+
+        robot.localizer.setPose(new Pose(-61, 57, 0), true);
+
+        drive.gotoPoint(new Pose(-59, 57, 0), 0);
+
+        drive.gotoPoint(new Pose(-58, -35,0), new MovementConstants(50, 10, -0.25));
+        robot.intake.setGripperState(Intake.GripperStates.OPEN);
+        MovementUtils.waitForLeftClearArea(robot, 4);
         switch (placementPosition) {
             case LEFT:
                 drive.gotoPoint(new Pose(-41.41, -35, 0), 0);
