@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: org.team11260:fast-load:0.1.1@aar">
+  <library name="Gradle: org.team11260:fast-load:0.1.1@aar" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d7286cf05cfb985203d24c588f3809e6/transformed/jetified-fast-load-0.1.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d7286cf05cfb985203d24c588f3809e6/transformed/jetified-fast-load-0.1.1/res" />

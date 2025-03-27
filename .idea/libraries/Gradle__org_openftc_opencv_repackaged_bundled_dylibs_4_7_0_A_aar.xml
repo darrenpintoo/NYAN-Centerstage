@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: org.openftc:opencv-repackaged-bundled-dylibs:4.7.0-A@aar">
+  <library name="Gradle: org.openftc:opencv-repackaged-bundled-dylibs:4.7.0-A@aar" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/561415b838a86c1dd200218d280fef68/transformed/jetified-opencv-repackaged-bundled-dylibs-4.7.0-A/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/561415b838a86c1dd200218d280fef68/transformed/jetified-opencv-repackaged-bundled-dylibs-4.7.0-A/res" />
